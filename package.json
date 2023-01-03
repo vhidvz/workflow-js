@@ -32,6 +32,7 @@
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
   "devDependencies": {
     "@types/jest": "^29.2.5",
+    "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
     "dotenv": "^16.0.3",
@@ -59,5 +60,8 @@
   },
   "files": [
     "/dist"
-  ]
+  ],
+  "dependencies": {
+    "xml2js": "^0.4.23"
+  }
 }
