@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "allowJs": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "declaration": true,
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "types": ["node", "jest"],
+    "removeComments": false,
+    "outDir": "./dist",
+    "strict": true
+  },
+  "include": ["src/**/*"]
+}
