@@ -65,7 +65,7 @@ export type BPMNTask = BPMNElement & {
 
 export type BPMNProcess = BPMNElement & {
   'bpmn:isExecutable': boolean;
-  'bpmn:laneSet'?: [BPMNLaneSet];
+  'bpmn:laneSet'?: BPMNLaneSet[];
   'bpmn:task'?: BPMNTask[];
   'bpmn:endEvent'?: BPMNEndEvent[];
   'bpmn:startEvent'?: BPMNStartEvent[];
