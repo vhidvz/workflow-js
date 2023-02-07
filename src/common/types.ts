@@ -1,1 +1,1 @@
-export type AttributeOptions = { id: string | symbol } | { name: string };
+export type IdentityOptions = { id: string } | { name: string };

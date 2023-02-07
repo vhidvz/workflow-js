@@ -10,7 +10,7 @@ export class Sequence extends Attribute {
     super(data);
   }
 
-  static build(el: BPMNSequenceFlow, sourceRef: Element, targetRef: Element): Sequence {
-    return new Sequence({ ...el, sourceRef, targetRef });
+  static build(el: BPMNSequenceFlow): Sequence {
+    return new Sequence(el);
   }
 }
