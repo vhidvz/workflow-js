@@ -1,3 +1,4 @@
 export * from './attribute';
 export * from './sequence';
-export * from './element';
+export * from './activity';
+export * from './lane';

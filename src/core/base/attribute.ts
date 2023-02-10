@@ -1,4 +1,7 @@
+import { BPMNProcess } from '../../type';
+
 export class Attribute {
+  protected process: BPMNProcess;
   $!: { id: string; name?: string };
 
   get id(): string {
@@ -9,7 +12,8 @@ export class Attribute {
     return this.$.name;
   }
 
-  constructor(data?: Partial<Attribute>) {
+  constructor(process: BPMNProcess, data?: Partial<Attribute>) {
     if (data) Object.assign(this, data);
+    this.process = process;
   }
 }

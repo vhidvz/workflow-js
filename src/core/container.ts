@@ -1,19 +1,17 @@
-import { IdentityOptions } from '../common';
 import { BPMNDefinition } from '../type';
-import { getIdentity } from '../utils';
 
 export class Container {
-  private static definitions: { [str: string]: BPMNDefinition };
+  private static definitions: { [id: string]: BPMNDefinition };
 
-  public static add(definition: BPMNDefinition, identity?: IdentityOptions) {
-    this.definitions[getIdentity(identity)] = definition;
+  public static add(id: string, definition: BPMNDefinition) {
+    this.definitions[id] = definition;
   }
 
-  public static del(identity?: IdentityOptions) {
-    delete this.definitions[getIdentity(identity)];
+  public static get(id: string) {
+    return this.definitions[id];
   }
 
-  public static get(identity?: IdentityOptions) {
-    return this.definitions[getIdentity(identity)];
+  public static del(id: string) {
+    delete this.definitions[id];
   }
 }

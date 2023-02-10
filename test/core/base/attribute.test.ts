@@ -1,4 +1,4 @@
-import { readFile, parse, Attribute, BPMNSchema } from '../../../src';
+import { readFile, parse, Attribute, BPMNSchema, getBPMNProcess } from '../../../src';
 
 describe('test core base attribute class', () => {
   let schema: BPMNSchema;
@@ -8,7 +8,10 @@ describe('test core base attribute class', () => {
   });
 
   it('should define attribute object', () => {
-    const attribute = new Attribute(schema['bpmn:definitions']);
+    const process = getBPMNProcess(schema['bpmn:definitions'], { name: 'Pizza Customer' });
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const attribute = new Attribute(process!, schema['bpmn:definitions']);
 
     expect(attribute.$).toEqual(schema['bpmn:definitions'].$);
     expect(attribute.id).toBe(schema['bpmn:definitions'].$.id);

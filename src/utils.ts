@@ -2,7 +2,6 @@ import { $, BPMNDefinition, BPMNProcess, BPMNSchema } from './type';
 import { IdentityOptions } from './common';
 
 import { parseString } from 'xml2js';
-import { nanoid } from 'nanoid';
 import fs from 'fs';
 
 export const readFile = (path: string): string => fs.readFileSync(path, 'utf8');
@@ -19,12 +18,14 @@ export const parse = (xml: string): BPMNSchema => {
   return parse;
 };
 
-export const getBPMNElement = (process: BPMNProcess, identity: IdentityOptions) => {
-  for (const elements of Object.values(process)) {
-    if (typeof elements === 'object' && Array.isArray(elements)) {
-      for (const element of elements) {
-        if ('id' in identity && '$' in element && (element.$ as $).id === identity.id) return element;
-        if ('name' in identity && '$' in element && (element.$ as $).name === identity.name) return element;
+export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions) => {
+  for (const [key, activities] of Object.entries(process)) {
+    if (typeof activities === 'object' && Array.isArray(activities)) {
+      for (const activity of activities) {
+        if ('id' in identity && '$' in activity && (activity.$ as $).id === identity.id)
+          return { key, activity };
+        if ('name' in identity && '$' in activity && (activity.$ as $).name === identity.name)
+          return { key, activity };
       }
     }
   }
@@ -46,13 +47,4 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
   }
 
   return processes.find((process) => process.$.id === identity.id);
-};
-
-export const uid = (): string => nanoid();
-
-export const getIdentity = (identity?: IdentityOptions): string => {
-  const id = identity && 'id' in identity ? identity.id : undefined;
-  const name = identity && 'name' in identity ? identity.name : undefined;
-
-  return id ?? name ?? 'default';
 };

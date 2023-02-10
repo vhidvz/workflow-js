@@ -1,4 +1,14 @@
-import { BPMNSchema, Sequence, getBPMNProcess, parse, readFile } from '../../../src';
+import {
+  Activity,
+  BPMNElement,
+  BPMNSchema,
+  BPMNSequenceFlow,
+  Sequence,
+  getBPMNActivity,
+  getBPMNProcess,
+  parse,
+  readFile,
+} from '../../../src';
 
 describe('test core base sequence class', () => {
   let schema: BPMNSchema;
@@ -10,6 +20,15 @@ describe('test core base sequence class', () => {
   it('should define sequence object', () => {
     const process = getBPMNProcess(schema['bpmn:definitions'], { name: 'Pizza Customer' });
 
-    const sequenceFlow = process?.['bpmn:sequenceFlow']?.[0];
+    const sequenceBPMN = getBPMNActivity(process!, { id: 'Flow_1x6ee0h' });
+    const sourceBPMN = getBPMNActivity(process!, { id: 'Activity_1acydm6' });
+    const targetBPMN = getBPMNActivity(process!, { id: 'Gateway_0s7y3gr' });
+
+    expect(
+      Sequence.build(sequenceBPMN as BPMNSequenceFlow, {
+        sourceRef: Activity.build(sourceBPMN as BPMNElement),
+        targetRef: Activity.build(targetBPMN as BPMNElement),
+      }),
+    ).toBeDefined();
   });
 });
