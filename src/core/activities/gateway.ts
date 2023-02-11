@@ -1,6 +1,8 @@
+import { History, Token, TokenStatus } from '../../context';
+import { getActivity, takeOutgoing } from '../../tools';
 import { BPMNGateway, BPMNProcess } from '../../type';
+import { IdentityOptions } from '../../common';
 import { getBPMNActivity } from '../../utils';
-import { getActivity } from '../../tools';
 import { Activity } from '../base';
 
 export enum GatewayType {
@@ -13,6 +15,37 @@ export enum GatewayType {
 
 export class GatewayActivity extends Activity {
   $!: { id: string; name?: string; default?: string };
+
+  takeOutgoing(identity?: IdentityOptions & { pause?: boolean }) {
+    if (!this.outgoing || !this.outgoing?.length) return;
+
+    const outgoing = takeOutgoing(this.outgoing, identity);
+
+    if (outgoing?.length) {
+      if (outgoing.length === 1 && this.token) {
+        this.token.push(History.build(this.id, { name: this.name }));
+      }
+
+      if (outgoing.length > 1 && this.context && this.token) {
+        this.token.locked = true;
+        this.token.status = TokenStatus.Terminated;
+
+        for (const activity of outgoing) {
+          const { pause } = identity ?? {};
+
+          const token = Token.build({
+            parent: this.token.id,
+            status: pause ? TokenStatus.Paused : TokenStatus.Ready,
+          });
+
+          token.push(History.build(activity.id, { name: activity.name }));
+          this.context.addToken(token);
+        }
+      }
+    }
+
+    return outgoing;
+  }
 
   get default(): Activity | undefined {
     if (!this.$.default) return;

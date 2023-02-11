@@ -4,6 +4,7 @@ import { BPMNActivity, BPMNProcess, BPMNSequenceFlow } from '../../type';
 import { Context, History, Token, TokenStatus } from '../../context';
 import { IdentityOptions } from '../../common';
 import { getBPMNActivity } from '../../utils';
+import { takeOutgoing } from '../../tools';
 import { Attribute } from './attribute';
 import { Sequence } from './sequence';
 
@@ -33,15 +34,9 @@ export class Activity extends Attribute {
   takeOutgoing(identity?: IdentityOptions & { pause?: boolean }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
-    let outgoing: Activity[] = [];
-    if (identity) {
-      if (identity && 'id' in identity)
-        outgoing = this.outgoing?.filter((o) => o.id === identity.id).map((o) => o.targetRef!);
-      if (identity && 'name' in identity)
-        outgoing = this.outgoing?.filter((o) => o.name === identity.name).map((o) => o.targetRef!);
-    } else outgoing = this.outgoing?.map((o) => o.targetRef!);
+    const outgoing = takeOutgoing(this.outgoing, identity);
 
-    if (outgoing.length) {
+    if (outgoing?.length) {
       if (outgoing.length === 1 && this.token) {
         this.token.push(History.build(this.id, { name: this.name }));
       }
