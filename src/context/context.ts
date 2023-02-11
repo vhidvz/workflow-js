@@ -2,7 +2,12 @@
 import { Token, TokenInterface } from './token';
 import { ContextStatus } from './enums';
 
-export class Context<D = any> {
+export interface ContextInterface<D = any> {
+  data?: D;
+  status?: ContextStatus;
+}
+
+export class Context<D = any> implements ContextInterface<D> {
   public data?: D;
   public status?: ContextStatus;
 
@@ -31,7 +36,7 @@ export class Context<D = any> {
     if (data) Object.assign(this, data);
   }
 
-  public static build<D = any>(data: Partial<Context<D>>) {
+  public static build<D = any>(data: ContextInterface<D>) {
     return new Context<D>(data);
   }
 }

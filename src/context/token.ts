@@ -3,11 +3,11 @@ import { TokenStatus } from './enums';
 import { History } from './history';
 import { uid } from '../utils';
 
-export type TokenInterface = {
+export interface TokenInterface {
   parent?: string;
   locked?: boolean;
   status?: TokenStatus;
-};
+}
 
 export class Token implements TokenInterface {
   public readonly id = uid();
