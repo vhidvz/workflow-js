@@ -18,10 +18,8 @@ export class Context<D = any> implements ContextInterface<D> {
     return Object.values(this._tokens);
   }
 
-  addToken(options?: TokenInterface) {
-    const token = Token.build(options);
+  addToken(token: Token) {
     this._tokens[token.id] = token;
-    return token;
   }
 
   getToken(identity: IdentityOptions) {

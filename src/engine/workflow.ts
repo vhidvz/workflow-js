@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
 import { getBPMNActivity, getBPMNProcess, parse, readFile } from '../utils';
-import { Context, ContextStatus, History, TokenStatus } from '../context';
+import { Context, ContextStatus, History, Token, TokenStatus } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
 import { getActivity } from '../tools';
 import { Container } from '../core';
@@ -63,10 +63,18 @@ export class WorkflowJS {
     }
     if (!activity) throw new Error('Node activity not found');
 
+    let token;
     if (this.context.tokens.length == 0) {
-      const token = this.context.addToken({ status: TokenStatus.Ready });
-      token.push(History.build(activity.id, { name: activity.name, value }));
+      const history = History.build(activity.id, { name: activity.name, value });
+      token = Token.build({ status: TokenStatus.Ready });
+      token.push(history);
+
+      this.context.addToken(token);
+    } else {
+      token = this.context.getToken(activity.$);
     }
+    if (!token) throw new Error('Token not found');
+    if (token.status !== TokenStatus.Ready) throw new Error('Token is not ready to execute');
 
     let node!: { identity: IdentityOptions; propertyName: string };
 
@@ -77,12 +85,33 @@ export class WorkflowJS {
     const args: MethodOptions = {
       data,
       value,
+      token,
       activity,
       context: this.context,
-      token: this.context.getToken(activity.$),
     };
 
-    (this.target as any)[node.propertyName](process, args);
+    activity.token = args.token;
+    activity.context = args.context;
+
+    let exception;
+
+    try {
+      token.status = TokenStatus.Running;
+      (this.target as any)[node.propertyName](process, args);
+      if (args.token.status !== TokenStatus.Paused) token.status = TokenStatus.Completed;
+    } catch (error) {
+      token.status = TokenStatus.Failed;
+      exception = error;
+    }
+
+    if (exception)
+      throw {
+        exception,
+        target: this.target,
+        context: this.context,
+        process: this.process,
+        definition: this.definition,
+      };
 
     return {
       target: this.target,
