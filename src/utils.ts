@@ -48,3 +48,5 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
 
   return processes.find((process) => process.$.id === identity.id);
 };
+
+export const uid = () => Math.round(Date.now() * Math.random() * 10).toString(36);
