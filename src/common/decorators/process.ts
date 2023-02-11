@@ -1,11 +1,11 @@
-import { DefineOptions, IdentityOptions, Metadata } from '../types';
+import { ProcessOptions, IdentityOptions, Metadata } from '../types';
 import { Container } from '../../core/container';
 import { parse, readFile } from '../../utils';
 import { Default } from '../keys';
 
 import 'reflect-metadata';
 
-export function DefineProcess(options: DefineOptions & IdentityOptions, id: string = Default) {
+export function Process(options: ProcessOptions & IdentityOptions, id: string = Default) {
   if ('schema' in options) Container.add(id, options.schema);
   if ('xml' in options) Container.add(id, parse(options.xml)['bpmn:definitions']);
   if ('path' in options) Container.add(id, parse(readFile(options.path))['bpmn:definitions']);

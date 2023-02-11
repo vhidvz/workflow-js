@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Token, TokenInterface } from './token';
+import { IdentityOptions } from '../common';
 import { ContextStatus } from './enums';
 
 export interface ContextInterface<D = any> {
@@ -23,12 +24,13 @@ export class Context<D = any> implements ContextInterface<D> {
     return token;
   }
 
-  getTokenByStateRef(id: string) {
-    return this.tokens.find((token) => token.state.ref === id);
+  getToken(identity: IdentityOptions) {
+    if ('id' in identity) return this.tokens.find((token) => token.state.ref === identity.id);
+    if ('name' in identity) return this.tokens.find((token) => token.state.name === identity.name);
   }
 
-  delTokenByStateRef(id: string) {
-    const token = this.tokens.find((token) => token.state.ref === id);
+  delToken(identity: IdentityOptions) {
+    const token = this.getToken(identity);
     if (token) delete this._tokens[token.id];
   }
 
@@ -36,7 +38,7 @@ export class Context<D = any> implements ContextInterface<D> {
     if (data) Object.assign(this, data);
   }
 
-  public static build<D = any>(data: ContextInterface<D>) {
+  public static build<D = any>(data?: ContextInterface<D>) {
     return new Context<D>(data);
   }
 }

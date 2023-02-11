@@ -1,7 +1,7 @@
 {
   "name": "workflow-js",
   "version": "1.0.0",
-  "description": "Workflow Engine (BPMN Engine).",
+  "description": "Workflow Engine (BPMN Engine)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

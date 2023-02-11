@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getBPMNActivity } from '../../utils';
 import { NodeKey, ParamKey } from '../keys';
 import { IdentityOptions } from '../types';
+import { getActivity } from '../../tools';
 import { BPMNProcess } from '../../type';
+import { Context } from '../../context';
 import { Activity } from '../../core';
 
 import 'reflect-metadata';
-import { getBPMNActivity } from 'utils';
-import { getActivity } from 'tools';
 
-export type ArgType = 'activity' | 'token' | 'value';
+export type ArgType = 'activity' | 'context' | 'token' | 'data' | 'value';
 
 export function Arg(type: ArgType) {
   return function (target: any, propertyKey: string, parameterIndex: number) {
@@ -20,7 +21,7 @@ export function Arg(type: ArgType) {
   };
 }
 
-export type MethodOptions = { activity: Activity; token: any; value?: any };
+export type MethodOptions = { activity: Activity; context: Context; token: any; data?: any; value?: any };
 
 export function Node(options: IdentityOptions) {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
@@ -34,7 +35,10 @@ export function Node(options: IdentityOptions) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const method = descriptor.value!;
 
-    descriptor.value = function (process: BPMNProcess, { activity, token, value }: MethodOptions) {
+    descriptor.value = function (
+      process: BPMNProcess,
+      { activity, context, token, data, value }: MethodOptions,
+    ) {
       const params: { parameterIndex: number; type: ArgType }[] = Reflect.getOwnMetadata(
         ParamKey,
         target,
@@ -49,7 +53,9 @@ export function Node(options: IdentityOptions) {
             if (param.type === 'activity') {
               const opt = getBPMNActivity(process, activity);
               args.push(opt ? getActivity(process, opt) : null);
-            } else if (param.type === 'token') args.push(token);
+            } else if (param.type === 'context') args.push(context);
+            else if (param.type === 'token') args.push(token);
+            else if (param.type === 'data') args.push(data);
             else if (param.type === 'value') args.push(value);
             else throw new Error('Arguments type is not supported');
           }
