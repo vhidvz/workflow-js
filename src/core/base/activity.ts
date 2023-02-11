@@ -30,7 +30,7 @@ export class Activity extends Attribute {
     });
   }
 
-  takeOutgoing(identity?: IdentityOptions) {
+  takeOutgoing(identity?: IdentityOptions & { pause?: boolean }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     let outgoing: Activity[] = [];
@@ -50,7 +50,13 @@ export class Activity extends Attribute {
         this.token.status = TokenStatus.Terminated;
 
         for (const activity of outgoing) {
-          const token = Token.build({ parent: this.token.id, status: TokenStatus.Ready });
+          const { pause } = identity ?? {};
+
+          const token = Token.build({
+            parent: this.token.id,
+            status: pause ? TokenStatus.Paused : TokenStatus.Ready,
+          });
+
           token.push(History.build(activity.id, { name: activity.name }));
           this.context.addToken(token);
         }
