@@ -45,6 +45,7 @@ export class Activity extends Attribute {
       if (outgoing.length === 1 && this.token) {
         this.token.push(History.build(this.id, { name: this.name }));
       }
+
       if (outgoing.length > 1 && this.context && this.token) {
         this.token.locked = true;
         this.token.status = TokenStatus.Terminated;
