@@ -12,17 +12,17 @@ export class Context<D = any> {
     return Object.values(this._tokens);
   }
 
-  add(options?: TokenInterface) {
+  addToken(options?: TokenInterface) {
     const token = Token.build(options);
     this._tokens[token.id] = token;
     return token;
   }
 
-  get(id: string) {
+  getTokenByStateRef(id: string) {
     return this.tokens.find((token) => token.state.ref === id);
   }
 
-  del(id: string) {
+  delTokenByStateRef(id: string) {
     const token = this.tokens.find((token) => token.state.ref === id);
     if (token) delete this._tokens[token.id];
   }
