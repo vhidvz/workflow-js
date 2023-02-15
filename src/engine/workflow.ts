@@ -9,6 +9,7 @@ import { Container } from '../core';
 import { Execute } from './types';
 
 export interface ExecuteInterface {
+  id?: string;
   factory?: () => any;
   handler?: any;
   context?: Context;
@@ -50,6 +51,8 @@ export class WorkflowJS {
 
   public execute<D = any>(options: ExecuteInterface): Execute<D> {
     const { handler, factory, path, xml, schema } = options;
+
+    if (options.id) this.definition = Container.get(options.id);
 
     if (schema) this.definition = schema;
     else if (xml) this.definition = parse(xml)['bpmn:definitions'];
