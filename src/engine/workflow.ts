@@ -38,7 +38,7 @@ export class WorkflowJS {
     try {
       options.token.status = TokenStatus.Running;
       options.context!.status = ContextStatus.Running;
-      value = (this.target as any)[method](process, options);
+      value = (this.target as any)[method](this.process, options);
       if (!options.token.isPaused()) options.token.status = TokenStatus.Completed;
     } catch (error) {
       options.context!.status = ContextStatus.Failed;
@@ -136,7 +136,7 @@ export class WorkflowJS {
           const next = this.context.next();
 
           if (next) {
-            next.value = result.value;
+            next.value = result.value ?? runOptions.options.value;
             if (next.name) runOptions.method = nodes[next.name]?.propertyName;
             if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
 
