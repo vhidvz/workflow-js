@@ -77,8 +77,10 @@ export class WorkflowJS {
     const { context, data, value } = options;
     this.context = context ?? Context.build({ data, status: ContextStatus.Ready });
 
-    if (this.context.status === ContextStatus.Paused)
-      throw new Error('Cannot execute workflow at paused state');
+    if (!this.context?.status) this.context.status = ContextStatus.Ready;
+
+    if ([ContextStatus.Paused, ContextStatus.Terminated].includes(this.context.status))
+      throw new Error('Cannot execute workflow at paused or terminated state');
 
     let activity;
     if (options?.identity) {
@@ -132,29 +134,22 @@ export class WorkflowJS {
       }
 
       if (this.context.status === ContextStatus.Running) {
-        if (this.context.isCompleted()) this.context.status = ContextStatus.Completed;
-        else if (this.context.isTerminated()) this.context.status = ContextStatus.Terminated;
+        const next = this.context.next();
 
-        if (this.context.status === ContextStatus.Running) {
-          const next = this.context.next();
+        if (next) {
+          next.value = result.value ?? runOptions.options.value;
+          if (next.name) runOptions.method = nodes[next.name]?.propertyName;
+          if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
 
-          if (next) {
-            next.value = result.value ?? runOptions.options.value;
-            if (next.name) runOptions.method = nodes[next.name]?.propertyName;
-            if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
+          if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
 
-            if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
+          const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === TokenStatus.Ready);
 
-            const token = this.context
-              .getTokens({ id: next.ref })
-              ?.find((t) => t.status === TokenStatus.Ready);
+          if (!token) throw new Error('Token not found at continuing stage');
 
-            if (!token) throw new Error('Token not found at continuing stage');
+          const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
 
-            const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
-
-            runOptions.options = { token, data, value: next.value, activity, context: this.context };
-          }
+          runOptions.options = { token, data, value: next.value, activity, context: this.context };
         }
       }
     } while (this.context.status === ContextStatus.Running);
