@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Token, TokenInterface } from './token';
+import { ContextStatus, TokenStatus } from './enums';
 import { IdentityOptions } from '../common';
-import { ContextStatus } from './enums';
+import { Token } from './token';
 
 export interface ContextInterface<D = any> {
   data?: D;
@@ -10,26 +10,41 @@ export interface ContextInterface<D = any> {
 
 export class Context<D = any> implements ContextInterface<D> {
   public data?: D;
+  public tokens: Token[] = [];
   public status?: ContextStatus;
 
-  protected _tokens: { [id: string]: Token } = {};
+  pause() {
+    this.status = ContextStatus.Paused;
+  }
 
-  get tokens() {
-    return Object.values(this._tokens);
+  resume() {
+    this.status = ContextStatus.Ready;
   }
 
   addToken(token: Token) {
-    this._tokens[token.id] = token;
+    this.tokens.push(token);
   }
 
-  getToken(identity: IdentityOptions) {
-    if ('id' in identity) return this.tokens.find((token) => token.state.ref === identity.id);
-    if ('name' in identity) return this.tokens.find((token) => token.state.name === identity.name);
+  getTokens(identity: IdentityOptions) {
+    if ('id' in identity) return this.tokens.filter((token) => token.state.ref === identity.id);
+    if ('name' in identity) return this.tokens.filter((token) => token.state.name === identity.name);
   }
 
-  delToken(identity: IdentityOptions) {
-    const token = this.getToken(identity);
-    if (token) delete this._tokens[token.id];
+  delTokens(identity: IdentityOptions) {
+    const tokens = this.getTokens(identity)?.map((t) => t.id);
+    if (tokens?.length) this.tokens = this.tokens.filter((t) => !tokens.includes(t.id));
+  }
+
+  isCompleted() {
+    return this.tokens.every((t) => t.status === TokenStatus.Completed);
+  }
+
+  isTerminated() {
+    return this.tokens.every((t) => t.status === TokenStatus.Terminated);
+  }
+
+  next() {
+    return this.tokens.find((t) => t.status === TokenStatus.Ready)?.state;
   }
 
   constructor(data?: Partial<Context>) {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TokenStatus } from './enums';
-import { History } from './history';
+import { State } from './state';
 import { uid } from '../utils';
 
 export interface TokenInterface {
@@ -16,14 +16,26 @@ export class Token implements TokenInterface {
   public locked?: boolean;
   public status?: TokenStatus;
 
-  protected histories: History[] = [];
+  protected histories: State[] = [];
 
-  push(history: History) {
+  push(history: State) {
     this.histories.push(history);
   }
 
   pop() {
     this.histories.pop();
+  }
+
+  pause() {
+    this.status = TokenStatus.Paused;
+  }
+
+  resume() {
+    this.status = TokenStatus.Ready;
+  }
+
+  isPaused() {
+    return this.status === TokenStatus.Paused;
   }
 
   get state() {

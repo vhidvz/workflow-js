@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Context, Token } from '../../context';
 import { getBPMNActivity } from '../../utils';
 import { NodeKey, ParamKey } from '../keys';
 import { IdentityOptions } from '../types';
 import { getActivity } from '../../tools';
 import { BPMNProcess } from '../../type';
-import { Context } from '../../context';
 import { Activity } from '../../core';
 
 import 'reflect-metadata';
@@ -21,7 +21,13 @@ export function Arg(type: ArgType) {
   };
 }
 
-export type MethodOptions = { activity: Activity; context: Context; token: any; data?: any; value?: any };
+export type MethodOptions<D = any> = {
+  activity: Activity;
+  context: Context;
+  token: Token;
+  data?: D;
+  value?: any;
+};
 
 export function Node(options: IdentityOptions) {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {

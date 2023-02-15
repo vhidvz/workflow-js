@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BPMNActivity, BPMNProcess, BPMNSequenceFlow } from '../../type';
-import { Context, History, Token, TokenStatus } from '../../context';
+import { Context, State, Token, TokenStatus } from '../../context';
 import { IdentityOptions } from '../../common';
 import { getBPMNActivity } from '../../utils';
 import { takeOutgoing } from '../../tools';
@@ -36,12 +36,12 @@ export class Activity extends Attribute {
 
     const outgoing = takeOutgoing(this.outgoing, identity);
 
-    if (outgoing?.length) {
-      if (outgoing.length === 1 && this.token) {
-        this.token.push(History.build(this.id, { name: this.name }));
+    if (outgoing?.length && this.token) {
+      if (outgoing.length === 1) {
+        this.token.push(State.build(this.id, { name: this.name }));
       }
 
-      if (outgoing.length > 1 && this.context && this.token) {
+      if (outgoing.length > 1 && this.context) {
         this.token.locked = true;
         this.token.status = TokenStatus.Terminated;
 
@@ -53,7 +53,7 @@ export class Activity extends Attribute {
             status: pause ? TokenStatus.Paused : TokenStatus.Ready,
           });
 
-          token.push(History.build(activity.id, { name: activity.name }));
+          token.push(State.build(activity.id, { name: activity.name }));
           this.context.addToken(token);
         }
       }

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
 import { getBPMNActivity, getBPMNProcess, parse, readFile } from '../utils';
-import { Context, ContextStatus, History, Token, TokenStatus } from '../context';
+import { Context, ContextStatus, State, Token, TokenStatus } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
 import { getActivity } from '../tools';
 import { Container } from '../core';
@@ -26,6 +27,27 @@ export class WorkflowJS {
   protected process?: BPMNProcess;
   protected definition?: BPMNDefinition;
 
+  private run<D = any>(method: string, options: MethodOptions<D>) {
+    options.activity.token = options.token;
+    options.activity.context = options.context;
+
+    let value;
+    let exception;
+
+    try {
+      options.token.status = TokenStatus.Running;
+      options.context!.status = ContextStatus.Running;
+      value = (this.target as any)[method](process, options);
+      if (!options.token.isPaused()) options.token.status = TokenStatus.Completed;
+    } catch (error) {
+      options.context!.status = ContextStatus.Failed;
+      options.token.status = TokenStatus.Failed;
+      exception = error;
+    }
+
+    return { value, exception };
+  }
+
   public execute<D = any>(options: ExecuteInterface): Execute<D> {
     const { handler, factory, path, xml, schema } = options;
 
@@ -49,6 +71,9 @@ export class WorkflowJS {
     const { context, data, value } = options;
     this.context = context ?? Context.build({ data, status: ContextStatus.Ready });
 
+    if (this.context.status === ContextStatus.Paused)
+      throw new Error('Cannot execute workflow at paused state');
+
     let activity;
     if (options?.identity) {
       activity = getActivity(this.process, getBPMNActivity(this.process, options.identity));
@@ -65,16 +90,16 @@ export class WorkflowJS {
 
     let token;
     if (this.context.tokens.length == 0) {
-      const history = History.build(activity.id, { name: activity.name, value });
+      const state = State.build(activity.id, { name: activity.name, value });
       token = Token.build({ status: TokenStatus.Ready });
-      token.push(history);
+      token.push(state);
 
       this.context.addToken(token);
     } else {
-      token = this.context.getToken(activity.$);
+      token = this.context.getTokens(activity.$)?.find((t) => t.status === TokenStatus.Ready);
     }
+
     if (!token) throw new Error('Token not found');
-    if (token.status !== TokenStatus.Ready) throw new Error('Token is not ready to execute');
 
     let node!: { identity: IdentityOptions; propertyName: string };
 
@@ -82,36 +107,53 @@ export class WorkflowJS {
     if (!node && activity.id) node = nodes[activity.id];
     if (!node) throw new Error('Requested node not found');
 
-    const args: MethodOptions = {
-      data,
-      value,
-      token,
-      activity,
-      context: this.context,
+    const runOptions: { method: string; options: MethodOptions<D> } = {
+      method: node.propertyName,
+      options: { token, data, value, activity, context: this.context },
     };
 
-    activity.token = args.token;
-    activity.context = args.context;
+    do {
+      const result = this.run(runOptions.method, runOptions.options);
 
-    let exception;
+      if (result.exception) {
+        throw {
+          result,
+          target: this.target,
+          context: this.context,
+          process: this.process,
+          definition: this.definition,
+        };
+      }
 
-    try {
-      token.status = TokenStatus.Running;
-      (this.target as any)[node.propertyName](process, args);
-      if (args.token.status !== TokenStatus.Paused) token.status = TokenStatus.Completed;
-    } catch (error) {
-      token.status = TokenStatus.Failed;
-      exception = error;
-    }
+      if (this.context.status === ContextStatus.Running) {
+        if (this.context.isCompleted()) this.context.status = ContextStatus.Completed;
+        else if (this.context.isTerminated()) this.context.status = ContextStatus.Terminated;
 
-    if (exception)
-      throw {
-        exception,
-        target: this.target,
-        context: this.context,
-        process: this.process,
-        definition: this.definition,
-      };
+        if (this.context.status === ContextStatus.Running) {
+          const next = this.context.next();
+
+          if (next) {
+            next.value = result.value;
+            if (next.name) runOptions.method = nodes[next.name]?.propertyName;
+            if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
+
+            if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
+
+            const token = this.context
+              .getTokens({ id: next.ref })
+              ?.find((t) => t.status === TokenStatus.Ready);
+
+            if (!token) throw new Error('Token not found at continuing stage');
+
+            const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
+
+            runOptions.options = { token, data, value: next.value, activity, context: this.context };
+          }
+        }
+      }
+    } while (this.context.status === ContextStatus.Running);
+
+    if (this.context.isTerminated()) this.context.status = ContextStatus.Terminated;
 
     return {
       target: this.target,

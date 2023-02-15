@@ -1,4 +1,5 @@
-import { History, Token, TokenStatus } from '../../context';
+/* eslint-disable no-case-declarations */
+import { State, Token, TokenStatus } from '../../context';
 import { getActivity, takeOutgoing } from '../../tools';
 import { BPMNGateway, BPMNProcess } from '../../type';
 import { IdentityOptions } from '../../common';
@@ -19,14 +20,43 @@ export class GatewayActivity extends Activity {
   takeOutgoing(identity?: IdentityOptions & { pause?: boolean }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
-    const outgoing = takeOutgoing(this.outgoing, identity);
+    let outgoing = takeOutgoing(this.outgoing, identity);
 
-    if (outgoing?.length) {
-      if (outgoing.length === 1 && this.token) {
-        this.token.push(History.build(this.id, { name: this.name }));
+    switch (this.type) {
+      case GatewayType.Complex:
+        break;
+
+      case GatewayType.Parallel:
+        if (this.context && this.token) {
+          const tokens = this.context.getTokens({ id: this.id });
+
+          if (tokens?.length !== this.incoming.length) {
+            this.token.pause();
+            return;
+          } else {
+            tokens.forEach((t) => (t.status = TokenStatus.Terminated));
+            outgoing = takeOutgoing(this.outgoing);
+          }
+        }
+        break;
+
+      case GatewayType.Inclusive:
+        break;
+
+      case GatewayType.Exclusive:
+        if (outgoing && outgoing?.length !== 1) outgoing = this.default ? [this.default] : undefined;
+        break;
+
+      case GatewayType.EventBased:
+        break;
+    }
+
+    if (outgoing?.length && this.token) {
+      if (outgoing.length === 1) {
+        this.token.push(State.build(this.id, { name: this.name }));
       }
 
-      if (outgoing.length > 1 && this.context && this.token) {
+      if (outgoing.length > 1 && this.context) {
         this.token.locked = true;
         this.token.status = TokenStatus.Terminated;
 
@@ -38,7 +68,7 @@ export class GatewayActivity extends Activity {
             status: pause ? TokenStatus.Paused : TokenStatus.Ready,
           });
 
-          token.push(History.build(activity.id, { name: activity.name }));
+          token.push(State.build(activity.id, { name: activity.name }));
           this.context.addToken(token);
         }
       }
