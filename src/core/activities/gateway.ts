@@ -53,7 +53,7 @@ export class GatewayActivity extends Activity {
 
     if (outgoing?.length && this.token) {
       if (outgoing.length === 1) {
-        this.token.push(State.build(this.id, { name: this.name }));
+        this.token.push(State.build(outgoing[0].id, { name: outgoing[0].name }));
       }
 
       if (outgoing.length > 1 && this.context) {

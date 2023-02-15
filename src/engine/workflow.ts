@@ -38,8 +38,11 @@ export class WorkflowJS {
     try {
       options.token.status = TokenStatus.Running;
       options.context!.status = ContextStatus.Running;
+
       value = (this.target as any)[method](this.process, options);
+
       if (!options.token.isPaused()) options.token.status = TokenStatus.Completed;
+      else if (options.activity.isEnd()) options.token.status = TokenStatus.Terminated;
     } catch (error) {
       options.context!.status = ContextStatus.Failed;
       options.token.status = TokenStatus.Failed;
@@ -156,7 +159,8 @@ export class WorkflowJS {
       }
     } while (this.context.status === ContextStatus.Running);
 
-    if (this.context.isTerminated()) this.context.status = ContextStatus.Terminated;
+    if (this.context.isCompleted()) this.context.status = ContextStatus.Completed;
+    else if (this.context.isTerminated()) this.context.status = ContextStatus.Terminated;
 
     return {
       target: this.target,

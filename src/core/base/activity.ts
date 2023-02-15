@@ -63,6 +63,14 @@ export class Activity extends Attribute {
     return outgoing;
   }
 
+  isEnd() {
+    return this.outgoing?.length === 0 && this.key?.includes('endEvent');
+  }
+
+  isStart() {
+    return this.incoming?.length === 0 && this.key?.includes('startEvent');
+  }
+
   constructor(process: BPMNProcess, data?: Partial<Activity>, key?: string) {
     super(process, data);
     this.key = key;
