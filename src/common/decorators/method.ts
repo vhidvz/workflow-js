@@ -21,13 +21,7 @@ export function Arg(type: ArgType) {
   };
 }
 
-export type MethodOptions<D = any> = {
-  activity: Activity;
-  context: Context;
-  token: Token;
-  data?: D;
-  value?: any;
-};
+export type MethodOptions = { activity: Activity; context: Context; token: Token; data?: any; value?: any };
 
 export function Node(options: IdentityOptions) {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {

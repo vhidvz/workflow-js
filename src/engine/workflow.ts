@@ -27,7 +27,7 @@ export class WorkflowJS {
   protected process?: BPMNProcess;
   protected definition?: BPMNDefinition;
 
-  private run<D = any>(method: string, options: MethodOptions<D>) {
+  private run(method: string, options: MethodOptions) {
     options.activity.token = options.token;
     options.activity.context = options.context;
 
@@ -107,7 +107,7 @@ export class WorkflowJS {
     if (!node && activity.id) node = nodes[activity.id];
     if (!node) throw new Error('Requested node not found');
 
-    const runOptions: { method: string; options: MethodOptions<D> } = {
+    const runOptions: { method: string; options: MethodOptions } = {
       method: node.propertyName,
       options: { token, data, value, activity, context: this.context },
     };
