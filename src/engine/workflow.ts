@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
 import { getBPMNActivity, getBPMNProcess, parse, readFile } from '../utils';
-import { Context, ContextStatus, State, Token, TokenStatus } from '../context';
+import { Context, Status, State, Token } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
 import { getActivity } from '../tools';
 import { Container } from '../core';
@@ -36,16 +36,16 @@ export class WorkflowJS {
     let exception;
 
     try {
-      options.token.status = TokenStatus.Running;
-      options.context!.status = ContextStatus.Running;
+      options.token.status = Status.Running;
+      options.context!.status = Status.Running;
 
       value = (this.target as any)[method](this.process, options);
 
-      if (!options.token.isPaused()) options.token.status = TokenStatus.Completed;
-      else if (options.activity.isEnd()) options.token.status = TokenStatus.Terminated;
+      if (!options.token.isPaused()) options.token.status = Status.Completed;
+      else if (options.activity.isEnd()) options.token.status = Status.Terminated;
     } catch (error) {
-      options.context!.status = ContextStatus.Failed;
-      options.token.status = TokenStatus.Failed;
+      options.context!.status = Status.Failed;
+      options.token.status = Status.Failed;
       exception = error;
     }
 
@@ -75,11 +75,11 @@ export class WorkflowJS {
     if (!this.process) throw new Error('Process definition not found');
 
     const { context, data, value } = options;
-    this.context = context ?? Context.build({ data, status: ContextStatus.Ready });
+    this.context = context ?? Context.build({ data, status: Status.Ready });
 
-    if (!this.context?.status) this.context.status = ContextStatus.Ready;
+    if (!this.context?.status) this.context.status = Status.Ready;
 
-    if ([ContextStatus.Paused, ContextStatus.Terminated].includes(this.context.status))
+    if ([Status.Paused, Status.Terminated].includes(this.context.status))
       throw new Error('Cannot execute workflow at paused or terminated state');
 
     let activity;
@@ -96,15 +96,15 @@ export class WorkflowJS {
     }
     if (!activity) throw new Error('Node activity not found');
 
-    let token;
+    let token: Token | undefined;
     if (this.context.tokens.length == 0) {
-      const state = State.build(activity.id, { name: activity.name, value });
-      token = Token.build({ status: TokenStatus.Ready });
+      const state = State.build(activity.id, { name: activity.name, value, status: Status.Ready });
+      token = Token.build();
       token.push(state);
 
       this.context.addToken(token);
     } else {
-      token = this.context.getTokens(activity.$)?.find((t) => t.status === TokenStatus.Ready);
+      token = this.context.getTokens(activity.$)?.find((t) => t.status === Status.Ready);
     }
 
     if (!token) throw new Error('Token not found');
@@ -133,7 +133,7 @@ export class WorkflowJS {
         };
       }
 
-      if (this.context.status === ContextStatus.Running) {
+      if (this.context.status === Status.Running) {
         const next = this.context.next();
 
         if (next) {
@@ -143,7 +143,7 @@ export class WorkflowJS {
 
           if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
 
-          const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === TokenStatus.Ready);
+          const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
           if (!token) throw new Error('Token not found at continuing stage');
 
@@ -152,10 +152,10 @@ export class WorkflowJS {
           runOptions.options = { token, data, value: next.value, activity, context: this.context };
         }
       }
-    } while (this.context.status === ContextStatus.Running);
+    } while (this.context.status === Status.Running);
 
-    if (this.context.isCompleted()) this.context.status = ContextStatus.Completed;
-    else if (this.context.isTerminated()) this.context.status = ContextStatus.Terminated;
+    if (this.context.isCompleted()) this.context.status = Status.Completed;
+    else if (this.context.isTerminated()) this.context.status = Status.Terminated;
 
     return {
       target: this.target,

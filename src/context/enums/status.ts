@@ -1,4 +1,4 @@
-export enum TokenStatus {
+export enum Status {
   Ready = 'ready',
   Paused = 'paused',
   Failed = 'failed',
