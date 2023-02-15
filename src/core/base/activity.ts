@@ -27,6 +27,7 @@ export class Activity extends Attribute {
   get outgoing() {
     return this['bpmn:outgoing']?.map((id: string) => {
       const activity = getBPMNActivity(this.process, { id })?.activity;
+      if (!activity) throw new Error('Outgoing activity not found');
       return Sequence.build(activity as BPMNSequenceFlow, this.process);
     });
   }
@@ -38,7 +39,7 @@ export class Activity extends Attribute {
 
     if (outgoing?.length && this.token) {
       if (outgoing.length === 1) {
-        this.token.push(State.build(this.id, { name: this.name }));
+        this.token.push(State.build(outgoing[0].id, { name: outgoing[0].name }));
       }
 
       if (outgoing.length > 1 && this.context) {

@@ -50,13 +50,11 @@ export function Node(options: IdentityOptions) {
 
         if ('$__metadata__' in (this as any)) {
           for (const param of params) {
-            if (param.type === 'activity') {
-              const opt = getBPMNActivity(process, activity);
-              args.push(opt ? getActivity(process, opt) : null);
-            } else if (param.type === 'context') args.push(context);
-            else if (param.type === 'token') args.push(token);
+            if (param.type === 'activity') args.push(activity);
             else if (param.type === 'data') args.push(data);
             else if (param.type === 'value') args.push(value);
+            else if (param.type === 'token') args.push(token);
+            else if (param.type === 'context') args.push(context);
             else throw new Error('Arguments type is not supported');
           }
         } else throw new Error('@DefineProcess decorator is required.');
