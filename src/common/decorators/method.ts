@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Context, Token } from '../../context';
-import { getBPMNActivity } from '../../utils';
 import { NodeKey, ParamKey } from '../keys';
 import { IdentityOptions } from '../types';
-import { getActivity } from '../../tools';
-import { BPMNProcess } from '../../type';
 import { Activity } from '../../core';
 
 import 'reflect-metadata';
