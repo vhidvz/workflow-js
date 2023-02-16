@@ -39,7 +39,8 @@ export class WorkflowJS {
       options.token.status = Status.Running;
       options.context!.status = Status.Running;
 
-      value = (this.target as any)[method](options);
+      if (!method) options.activity.takeOutgoing();
+      else value = (this.target as any)[method](options);
 
       if (options.activity.id === options.token.state.ref)
         options.activity.takeOutgoing(undefined, { pause: true });
@@ -121,7 +122,7 @@ export class WorkflowJS {
 
     const runOptions: { method: string; options: MethodOptions } = {
       method: node.propertyName,
-      options: { token, data: data ?? this.context, value, activity, context: this.context },
+      options: { activity, token, value, data: data ?? this.context.data, context: this.context },
     };
 
     do {
@@ -145,10 +146,8 @@ export class WorkflowJS {
         runOptions.method = '';
         next.value = result.value;
 
-        if (next.name) runOptions.method = nodes[next.name]?.propertyName;
-        if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName;
-
-        if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
+        if (next.name) runOptions.method = nodes[next.name]?.propertyName ?? '';
+        if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName ?? '';
 
         const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
@@ -156,7 +155,13 @@ export class WorkflowJS {
 
         const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
 
-        runOptions.options = { token, data, value: next.value, activity, context: this.context };
+        runOptions.options = {
+          token,
+          activity,
+          value: next.value,
+          context: this.context,
+          data: data ?? this.context.data,
+        };
       }
     } while (this.context.status === Status.Running);
 

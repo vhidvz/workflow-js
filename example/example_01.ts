@@ -32,15 +32,6 @@ class PizzaCustomer extends WorkflowJS {
     return 'value from hungryForPizza to selectAPizza';
   }
 
-  @Node({ name: 'Select a Pizza' })
-  selectAPizza(@Arg('activity') activity: Activity, @Arg('token') token: Token, @Arg('value') value: any) {
-    console.log(token);
-    console.log(value);
-    console.log(activity);
-
-    activity.takeOutgoing();
-  }
-
   @Node({ name: 'Order a Pizza' })
   orderAPizza(@Arg('activity') activity: Activity, @Arg('token') token: Token, @Arg('data') data: any) {
     console.log(data);
