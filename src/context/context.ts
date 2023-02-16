@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ContextStatus, TokenStatus } from './enums';
 import { IdentityOptions } from '../common';
+import { Status } from './enums';
 import { Token } from './token';
 
 export interface ContextInterface<D = any> {
   data?: D;
-  status?: ContextStatus;
+  status?: Status;
 }
 
 export class Context<D = any> implements ContextInterface<D> {
   public data?: D;
   public tokens: Token[] = [];
-  public status?: ContextStatus;
+  public status?: Status;
 
   pause() {
-    this.status = ContextStatus.Paused;
+    this.status = Status.Paused;
   }
 
   resume() {
-    this.status = ContextStatus.Ready;
+    this.status = Status.Ready;
   }
 
   addToken(token: Token) {
@@ -36,15 +36,15 @@ export class Context<D = any> implements ContextInterface<D> {
   }
 
   isCompleted() {
-    return this.tokens.every((t) => t.status === TokenStatus.Completed);
+    return this.tokens.every((t) => t.status === Status.Completed);
   }
 
   isTerminated() {
-    return this.tokens.some((t) => t.status === TokenStatus.Terminated);
+    return this.tokens.some((t) => t.status === Status.Terminated);
   }
 
   next() {
-    return this.tokens.find((t) => t.status === TokenStatus.Ready)?.state;
+    return this.tokens.find((t) => t.status === Status.Ready)?.state;
   }
 
   constructor(data?: Partial<Context>) {
