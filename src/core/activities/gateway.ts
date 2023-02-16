@@ -55,6 +55,8 @@ export class GatewayActivity extends Activity {
       const { pause } = identity ?? {};
 
       if (outgoing.length === 1) {
+        this.token.status = Status.Completed;
+
         this.token.push(
           State.build(outgoing[0].id, {
             name: outgoing[0].name,
@@ -71,6 +73,8 @@ export class GatewayActivity extends Activity {
           const token = Token.build({
             parent: this.token.id,
           });
+
+          this.token.status = Status.Completed;
 
           token.push(
             State.build(activity.id, {

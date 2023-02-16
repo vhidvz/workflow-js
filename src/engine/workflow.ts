@@ -41,8 +41,7 @@ export class WorkflowJS {
 
       value = (this.target as any)[method](options);
 
-      if (!options.token.isPaused()) options.token.status = Status.Completed;
-      else if (options.activity.isEnd()) options.token.status = Status.Terminated;
+      if (options.activity.isEnd()) options.token.status = Status.Terminated;
     } catch (error) {
       options.context!.status = Status.Failed;
       options.token.status = Status.Failed;
@@ -150,12 +149,12 @@ export class WorkflowJS {
           const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
 
           runOptions.options = { token, data, value: next.value, activity, context: this.context };
+        } else {
+          if (this.context.isCompleted()) this.context.status = Status.Completed;
+          else if (this.context.isTerminated()) this.context.status = Status.Terminated;
         }
       }
     } while (this.context.status === Status.Running);
-
-    if (this.context.isCompleted()) this.context.status = Status.Completed;
-    else if (this.context.isTerminated()) this.context.status = Status.Terminated;
 
     return {
       target: this.target,
