@@ -51,7 +51,7 @@ export function Node(options: IdentityOptions) {
             else if (param.type === 'context') args.push(context);
             else throw new Error('Arguments type is not supported');
           }
-        } else throw new Error('@DefineProcess decorator is required.');
+        } else throw new Error('@Process decorator is required');
 
         return method.call(this, ...args);
       }
