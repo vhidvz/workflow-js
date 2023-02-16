@@ -1,10 +1,10 @@
 /* eslint-disable no-case-declarations */
-import { getActivity, takeOutgoing } from '../../tools';
-import { BPMNGateway, BPMNProcess } from '../../type';
+import { BPMNGateway, BPMNProcess, BPMNSequenceFlow } from '../../type';
 import { State, Token, Status } from '../../context';
 import { IdentityOptions } from '../../common';
 import { getBPMNActivity } from '../../utils';
-import { Activity } from '../base';
+import { Activity, Sequence } from '../base';
+import { takeOutgoing } from '../../tools';
 
 export enum GatewayType {
   Complex = 'complex',
@@ -44,7 +44,8 @@ export class GatewayActivity extends Activity {
         break;
 
       case GatewayType.Exclusive:
-        if (outgoing && outgoing?.length !== 1) outgoing = this.default ? [this.default] : undefined;
+        if (outgoing && outgoing?.length !== 1)
+          outgoing = this.default?.targetRef ? [this.default.targetRef] : undefined;
         break;
 
       case GatewayType.EventBased:
@@ -90,10 +91,10 @@ export class GatewayActivity extends Activity {
     return outgoing;
   }
 
-  get default(): Activity | undefined {
+  get default(): Sequence | undefined {
     if (!this.$.default) return;
     const options = getBPMNActivity(this.process, { id: this.$.default });
-    if (options) return getActivity(this.process, options);
+    if (options) return Sequence.build(options.activity as BPMNSequenceFlow, this.process);
   }
 
   get type() {
