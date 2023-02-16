@@ -42,6 +42,7 @@ export class WorkflowJS {
       value = (this.target as any)[method](options);
 
       if (options.activity.isEnd()) options.token.status = Status.Terminated;
+      else if (options.activity.id === options.token.state.ref) options.token.pause();
     } catch (error) {
       options.context!.status = Status.Failed;
       options.token.status = Status.Failed;
@@ -135,26 +136,26 @@ export class WorkflowJS {
       if (this.context.status === Status.Running) {
         const next = this.context.next();
 
-        if (next) {
-          next.value = result.value ?? runOptions.options.value;
-          if (next.name) runOptions.method = nodes[next.name]?.propertyName;
-          if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
+        if (!next) break;
 
-          if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
+        next.value = result.value ?? runOptions.options.value;
+        if (next.name) runOptions.method = nodes[next.name]?.propertyName;
+        if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
 
-          const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
+        if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
 
-          if (!token) throw new Error('Token not found at continuing stage');
+        const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
-          const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
+        if (!token) throw new Error('Token not found at continuing stage');
 
-          runOptions.options = { token, data, value: next.value, activity, context: this.context };
-        } else {
-          if (this.context.isCompleted()) this.context.status = Status.Completed;
-          else if (this.context.isTerminated()) this.context.status = Status.Terminated;
-        }
+        const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
+
+        runOptions.options = { token, data, value: next.value, activity, context: this.context };
       }
     } while (this.context.status === Status.Running);
+
+    if (this.context.isCompleted()) this.context.status = Status.Completed;
+    else if (this.context.isTerminated()) this.context.status = Status.Terminated;
 
     return {
       target: this.target,
