@@ -32,13 +32,13 @@ export class Activity extends Attribute {
     });
   }
 
-  takeOutgoing(identity?: IdentityOptions & { pause?: boolean }) {
+  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     const outgoing = takeOutgoing(this.outgoing, identity);
 
     if (outgoing?.length && this.token) {
-      const { pause } = identity ?? {};
+      const { pause } = options ?? {};
 
       if (outgoing.length === 1) {
         this.token.status = Status.Completed;
@@ -75,11 +75,11 @@ export class Activity extends Attribute {
   }
 
   isEnd() {
-    return this.outgoing?.length === 0 && this.key?.includes('endEvent');
+    return this.key?.includes('endEvent');
   }
 
   isStart() {
-    return this.incoming?.length === 0 && this.key?.includes('startEvent');
+    return this.key?.includes('startEvent');
   }
 
   constructor(process: BPMNProcess, data?: Partial<Activity>, key?: string) {

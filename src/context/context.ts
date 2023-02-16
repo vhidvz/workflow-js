@@ -40,7 +40,7 @@ export class Context<D = any> implements ContextInterface<D> {
   }
 
   isTerminated() {
-    return this.tokens.some((t) => t.status === Status.Terminated);
+    return this.tokens.every((t) => t.status === Status.Terminated);
   }
 
   next() {

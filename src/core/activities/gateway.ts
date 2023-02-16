@@ -17,7 +17,7 @@ export enum GatewayType {
 export class GatewayActivity extends Activity {
   $!: { id: string; name?: string; default?: string };
 
-  takeOutgoing(identity?: IdentityOptions & { pause?: boolean }) {
+  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     let outgoing = takeOutgoing(this.outgoing, identity);
@@ -44,7 +44,7 @@ export class GatewayActivity extends Activity {
         break;
 
       case GatewayType.Exclusive:
-        if (outgoing && outgoing?.length !== 1)
+        if (outgoing && outgoing.length !== 1)
           outgoing = this.default?.targetRef ? [this.default.targetRef] : undefined;
         break;
 
@@ -53,7 +53,7 @@ export class GatewayActivity extends Activity {
     }
 
     if (outgoing?.length && this.token) {
-      const { pause } = identity ?? {};
+      const { pause } = options ?? {};
 
       if (outgoing.length === 1) {
         this.token.status = Status.Completed;

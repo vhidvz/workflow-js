@@ -41,8 +41,9 @@ export class WorkflowJS {
 
       value = (this.target as any)[method](options);
 
+      if (options.activity.id === options.token.state.ref)
+        options.activity.takeOutgoing(undefined, { pause: true });
       if (options.activity.isEnd()) options.token.status = Status.Terminated;
-      else if (options.activity.id === options.token.state.ref) options.token.pause();
     } catch (error) {
       options.context!.status = Status.Failed;
       options.token.status = Status.Failed;
@@ -104,7 +105,8 @@ export class WorkflowJS {
 
       this.context.addToken(token);
     } else {
-      token = this.context.getTokens(activity.$)?.find((t) => t.status === Status.Ready);
+      token = this.context.getTokens(activity.$)?.pop();
+      if (token?.isPaused()) token.resume();
     }
 
     if (!token) throw new Error('Token not found');
@@ -117,7 +119,7 @@ export class WorkflowJS {
 
     const runOptions: { method: string; options: MethodOptions } = {
       method: node.propertyName,
-      options: { token, data, value, activity, context: this.context },
+      options: { token, data: data ?? this.context, value, activity, context: this.context },
     };
 
     do {
@@ -138,9 +140,9 @@ export class WorkflowJS {
 
         if (!next) break;
 
-        next.value = result.value ?? runOptions.options.value;
-
         runOptions.method = '';
+        next.value = result.value;
+
         if (next.name) runOptions.method = nodes[next.name]?.propertyName;
         if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName;
 
