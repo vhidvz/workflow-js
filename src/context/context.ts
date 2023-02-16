@@ -35,6 +35,10 @@ export class Context<D = any> implements ContextInterface<D> {
     if (tokens?.length) this.tokens = this.tokens.filter((t) => !tokens.includes(t.id));
   }
 
+  isPaused() {
+    return this.tokens.every((t) => t.status === Status.Paused);
+  }
+
   isCompleted() {
     return this.tokens.every((t) => t.status === Status.Completed);
   }

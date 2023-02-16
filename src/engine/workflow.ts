@@ -80,8 +80,10 @@ export class WorkflowJS {
 
     if (!this.context?.status) this.context.status = Status.Ready;
 
-    if ([Status.Paused, Status.Terminated].includes(this.context.status))
-      throw new Error('Cannot execute workflow at paused or terminated state');
+    if ([Status.Completed, Status.Terminated].includes(this.context.status))
+      throw new Error('Cannot execute workflow at completed or terminated state');
+
+    if (this.context.status !== Status.Ready) this.context.resume();
 
     let activity;
     if (options?.identity) {
@@ -158,7 +160,8 @@ export class WorkflowJS {
       }
     } while (this.context.status === Status.Running);
 
-    if (this.context.isCompleted()) this.context.status = Status.Completed;
+    if (this.context.isPaused()) this.context.status = Status.Paused;
+    else if (this.context.isCompleted()) this.context.status = Status.Completed;
     else if (this.context.isTerminated()) this.context.status = Status.Terminated;
 
     return {
