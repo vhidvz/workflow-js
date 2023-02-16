@@ -139,8 +139,10 @@ export class WorkflowJS {
         if (!next) break;
 
         next.value = result.value ?? runOptions.options.value;
+
+        runOptions.method = '';
         if (next.name) runOptions.method = nodes[next.name]?.propertyName;
-        if (!runOptions.method && next.ref) runOptions.method = nodes[next.ref]?.propertyName;
+        if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName;
 
         if (!runOptions.method) throw new Error('Requested node not found at continuing stage');
 
