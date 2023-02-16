@@ -35,10 +35,7 @@ export function Node(options: IdentityOptions) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const method = descriptor.value!;
 
-    descriptor.value = function (
-      process: BPMNProcess,
-      { activity, context, token, data, value }: MethodOptions,
-    ) {
+    descriptor.value = function ({ activity, context, token, data, value }: MethodOptions) {
       const params: { parameterIndex: number; type: ArgType }[] = Reflect.getOwnMetadata(
         ParamKey,
         target,

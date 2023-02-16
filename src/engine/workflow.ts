@@ -39,7 +39,7 @@ export class WorkflowJS {
       options.token.status = Status.Running;
       options.context!.status = Status.Running;
 
-      value = (this.target as any)[method](this.process, options);
+      value = (this.target as any)[method](options);
 
       if (!options.token.isPaused()) options.token.status = Status.Completed;
       else if (options.activity.isEnd()) options.token.status = Status.Terminated;
