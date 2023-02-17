@@ -8,7 +8,7 @@ import 'reflect-metadata';
 
 export type ArgType = 'activity' | 'context' | 'token' | 'data' | 'value';
 
-export function Arg(type: ArgType) {
+export function Arg(type: ArgType): any {
   return function (target: any, propertyKey: string, parameterIndex: number) {
     const params = Reflect.getOwnMetadata(ParamKey, target, propertyKey) ?? [];
 
@@ -20,7 +20,7 @@ export function Arg(type: ArgType) {
 
 export type MethodOptions = { activity: Activity; context: Context; token: Token; data?: any; value?: any };
 
-export function Node(options: IdentityOptions) {
+export function Node(options: IdentityOptions): any {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const nodes = Reflect.getOwnMetadata(NodeKey, target, '$__metadata__') ?? {};
 
