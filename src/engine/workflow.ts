@@ -3,7 +3,7 @@
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
 import { getBPMNActivity, getBPMNProcess, parse, readFile } from '../utils';
 import { Context, Status, State, Token } from '../context';
-import { BPMNDefinition, BPMNProcess } from '../type';
+import { BPMNDefinition } from '../type';
 import { getActivity } from '../tools';
 import { Container } from '../core';
 import { Execute } from './types';
@@ -19,7 +19,6 @@ export interface ExecuteInterface {
   xml?: string;
   path?: string;
   schema?: BPMNDefinition;
-  snapshot?: Execute;
 }
 
 function run(target: any, method: string, options: MethodOptions) {
@@ -49,67 +48,63 @@ function run(target: any, method: string, options: MethodOptions) {
 }
 
 export class WorkflowJS {
-  protected target!: any;
+  static execute<D = any>(options: ExecuteInterface, exec?: Execute<D>): Execute<D> {
+    exec = exec ?? ({} as Execute<D>);
 
-  protected context?: Context;
-  protected process?: BPMNProcess;
-  protected definition?: BPMNDefinition;
-
-  public execute<D = any>(options: ExecuteInterface): Execute<D> {
     const { handler, factory, path, xml, schema } = options;
 
-    if (options.id) this.definition = Container.get(options.id);
+    if (options.id) exec.definition = Container.get(options.id);
 
-    if (schema) this.definition = schema;
-    else if (xml) this.definition = parse(xml)['bpmn:definitions'];
-    else if (path) this.definition = parse(readFile(path))['bpmn:definitions'];
+    if (schema) exec.definition = schema;
+    else if (xml) exec.definition = parse(xml)['bpmn:definitions'];
+    else if (path) exec.definition = parse(readFile(path))['bpmn:definitions'];
 
-    if (!this.target)
-      this.target = '$__metadata__' in this ? this : (factory ?? (() => undefined))() ?? handler;
-    if (!this.target) throw new Error('Target workflow not found');
+    if (!exec.target)
+      exec.target = '$__metadata__' in this ? this : (factory ?? (() => undefined))() ?? handler;
+    if (!exec.target) throw new Error('Target workflow not found');
 
-    const metadata = (this.target as any).$__metadata__ as Metadata;
-    const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
+    const metadata = (exec.target as any).$__metadata__ as Metadata;
+    const nodes = Reflect.getMetadata(NodeKey, exec.target, '$__metadata__');
 
-    this.definition = this.definition ?? Container.get(metadata.definition.id);
-    if (!this.definition) throw new Error('Definition schema not found');
+    exec.definition = exec.definition ?? Container.get(metadata.definition.id);
+    if (!exec.definition) throw new Error('Definition schema not found');
 
-    this.process = this.process ?? getBPMNProcess(this.definition, metadata.process);
-    if (!this.process) throw new Error('Process definition not found');
+    exec.process = exec.process ?? getBPMNProcess(exec.definition, metadata.process);
+    if (!exec.process) throw new Error('Process definition not found');
 
     const { context, data, value } = options;
-    this.context = context ?? Context.build({ data, status: Status.Ready });
+    exec.context = context ?? Context.build({ data, status: Status.Ready });
 
-    if (!this.context?.status) this.context.status = Status.Ready;
+    if (!exec.context?.status) exec.context.status = Status.Ready;
 
-    if ([Status.Completed, Status.Terminated].includes(this.context.status))
+    if ([Status.Completed, Status.Terminated].includes(exec.context.status))
       throw new Error('Cannot execute workflow at completed or terminated state');
 
-    if (this.context.status !== Status.Ready) this.context.resume();
+    if (exec.context.status !== Status.Ready) exec.context.resume();
 
     let activity;
     if (options?.identity) {
-      activity = getActivity(this.process, getBPMNActivity(this.process, options.identity));
-    } else if (!this.context.tokens.length) {
-      if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
+      activity = getActivity(exec.process, getBPMNActivity(exec.process, options.identity));
+    } else if (!exec.context.tokens.length) {
+      if (!exec.process['bpmn:startEvent'] || exec.process['bpmn:startEvent'].length !== 1)
         throw new Error('Start event is not defined in process or have more than one start event');
 
-      activity = getActivity(this.process, {
+      activity = getActivity(exec.process, {
         key: 'bpmn:startEvent',
-        activity: this.process['bpmn:startEvent'][0],
+        activity: exec.process['bpmn:startEvent'][0],
       });
     }
     if (!activity) throw new Error('Node activity not found');
 
     let token: Token | undefined;
-    if (this.context.tokens.length == 0) {
+    if (exec.context.tokens.length == 0) {
       const state = State.build(activity.id, { name: activity.name, value, status: Status.Ready });
       token = Token.build();
       token.push(state);
 
-      this.context.addToken(token);
+      exec.context.addToken(token);
     } else {
-      token = this.context.getTokens(activity.$)?.pop();
+      token = exec.context.getTokens(activity.$)?.pop();
       if (token?.isPaused()) token.resume();
     }
 
@@ -123,24 +118,24 @@ export class WorkflowJS {
 
     const runOptions: { method: string; options: MethodOptions } = {
       method: node.propertyName,
-      options: { activity, token, value, data: data ?? this.context.data, context: this.context },
+      options: { activity, token, value, data: data ?? exec.context.data, context: exec.context },
     };
 
     do {
-      const result = run(this.target, runOptions.method, runOptions.options);
+      const result = run(exec.target, runOptions.method, runOptions.options);
 
       if (result.exception) {
         throw {
           result,
-          target: this.target,
-          context: this.context,
-          process: this.process,
-          definition: this.definition,
+          target: exec.target,
+          context: exec.context,
+          process: exec.process,
+          definition: exec.definition,
         };
       }
 
-      if (this.context.status === Status.Running) {
-        const next = this.context.next();
+      if (exec.context.status === Status.Running) {
+        const next = exec.context.next();
 
         if (!next) break;
 
@@ -150,31 +145,35 @@ export class WorkflowJS {
         if (next.name) runOptions.method = nodes[next.name]?.propertyName ?? '';
         if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName ?? '';
 
-        const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
+        const token = exec.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
         if (!token) throw new Error('Token not found at continuing stage');
 
-        const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
+        const activity = getActivity(exec.process, getBPMNActivity(exec.process, { id: next.ref }));
 
         runOptions.options = {
           token,
           activity,
           value: next.value,
-          context: this.context,
-          data: data ?? this.context.data,
+          context: exec.context,
+          data: data ?? exec.context.data,
         };
       }
-    } while (this.context.status === Status.Running);
+    } while (exec.context.status === Status.Running);
 
-    if (this.context.isPaused()) this.context.status = Status.Paused;
-    else if (this.context.isCompleted()) this.context.status = Status.Completed;
-    else if (this.context.isTerminated()) this.context.status = Status.Terminated;
+    if (exec.context.isPaused()) exec.context.status = Status.Paused;
+    else if (exec.context.isCompleted()) exec.context.status = Status.Completed;
+    else if (exec.context.isTerminated()) exec.context.status = Status.Terminated;
 
     return {
-      target: this.target,
-      context: this.context,
-      process: this.process,
-      definition: this.definition,
+      target: exec.target,
+      context: exec.context,
+      process: exec.process,
+      definition: exec.definition,
     };
+  }
+
+  public execute<D = any>(options: ExecuteInterface): Execute<D> {
+    return WorkflowJS.execute<D>(options);
   }
 }
