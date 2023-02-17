@@ -19,6 +19,33 @@ export interface ExecuteInterface {
   xml?: string;
   path?: string;
   schema?: BPMNDefinition;
+  snapshot?: Execute;
+}
+
+function run(target: any, method: string, options: MethodOptions) {
+  options.activity.token = options.token;
+  options.activity.context = options.context;
+
+  let value;
+  let exception;
+
+  try {
+    options.token.status = Status.Running;
+    options.context!.status = Status.Running;
+
+    if (!method) options.activity.takeOutgoing();
+    else value = (target as any)[method](options);
+
+    if (options.activity.id === options.token.state.ref)
+      options.activity.takeOutgoing(undefined, { pause: true });
+    if (options.activity.isEnd()) options.token.status = Status.Terminated;
+  } catch (error) {
+    options.context!.status = Status.Failed;
+    options.token.status = Status.Failed;
+    exception = error;
+  }
+
+  return { value, exception };
 }
 
 export class WorkflowJS {
@@ -27,32 +54,6 @@ export class WorkflowJS {
   protected context?: Context;
   protected process?: BPMNProcess;
   protected definition?: BPMNDefinition;
-
-  private run(method: string, options: MethodOptions) {
-    options.activity.token = options.token;
-    options.activity.context = options.context;
-
-    let value;
-    let exception;
-
-    try {
-      options.token.status = Status.Running;
-      options.context!.status = Status.Running;
-
-      if (!method) options.activity.takeOutgoing();
-      else value = (this.target as any)[method](options);
-
-      if (options.activity.id === options.token.state.ref)
-        options.activity.takeOutgoing(undefined, { pause: true });
-      if (options.activity.isEnd()) options.token.status = Status.Terminated;
-    } catch (error) {
-      options.context!.status = Status.Failed;
-      options.token.status = Status.Failed;
-      exception = error;
-    }
-
-    return { value, exception };
-  }
 
   public execute<D = any>(options: ExecuteInterface): Execute<D> {
     const { handler, factory, path, xml, schema } = options;
@@ -126,7 +127,7 @@ export class WorkflowJS {
     };
 
     do {
-      const result = this.run(runOptions.method, runOptions.options);
+      const result = run(this.target, runOptions.method, runOptions.options);
 
       if (result.exception) {
         throw {
