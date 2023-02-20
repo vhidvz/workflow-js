@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Arg, EventActivity, GatewayActivity, Node, Process, TaskActivity, WorkflowJS } from '../src';
+import { EventActivity, GatewayActivity, TaskActivity } from '../src/core';
+import { Activity, Data, Node, Process, Value } from '../src/common';
+import { WorkflowJS } from '../src';
 
 @Process(
   {
@@ -12,9 +14,9 @@ import { Arg, EventActivity, GatewayActivity, Node, Process, TaskActivity, Workf
 class PizzaCustomer {
   @Node({ name: 'Hungry for Pizza' })
   public hungryForPizza(
-    @Arg('value') value: string,
-    @Arg('data') data: { value: string },
-    @Arg('activity') activity: EventActivity,
+    @Value() value: string,
+    @Data() data: { value: string },
+    @Activity() activity: EventActivity,
   ) {
     console.log('data in hungryForPizza is:', data);
     console.log('value in hungryForPizza is:', value);
@@ -27,11 +29,7 @@ class PizzaCustomer {
   }
 
   @Node({ name: 'Order a Pizza' })
-  orderAPizza(
-    @Arg('value') value: string,
-    @Arg('data') data: { value: string },
-    @Arg('activity') activity: TaskActivity,
-  ) {
+  orderAPizza(@Value() value: string, @Data() data: { value: string }, @Activity() activity: TaskActivity) {
     console.log('data in orderAPizza is:', data);
     console.log('value in orderAPizza is:', value);
 
@@ -42,9 +40,9 @@ class PizzaCustomer {
 
   @Node({ id: 'Gateway_0s7y3gr' })
   whereIsMyPizza(
-    @Arg('value') value: string,
-    @Arg('data') data: { value: string },
-    @Arg('activity') activity: GatewayActivity,
+    @Value() value: string,
+    @Data() data: { value: string },
+    @Activity() activity: GatewayActivity,
   ) {
     console.log('data in whereIsMyPizza is:', data);
     console.log('value in whereIsMyPizza is:', value);
@@ -59,9 +57,9 @@ class PizzaCustomer {
 
   @Node({ name: 'Ask for the pizza' })
   askForThePizza(
-    @Arg('value') value: string,
-    @Arg('data') data: { value: string },
-    @Arg('activity') activity: TaskActivity,
+    @Value() value: string,
+    @Data() data: { value: string },
+    @Activity() activity: TaskActivity,
   ) {
     console.log('data in askForThePizza is:', data);
     console.log('value in askForThePizza is:', value);
@@ -71,9 +69,9 @@ class PizzaCustomer {
 
   @Node({ name: 'Pizza Received' })
   pizzaReceived(
-    @Arg('value') value: string,
-    @Arg('data') data: { value: string },
-    @Arg('activity') activity: EventActivity,
+    @Value() value: string,
+    @Data() data: { value: string },
+    @Activity() activity: EventActivity,
   ) {
     console.log('data in pizzaReceived is:', data);
     console.log('value in pizzaReceived is:', value);
@@ -84,7 +82,7 @@ class PizzaCustomer {
   }
 
   @Node({ name: 'Hunger Satisfied' })
-  hungerSatisfied(@Arg('value') value: string, @Arg('data') data: { value: string }) {
+  hungerSatisfied(@Value() value: string, @Data() data: { value: string }) {
     console.log('data in hungerSatisfied is:', data);
     console.log('value in hungerSatisfied is:', value);
   }

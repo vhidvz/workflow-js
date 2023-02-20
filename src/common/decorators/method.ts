@@ -3,28 +3,7 @@ import { Context, Token } from '../../context';
 import { NodeKey, ParamKey } from '../keys';
 import { IdentityOptions } from '../types';
 import { Activity } from '../../core';
-
-import 'reflect-metadata';
-
-export type ArgType = 'activity' | 'context' | 'token' | 'data' | 'value';
-
-/**
- * It takes a type and returns a decorator that takes a target, propertyKey, and parameterIndex and
- * adds a metadata object to the target with the type and parameterIndex
- *
- * @param {ArgType} type - The type of the parameter.
- *
- * @returns A decorator function
- */
-export function Arg(type: ArgType): any {
-  return function (target: any, propertyKey: string, parameterIndex: number) {
-    const params = Reflect.getOwnMetadata(ParamKey, target, propertyKey) ?? [];
-
-    params.unshift({ parameterIndex, type });
-
-    Reflect.defineMetadata(ParamKey, params, target, propertyKey);
-  };
-}
+import { ParamType } from './params';
 
 export type MethodOptions = { activity: Activity; context: Context; token: Token; data?: any; value?: any };
 
@@ -48,7 +27,7 @@ export function Node(options: IdentityOptions): any {
     const method = descriptor.value!;
 
     descriptor.value = function ({ activity, context, token, data, value }: MethodOptions) {
-      const params: { parameterIndex: number; type: ArgType }[] = Reflect.getOwnMetadata(
+      const params: { parameterIndex: number; type: ParamType }[] = Reflect.getOwnMetadata(
         ParamKey,
         target,
         propertyName,

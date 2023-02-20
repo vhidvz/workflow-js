@@ -2,7 +2,7 @@ import { $, BPMNDefinition, BPMNProcess, BPMNSchema } from './type';
 import { IdentityOptions } from './common';
 
 import { parseString } from 'xml2js';
-import fs from 'fs';
+import * as fs from 'fs';
 
 export const readFile = (path: string): string => fs.readFileSync(path, 'utf8');
 
