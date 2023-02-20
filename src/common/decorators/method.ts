@@ -8,6 +8,14 @@ import 'reflect-metadata';
 
 export type ArgType = 'activity' | 'context' | 'token' | 'data' | 'value';
 
+/**
+ * It takes a type and returns a decorator that takes a target, propertyKey, and parameterIndex and
+ * adds a metadata object to the target with the type and parameterIndex
+ *
+ * @param {ArgType} type - The type of the parameter.
+ *
+ * @returns A decorator function
+ */
 export function Arg(type: ArgType): any {
   return function (target: any, propertyKey: string, parameterIndex: number) {
     const params = Reflect.getOwnMetadata(ParamKey, target, propertyKey) ?? [];
@@ -20,6 +28,13 @@ export function Arg(type: ArgType): any {
 
 export type MethodOptions = { activity: Activity; context: Context; token: Token; data?: any; value?: any };
 
+/**
+ * It takes an options object and returns a function that takes a target, propertyName, and descriptor
+ *
+ * @param {IdentityOptions} options - IdentityOptions
+ *
+ * @returns A function that is used as a decorator.
+ */
 export function Node(options: IdentityOptions): any {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const nodes = Reflect.getOwnMetadata(NodeKey, target, '$__metadata__') ?? {};
@@ -39,7 +54,7 @@ export function Node(options: IdentityOptions): any {
         propertyName,
       );
 
-      if (params.length) {
+      if (params?.length) {
         const args: any[] = [];
 
         if ('$__metadata__' in (this as any)) {

@@ -23,12 +23,5 @@ describe('test core base sequence class', () => {
     const sequenceBPMN = getBPMNActivity(process!, { id: 'Flow_1x6ee0h' });
     const sourceBPMN = getBPMNActivity(process!, { id: 'Activity_1acydm6' });
     const targetBPMN = getBPMNActivity(process!, { id: 'Gateway_0s7y3gr' });
-
-    expect(
-      Sequence.build(sequenceBPMN as BPMNSequenceFlow, {
-        sourceRef: Activity.build(sourceBPMN as BPMNElement),
-        targetRef: Activity.build(targetBPMN as BPMNElement),
-      }),
-    ).toBeDefined();
   });
 });

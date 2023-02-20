@@ -13,7 +13,14 @@
     "lint": "eslint . '*/**/*.{js,ts}' --quiet --fix",
     "format": "prettier --write \"(src|test)/**/*.(ts|js)\"",
     "start:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register src/index.ts",
+    "start:example01": "node -r tsconfig-paths/register -r ts-node/register example/example_01.ts",
+    "start:example02": "node -r tsconfig-paths/register -r ts-node/register example/example_02.ts",
+    "start:example03": "node -r tsconfig-paths/register -r ts-node/register example/example_03.ts",
+    "start:example04": "node -r tsconfig-paths/register -r ts-node/register example/example_04.ts",
     "start:example01:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_01.ts",
+    "start:example02:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_02.ts",
+    "start:example03:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_03.ts",
+    "start:example04:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_04.ts",
     "test": "jest && make-coverage-badge --report-path docs/coverage/coverage-summary.json --output-path coverage-badge.svg"
   },
   "repository": {

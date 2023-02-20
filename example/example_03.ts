@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Arg, EventActivity, GatewayActivity, Node, Process, TaskActivity, WorkflowJS } from '../src';
 
-@Process({
-  name: 'Pizza Customer',
-  path: './example/supplying-pizza.bpmn',
-})
-class PizzaCustomer extends WorkflowJS {
+@Process(
+  {
+    name: 'Pizza Customer',
+    path: './example/supplying-pizza.bpmn',
+  },
+  // you must set this id if you have multiple bpmn file
+  'custom_definition_id',
+)
+class PizzaCustomer {
   @Node({ name: 'Hungry for Pizza' })
   public hungryForPizza(
     @Arg('value') value: string,
@@ -86,14 +90,17 @@ class PizzaCustomer extends WorkflowJS {
   }
 }
 
-const workflow = new PizzaCustomer();
+const workflow = WorkflowJS.build();
 
-const { context } = workflow.execute({ data: { value: 'pizza' }, value: 'pepperoni' });
+const { target } = workflow.execute({
+  id: 'custom_definition_id',
+  factory: () => new PizzaCustomer(),
+  data: { value: 'pizza' },
+  value: 'pepperoni',
+});
 
-console.debug('\nContext is:', JSON.stringify(context, null, 2));
+console.log(typeof target);
 
 // After 60 Minutes
 
 workflow.execute({ node: { name: 'Ask for the pizza' }, value: 'Hey?' });
-
-console.debug('\nContext is:', JSON.stringify(context, null, 2));

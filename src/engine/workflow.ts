@@ -15,10 +15,11 @@ export interface ExecuteInterface {
   context?: Context;
   data?: any;
   value?: any;
-  identity?: IdentityOptions;
+  node?: IdentityOptions;
   xml?: string;
   path?: string;
   schema?: BPMNDefinition;
+  exec?: Execute;
 }
 
 function run(target: any, method: string, options: MethodOptions) {
@@ -32,8 +33,10 @@ function run(target: any, method: string, options: MethodOptions) {
     options.token.status = Status.Running;
     options.context!.status = Status.Running;
 
-    if (!method) options.activity.takeOutgoing();
-    else value = (target as any)[method](options);
+    if (!method) {
+      value = options.value;
+      options.activity.takeOutgoing();
+    } else value = (target as any)[method](options);
 
     if (options.activity.id === options.token.state.ref)
       options.activity.takeOutgoing(undefined, { pause: true });
@@ -54,17 +57,36 @@ export class WorkflowJS {
   protected process?: BPMNProcess;
   protected definition?: BPMNDefinition;
 
-  public execute<D = any>(options: ExecuteInterface): Execute<D> {
+  static build(exec?: Execute): WorkflowJS {
+    const workflow = new this();
+
+    if (exec) {
+      workflow.target = exec.target;
+      workflow.context = exec.context;
+      workflow.process = exec.process;
+      workflow.definition = exec.definition;
+    }
+
+    return workflow;
+  }
+
+  public execute(options: ExecuteInterface): Execute {
+    if (!this.target && options?.exec?.target) this.target = options.exec.target;
+    if (!this.context && options?.exec?.context) this.context = options.exec.context;
+    if (!this.process && options?.exec?.process) this.process = options.exec.process;
+    if (!this.definition && options?.exec?.definition) this.definition = options.exec.definition;
+
     const { handler, factory, path, xml, schema } = options;
 
-    if (options.id) this.definition = Container.get(options.id);
+    if (!this.definition && options.id) this.definition = Container.get(options.id);
 
-    if (schema) this.definition = schema;
-    else if (xml) this.definition = parse(xml)['bpmn:definitions'];
-    else if (path) this.definition = parse(readFile(path))['bpmn:definitions'];
+    if (!this.definition && schema) this.definition = schema;
+    else if (!this.definition && xml) this.definition = parse(xml)['bpmn:definitions'];
+    else if (!this.definition && path) this.definition = parse(readFile(path))['bpmn:definitions'];
 
-    if (!this.target)
+    if (!this.target) {
       this.target = '$__metadata__' in this ? this : (factory ?? (() => undefined))() ?? handler;
+    }
     if (!this.target) throw new Error('Target workflow not found');
 
     const metadata = (this.target as any).$__metadata__ as Metadata;
@@ -77,7 +99,7 @@ export class WorkflowJS {
     if (!this.process) throw new Error('Process definition not found');
 
     const { context, data, value } = options;
-    this.context = context ?? Context.build({ data, status: Status.Ready });
+    this.context = this.context ?? context ?? Context.build({ data, status: Status.Ready });
 
     if (!this.context?.status) this.context.status = Status.Ready;
 
@@ -87,8 +109,8 @@ export class WorkflowJS {
     if (this.context.status !== Status.Ready) this.context.resume();
 
     let activity;
-    if (options?.identity) {
-      activity = getActivity(this.process, getBPMNActivity(this.process, options.identity));
+    if (options?.node) {
+      activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
     } else if (!this.context.tokens.length) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
         throw new Error('Start event is not defined in process or have more than one start event');
@@ -128,15 +150,7 @@ export class WorkflowJS {
     do {
       const result = run(this.target, runOptions.method, runOptions.options);
 
-      if (result.exception) {
-        throw {
-          result,
-          target: this.target,
-          context: this.context,
-          process: this.process,
-          definition: this.definition,
-        };
-      }
+      if (result.exception) throw result.exception;
 
       if (this.context.status === Status.Running) {
         const next = this.context.next();
