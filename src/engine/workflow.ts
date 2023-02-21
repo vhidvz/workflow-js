@@ -22,6 +22,15 @@ export interface ExecuteInterface {
   exec?: Execute;
 }
 
+/**
+ * It runs the activity, and returns the value and exception
+ *
+ * @param {any} target - any - The target object that contains the method to be executed.
+ * @param {string} method - The name of the method to be executed.
+ * @param {MethodOptions} options - MethodOptions
+ *
+ * @returns The value of the method, or the exception if there is one.
+ */
 function run(target: any, method: string, options: MethodOptions) {
   options.activity.token = options.token;
   options.activity.context = options.context;
@@ -57,6 +66,14 @@ export class WorkflowJS {
   protected process?: BPMNProcess;
   protected definition?: BPMNDefinition;
 
+  /**
+   * > The `build` function is a static function that returns a new instance of the `WorkflowJS` class
+   *
+   * @param {Execute} [exec] - Execute - This is the object that is passed to the workflow when it is
+   * executed.
+   *
+   * @returns A new instance of the WorkflowJS class.
+   */
   static build(exec?: Execute): WorkflowJS {
     const workflow = new this();
 
@@ -70,6 +87,13 @@ export class WorkflowJS {
     return workflow;
   }
 
+  /**
+   * It executes a workflow
+   *
+   * @param {ExecuteInterface} options - ExecuteInterface
+   *
+   * @returns The return value is an object with the following properties:
+   */
   public execute(options: ExecuteInterface): Execute {
     if (!this.target && options?.exec?.target) this.target = options.exec.target;
     if (!this.context && options?.exec?.context) this.context = options.exec.context;
@@ -108,6 +132,9 @@ export class WorkflowJS {
 
     if (this.context.status !== Status.Ready) this.context.resume();
 
+    /* Checking if the options has a node, if it does, it will get the activity from the process. If it
+    does not, it will check if the context has tokens. If it does not, it will get the start event
+    from the process. If it does, it will throw an error. */
     let activity;
     if (options?.node) {
       activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
@@ -122,6 +149,8 @@ export class WorkflowJS {
     }
     if (!activity) throw new Error('Node activity not found');
 
+    /* Checking if the context has tokens. If it does not, it creates a new token and adds it to the
+    context. If it does, it gets the last token from the context and resumes it. */
     let token: Token | undefined;
     if (this.context.tokens.length == 0) {
       const state = State.build(activity.id, { name: activity.name, value, status: Status.Ready });
@@ -147,6 +176,7 @@ export class WorkflowJS {
       options: { activity, token, value, data: data ?? this.context.data, context: this.context },
     };
 
+    /* A loop that will run until the context status is not running. */
     do {
       const result = run(this.target, runOptions.method, runOptions.options);
 
@@ -165,7 +195,7 @@ export class WorkflowJS {
 
         const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
-        if (!token) throw new Error('Token not found at continuing stage');
+        if (!token) throw new Error('Token not found at running stage');
 
         const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
 
@@ -179,6 +209,7 @@ export class WorkflowJS {
       }
     } while (this.context.status === Status.Running);
 
+    /* Setting the status of the context to the appropriate status. */
     if (this.context.isPaused()) this.context.status = Status.Paused;
     else if (this.context.isCompleted()) this.context.status = Status.Completed;
     else if (this.context.isTerminated()) this.context.status = Status.Terminated;

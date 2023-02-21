@@ -8,6 +8,7 @@ import { takeOutgoing } from '../../tools';
 import { Attribute } from './attribute';
 import { Sequence } from './sequence';
 
+/* It's a class that represents an activity in a BPMN file */
 export class Activity extends Attribute {
   protected readonly key?: string;
 
@@ -22,6 +23,12 @@ export class Activity extends Attribute {
     this.key = key;
   }
 
+  /**
+   * > The `incoming` property returns an array of `Sequence` objects that are incoming to the current
+   * `Activity`
+   *
+   * @returns An array of Sequence objects.
+   */
   get incoming() {
     return this['bpmn:incoming']?.map((id: string) => {
       const activity = getBPMNActivity(this.process, { id })?.activity;
@@ -29,6 +36,11 @@ export class Activity extends Attribute {
     });
   }
 
+  /**
+   * > It returns an array of `Sequence` objects that are outgoing from the current activity
+   *
+   * @returns An array of Sequence objects
+   */
   get outgoing() {
     return this['bpmn:outgoing']?.map((id: string) => {
       const activity = getBPMNActivity(this.process, { id })?.activity;
@@ -37,6 +49,15 @@ export class Activity extends Attribute {
     });
   }
 
+  /**
+   * It takes the outgoing sequence flows from the current activity and creates a new token for each
+   * one
+   *
+   * @param {IdentityOptions} [identity] - IdentityOptions
+   * @param [options] - { pause: boolean }
+   *
+   * @returns The outgoing activity
+   */
   takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
@@ -79,10 +100,22 @@ export class Activity extends Attribute {
     return outgoing;
   }
 
+  /**
+   * If the key property of the current node is not null and includes the string 'endEvent', return
+   * true
+   *
+   * @returns The key of the current node.
+   */
   isEnd() {
     return this.key?.includes('endEvent');
   }
 
+  /**
+   * If the key property exists and includes the string 'startEvent', return true. Otherwise, return
+   * false
+   *
+   * @returns A boolean value.
+   */
   isStart() {
     return this.key?.includes('startEvent');
   }
