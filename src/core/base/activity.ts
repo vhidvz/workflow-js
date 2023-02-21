@@ -17,6 +17,11 @@ export class Activity extends Attribute {
   private readonly 'bpmn:incoming': string[];
   private readonly 'bpmn:outgoing': string[];
 
+  constructor(process: BPMNProcess, data?: Partial<Activity>, key?: string) {
+    super(process, data);
+    this.key = key;
+  }
+
   get incoming() {
     return this['bpmn:incoming']?.map((id: string) => {
       const activity = getBPMNActivity(this.process, { id })?.activity;
@@ -82,11 +87,15 @@ export class Activity extends Attribute {
     return this.key?.includes('startEvent');
   }
 
-  constructor(process: BPMNProcess, data?: Partial<Activity>, key?: string) {
-    super(process, data);
-    this.key = key;
-  }
-
+  /**
+   * It creates a new Activity object.
+   *
+   * @param {BPMNActivity} el - BPMNActivity - the element from the BPMN file
+   * @param {BPMNProcess} process - The process that the activity belongs to.
+   * @param {string} [key] - The key of the element.
+   *
+   * @returns A new instance of the Activity class.
+   */
   static build(el: BPMNActivity, process: BPMNProcess, key?: string) {
     return new Activity(process, { ...el }, key);
   }
