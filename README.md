@@ -6,7 +6,7 @@
 
 ## Description
 
-WorkflowJS is a lightweight and flexible library for building workflows and processes with JavaScript. It allows you to define processes using BPMN 2.0 standard and execute them in a Node.js or browser environment.
+WorkflowJS is a lightweight and flexible library for building workflows and processes with NodeJS. It allows you to define processes using BPMN 2.0
 
 ## Installation
 
