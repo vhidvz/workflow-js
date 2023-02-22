@@ -1,6 +1,6 @@
 # WorkflowJS
 
-[![npm](https://img.shields.io/npm/v/workflow-js)](https://www.npmjs.com/package/workflow-js)
+[![npm](https://img.shields.io/npm/v/@vhidvz/wfjs)](https://www.npmjs.com/package/@vhidvz/wfjs)
 [![Coverage](https://raw.githubusercontent.com/vhidvz/workflow-js/master/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/vhidvz/workflow-js/blob/master/docs/coverage/lcov-report/index.html)
 ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/vhidvz/workflow-js)
 ![npm](https://img.shields.io/npm/dm/workflow-js)
