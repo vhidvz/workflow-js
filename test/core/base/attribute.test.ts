@@ -1,4 +1,5 @@
-import { readFile, parse, Attribute, BPMNSchema, getBPMNProcess } from '../../../src';
+import { readFile, parse, BPMNSchema, getBPMNProcess } from '../../../src';
+import { Attribute } from '../../../src/core';
 
 describe('test core base attribute class', () => {
   let schema: BPMNSchema;

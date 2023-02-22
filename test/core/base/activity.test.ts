@@ -1,4 +1,5 @@
-import { BPMNSchema, Activity, parse, readFile, getBPMNProcess } from '../../../src';
+import { BPMNSchema, parse, readFile, getBPMNProcess } from '../../../src';
+import { Activity } from '../../../src/core';
 
 describe('test core base activity class', () => {
   let schema: BPMNSchema;

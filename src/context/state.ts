@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Status } from './enums';
 
 export interface StateInterface<V = any> {

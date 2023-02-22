@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ParamKey } from 'common/keys';
+import { ParamKey } from '../keys';
 import 'reflect-metadata';
 
 export type ParamType = 'activity' | 'context' | 'token' | 'data' | 'value';
