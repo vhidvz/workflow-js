@@ -50,24 +50,9 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
       <bpmn:incoming>Flow_17n861s</bpmn:incoming>
       <bpmn:outgoing>Flow_1fznvmj</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:endEvent id="Event_16a7ub0" name="End">
-      <bpmn:incoming>Flow_1fznvmj</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:userTask id="Activity_1efomxn" name="Task1">
-      <bpmn:incoming>Flow_0hs4ef8</bpmn:incoming>
-      <bpmn:outgoing>Flow_17n861s</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0xzkax6" name="Task01">
-      <bpmn:incoming>Flow_05tl31k</bpmn:incoming>
-      <bpmn:outgoing>Flow_1720nab</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sendTask id="Activity_1r8gmbw" name="Task02">
-      <bpmn:incoming>Flow_1720nab</bpmn:incoming>
-      <bpmn:outgoing>Flow_1dyucuz</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_0eekk20" sourceRef="StartEvent_1ogvy0x" targetRef="Gateway_009anth" />
-    <bpmn:sequenceFlow id="Flow_0hs4ef8" sourceRef="Gateway_009anth" targetRef="Activity_1efomxn" />
-    <bpmn:sequenceFlow id="Flow_05tl31k" sourceRef="Gateway_009anth" targetRef="Activity_0xzkax6" />
+    ...
+    ...
+    ...
     <bpmn:sequenceFlow id="Flow_1dyucuz" sourceRef="Activity_1r8gmbw" targetRef="Gateway_00y0ktn" />
     <bpmn:sequenceFlow id="Flow_17n861s" sourceRef="Activity_1efomxn" targetRef="Gateway_00y0ktn" />
     <bpmn:sequenceFlow id="Flow_1fznvmj" sourceRef="Gateway_00y0ktn" targetRef="Event_16a7ub0" />
@@ -76,7 +61,7 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
 </bpmn:definitions>
 ```
 
-> This simple workflow schema `.bpmn` file located at this [link](./assets/simple-workflow.bpmn).
+> This simple workflow schema `.bpmn` file located in [this link](./assets/simple-workflow.bpmn).
 
 ### Creating a Workflow Instance
 
