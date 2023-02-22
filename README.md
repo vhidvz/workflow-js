@@ -1,8 +1,16 @@
 # WorkflowJS
 
-[![GitHub](https://img.shields.io/github/license/vhidvz/workflow-js?style=flat)](https://vhidvz.github.io/workflow-js/)
+[![npm](https://img.shields.io/npm/v/workflow-js)](https://www.npmjs.com/package/workflow-js)
 [![Coverage](https://raw.githubusercontent.com/vhidvz/workflow-js/master/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/vhidvz/workflow-js/blob/master/docs/coverage/lcov-report/index.html)
-[![Build, Test and Publish to NPM Package Registry](https://github.com/vhidvz/workflow-js/actions/workflows/npm-ci.yml/badge.svg)](https://github.com/vhidvz/workflow-js/actions/workflows/npm-ci.yml)
+![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/vhidvz/workflow-js)
+![npm](https://img.shields.io/npm/dm/workflow-js)
+![node-current](https://img.shields.io/node/v/workflow-js)
+[![GitHub](https://img.shields.io/github/license/vhidvz/workflow-js?style=flat)](https://vhidvz.github.io/workflow-js/)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-nodejs-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Gitter](https://badges.gitter.im/workflow-js-npm/community.svg)](https://gitter.im/workflow-js-npm/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![documentation](https://img.shields.io/badge/documentation-click_to_read-c27cf4)](https://vhidvz.github.io/workflow-js/)
+[![Build, Test and Publish](https://github.com/vhidvz/workflow-js/actions/workflows/npm-ci.yml/badge.svg)](https://github.com/vhidvz/workflow-js/actions/workflows/npm-ci.yml)
 
 WorkflowJS is a lightweight and flexible library for building workflows and processes with NodeJS. It allows you to define processes using BPMN 2.0.
 
