@@ -107,7 +107,7 @@ const workflow = builder.build(SimpleWorkflow);
 workflow.execute({ value: 'Hello World!' });
 ```
 
-## [More Examples](./example/)
+## [More Example](./example/)
 
 ## License
 
