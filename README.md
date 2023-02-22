@@ -3,12 +3,12 @@
 [![npm](https://img.shields.io/npm/v/@vhidvz/wfjs)](https://www.npmjs.com/package/@vhidvz/wfjs)
 [![Coverage](https://raw.githubusercontent.com/vhidvz/workflow-js/master/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/vhidvz/workflow-js/blob/master/docs/coverage/lcov-report/index.html)
 ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/vhidvz/workflow-js)
-![npm](https://img.shields.io/npm/dm/workflow-js)
-![node-current](https://img.shields.io/node/v/workflow-js)
+![npm](https://img.shields.io/npm/dm/@vhidvz/wfjs)
+![node-current](https://img.shields.io/node/v/@vhidvz/wfjs)
 [![GitHub](https://img.shields.io/github/license/vhidvz/workflow-js?style=flat)](https://vhidvz.github.io/workflow-js/)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-nodejs-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![Gitter](https://badges.gitter.im/workflow-js-npm/community.svg)](https://gitter.im/workflow-js-npm/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/workflow-js-npm/community.svg)](https://matrix.to/#/#wfjs:gitter.im)
 [![documentation](https://img.shields.io/badge/documentation-click_to_read-c27cf4)](https://vhidvz.github.io/workflow-js/)
 [![Build, Test and Publish](https://github.com/vhidvz/workflow-js/actions/workflows/npm-ci.yml/badge.svg)](https://github.com/vhidvz/workflow-js/actions/workflows/npm-ci.yml)
 
@@ -19,7 +19,7 @@ This is a JavaScript library for building and executing workflows. It provides a
 ## Installation
 
 ```sh
-npm install workflow-js
+npm install @vhidvz/wfjs
 ```
 
 ## Getting Started
@@ -68,7 +68,7 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
 To create a new workflow, you need to define a class with methods that represent the different steps of the workflow. You can use decorators to define the nodes and activities of the workflow. Here's an example of a simple workflow:
 
 ```ts
-import { Process, Node, Value, Data, Activity } from 'workflow-js';
+import { Process, Node, Value, Data, Activity } from '@vhidvz/wfjs';
 
 @Process({ name: 'Simple Workflow' })
 class SimpleWorkflow {
@@ -91,13 +91,20 @@ class SimpleWorkflow {
 Once you have defined the workflow, you can build and execute it using the WorkflowJS library. Here's how you can do it:
 
 ```ts
-import { WorkflowBuilder } from 'workflow-js';
+import { WorkflowJS, Context } from '@vhidvz/wfjs';
 
-const builder = new WorkflowBuilder();
+const workflow = WorkflowJS.build();
 
-const workflow = builder.build(SimpleWorkflow);
+const { context } = workflow.execute({
+  factory: () => new SimpleWorkflow(),
+  data: { value: 'pizza' },
+  value: 'pepperoni',
+  path: './assets/simple-workflow.bpmn',
+});
 
-workflow.execute({ value: 'Hello World!' });
+const serializedContext = context.serialize()
+
+const deserializedContext = Context.deserialize(serializedContext)
 ```
 
 ## [More Example](./example/)
