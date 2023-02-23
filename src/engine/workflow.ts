@@ -4,8 +4,8 @@ import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
 import { getBPMNActivity, getBPMNProcess, parse, readFile } from '../utils';
 import { Context, Status, State, Token } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
+import { Activity, Container } from '../core';
 import { getActivity } from '../tools';
-import { Container } from '../core';
 import { Execute } from './types';
 
 export interface ExecuteInterface {
@@ -135,7 +135,7 @@ export class WorkflowJS {
     /* Checking if the options has a node, if it does, it will get the activity from the process. If it
     does not, it will check if the context has tokens. If it does not, it will get the start event
     from the process. If it does, it will throw an error. */
-    let activity;
+    let activity: Activity | undefined;
     if (options?.node) {
       activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
     } else if (!this.context.tokens.length) {
