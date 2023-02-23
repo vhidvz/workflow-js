@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "1.0.6-alpha",
+  "version": "1.0.7-alpha",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -38,6 +38,10 @@
     "workflow"
   ],
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "xml2js": "^0.4.23"
+  },
   "devDependencies": {
     "@types/jest": "^29.4.0",
     "@types/xml2js": "^0.4.11",
@@ -59,6 +63,16 @@
     "typedoc": "^0.23.25",
     "typescript": "^4.9.5"
   },
+  "files": [
+    "/dist",
+    "/dist/core",
+    "/dist/common"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./core": "./dist/core/index.js",
+    "./common": "./dist/common/index.js"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -66,14 +80,5 @@
   "engines": {
     "node": ">=18.14.1",
     "npm": ">=9.3.1"
-  },
-  "files": [
-    "/dist",
-    "/dist/core",
-    "/dist/common"
-  ],
-  "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "xml2js": "^0.4.23"
   }
 }
