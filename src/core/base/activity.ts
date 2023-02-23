@@ -86,8 +86,6 @@ export class Activity extends Attribute {
             parent: this.token.id,
           });
 
-          this.token.status = Status.Completed;
-
           token.push(
             State.build(activity.id, { name: activity.name, status: pause ? Status.Paused : Status.Ready }),
           );

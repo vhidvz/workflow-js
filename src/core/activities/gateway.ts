@@ -89,8 +89,6 @@ export class GatewayActivity extends Activity {
             parent: this.token.id,
           });
 
-          this.token.status = Status.Completed;
-
           token.push(
             State.build(activity.id, {
               name: activity.name,
