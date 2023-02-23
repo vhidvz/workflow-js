@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "1.0.4-alpha",
+  "version": "1.0.5-alpha",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -68,7 +68,9 @@
     "npm": ">=9.3.1"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "/dist/core",
+    "/dist/common"
   ],
   "dependencies": {
     "reflect-metadata": "^0.1.13",
