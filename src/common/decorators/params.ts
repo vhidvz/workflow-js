@@ -24,11 +24,11 @@ export function Param(type: ParamType): any {
 
 /**
  * It takes a parameter index and adds it to the list of parameters that are decorated with the
- * `@Activity` decorator
+ * `@Act` decorator
  *
  * @returns A decorator function
  */
-export function Activity(): any {
+export function Act(): any {
   return function (target: any, propertyKey: string, parameterIndex: number) {
     const params = Reflect.getOwnMetadata(ParamKey, target, propertyKey) ?? [];
 
@@ -43,7 +43,7 @@ export function Activity(): any {
  *
  * @returns A decorator function
  */
-export function Context(): any {
+export function Ctx(): any {
   return function (target: any, propertyKey: string, parameterIndex: number) {
     const params = Reflect.getOwnMetadata(ParamKey, target, propertyKey) ?? [];
 
@@ -58,7 +58,7 @@ export function Context(): any {
  *
  * @returns A decorator function
  */
-export function Token(): any {
+export function Sign(): any {
   return function (target: any, propertyKey: string, parameterIndex: number) {
     const params = Reflect.getOwnMetadata(ParamKey, target, propertyKey) ?? [];
 

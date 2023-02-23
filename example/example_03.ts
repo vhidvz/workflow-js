@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EventActivity, GatewayActivity, TaskActivity } from '../src/core';
-import { Activity, Data, Node, Process, Value } from '../src/common';
+import { Act, Data, Node, Process, Value } from '../src/common';
 import { WorkflowJS } from '../src';
 
 @Process(
@@ -16,7 +16,7 @@ class PizzaCustomer {
   public hungryForPizza(
     @Value() value: string,
     @Data() data: { value: string },
-    @Activity() activity: EventActivity,
+    @Act() activity: EventActivity,
   ) {
     console.log('data in hungryForPizza is:', data);
     console.log('value in hungryForPizza is:', value);
@@ -29,7 +29,7 @@ class PizzaCustomer {
   }
 
   @Node({ name: 'Order a Pizza' })
-  orderAPizza(@Value() value: string, @Data() data: { value: string }, @Activity() activity: TaskActivity) {
+  orderAPizza(@Value() value: string, @Data() data: { value: string }, @Act() activity: TaskActivity) {
     console.log('data in orderAPizza is:', data);
     console.log('value in orderAPizza is:', value);
 
@@ -39,11 +39,7 @@ class PizzaCustomer {
   }
 
   @Node({ id: 'Gateway_0s7y3gr' })
-  whereIsMyPizza(
-    @Value() value: string,
-    @Data() data: { value: string },
-    @Activity() activity: GatewayActivity,
-  ) {
+  whereIsMyPizza(@Value() value: string, @Data() data: { value: string }, @Act() activity: GatewayActivity) {
     console.log('data in whereIsMyPizza is:', data);
     console.log('value in whereIsMyPizza is:', value);
 
@@ -56,11 +52,7 @@ class PizzaCustomer {
   }
 
   @Node({ name: 'Ask for the pizza' })
-  askForThePizza(
-    @Value() value: string,
-    @Data() data: { value: string },
-    @Activity() activity: TaskActivity,
-  ) {
+  askForThePizza(@Value() value: string, @Data() data: { value: string }, @Act() activity: TaskActivity) {
     console.log('data in askForThePizza is:', data);
     console.log('value in askForThePizza is:', value);
 
@@ -68,11 +60,7 @@ class PizzaCustomer {
   }
 
   @Node({ name: 'Pizza Received' })
-  pizzaReceived(
-    @Value() value: string,
-    @Data() data: { value: string },
-    @Activity() activity: EventActivity,
-  ) {
+  pizzaReceived(@Value() value: string, @Data() data: { value: string }, @Act() activity: EventActivity) {
     console.log('data in pizzaReceived is:', data);
     console.log('value in pizzaReceived is:', value);
 

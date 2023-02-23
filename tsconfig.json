@@ -14,12 +14,7 @@
     "types": ["node", "jest"],
     "removeComments": false,
     "outDir": "./dist",
-    "strict": true,
-    "paths": {
-      "*": ["src/*"],
-      "core/*": ["src/core/*"],
-      "common/*": ["src/common/*"]
-    }
+    "strict": true
   },
   "include": ["src/**/*"]
 }
