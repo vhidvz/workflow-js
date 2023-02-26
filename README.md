@@ -6,7 +6,7 @@
 ![npm](https://img.shields.io/npm/dm/@vhidvz/wfjs)
 ![node-current](https://img.shields.io/node/v/@vhidvz/wfjs)
 [![GitHub](https://img.shields.io/github/license/vhidvz/workflow-js?style=flat)](https://github.com/vhidvz/workflow-js/blob/master/LICENSE)
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-nodejs-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+[![semantic-release: nodejs](https://img.shields.io/badge/semantic--versioning-nodejs-e10079?logo=semantic-release)](https://semver.org)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Chat on Matrix](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#wfjs:gitter.im)
 [![documentation](https://img.shields.io/badge/documentation-click_to_read-c27cf4)](https://vhidvz.github.io/workflow-js/)
@@ -82,8 +82,7 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
 To create a new workflow, you need to define a class with methods that represent the different steps of the workflow. You can use decorators to define the nodes and activities of the workflow. Here's an example of a simple workflow:
 
 ```ts
-import { Act, Node, Process } from '@vhidvz/wfjs';
-import { EventActivity } from '@vhidvz/wfjs';
+import { Act, Node, Process, EventActivity } from '@vhidvz/wfjs';
 
 @Process({ name: 'Simple Workflow' })
 class SimpleWorkflow {
