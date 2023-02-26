@@ -47,7 +47,7 @@ function run(target: any, method: string, options: MethodOptions) {
       options.activity.takeOutgoing();
     } else value = (target as any)[method](options);
 
-    if (options.activity.id === options.token.state.ref)
+    if (method && options.activity.id === options.token.state.ref)
       options.activity.takeOutgoing(undefined, { pause: true });
     if (options.activity.isEnd()) options.token.status = Status.Terminated;
   } catch (error) {

@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "1.1.1-alpha",
+  "version": "1.0.0-beta",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,10 +17,12 @@
     "start:example02": "node -r tsconfig-paths/register -r ts-node/register example/example_02.ts",
     "start:example03": "node -r tsconfig-paths/register -r ts-node/register example/example_03.ts",
     "start:example04": "node -r tsconfig-paths/register -r ts-node/register example/example_04.ts",
+    "start:example05": "node -r tsconfig-paths/register -r ts-node/register example/example_05.ts",
     "start:example01:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_01.ts",
     "start:example02:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_02.ts",
     "start:example03:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_03.ts",
     "start:example04:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_04.ts",
+    "start:example05:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register example/example_05.ts",
     "test": "jest && make-coverage-badge --report-path docs/coverage/coverage-summary.json --output-path coverage-badge.svg"
   },
   "repository": {

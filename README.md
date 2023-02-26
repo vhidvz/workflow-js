@@ -19,7 +19,7 @@ This is a JavaScript library for building and executing workflows. It provides a
 ## Installation
 
 ```sh
-npm install @vhidvz/wfjs
+npm install --save @vhidvz/wfjs
 ```
 
 ## Getting Started
@@ -31,8 +31,7 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
 ![Simple Workflow](./assets/simple-workflow.svg)
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:collaboration id="Collaboration_0wlp4ym">
     <bpmn:participant id="Participant_0ae9bpa" name="Simple Workflow" processRef="Process_1igpwhg" />
   </bpmn:collaboration>
@@ -40,48 +39,57 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
     <bpmn:startEvent id="StartEvent_1ogvy0x" name="Start">
       <bpmn:outgoing>Flow_0eekk20</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_009anth" name="Decision" default="Flow_0hs4ef8">
-      <bpmn:incoming>Flow_0eekk20</bpmn:incoming>
-      <bpmn:outgoing>Flow_0hs4ef8</bpmn:outgoing>
-      <bpmn:outgoing>Flow_05tl31k</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="Gateway_00y0ktn" name="Aggregation">
-      <bpmn:incoming>Flow_1dyucuz</bpmn:incoming>
-      <bpmn:incoming>Flow_17n861s</bpmn:incoming>
-      <bpmn:outgoing>Flow_1fznvmj</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    ...
-    ...
-    ...
+    <bpmn:endEvent id="Event_16a7ub0" name="End">
+      <bpmn:incoming>Flow_1fznvmj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_1efomxn" name="Task1">
+      <bpmn:incoming>Flow_0hs4ef8</bpmn:incoming>
+      <bpmn:outgoing>Flow_17n861s</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0xzkax6" name="Task01">
+      <bpmn:incoming>Flow_05tl31k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1720nab</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="Activity_1r8gmbw" name="Task02">
+      <bpmn:incoming>Flow_1720nab</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dyucuz</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_0eekk20" sourceRef="StartEvent_1ogvy0x" targetRef="Gateway_009anth" />
+    <bpmn:sequenceFlow id="Flow_0hs4ef8" sourceRef="Gateway_009anth" targetRef="Activity_1efomxn" />
+    <bpmn:sequenceFlow id="Flow_05tl31k" sourceRef="Gateway_009anth" targetRef="Activity_0xzkax6" />
     <bpmn:sequenceFlow id="Flow_1dyucuz" sourceRef="Activity_1r8gmbw" targetRef="Gateway_00y0ktn" />
     <bpmn:sequenceFlow id="Flow_17n861s" sourceRef="Activity_1efomxn" targetRef="Gateway_00y0ktn" />
     <bpmn:sequenceFlow id="Flow_1fznvmj" sourceRef="Gateway_00y0ktn" targetRef="Event_16a7ub0" />
     <bpmn:sequenceFlow id="Flow_1720nab" sourceRef="Activity_0xzkax6" targetRef="Activity_1r8gmbw" />
+    <bpmn:parallelGateway id="Gateway_009anth">
+      <bpmn:incoming>Flow_0eekk20</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hs4ef8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05tl31k</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_00y0ktn">
+      <bpmn:incoming>Flow_1dyucuz</bpmn:incoming>
+      <bpmn:incoming>Flow_17n861s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fznvmj</bpmn:outgoing>
+    </bpmn:parallelGateway>
   </bpmn:process>
 </bpmn:definitions>
 ```
 
-> The full definition of the simple workflow schema `.bpmn` file located in [this link](./assets/simple-workflow.bpmn).
+> The full definition of the simple workflow schema `.bpmn` file located in [this link](./example/simple-workflow.bpmn).
 
 ### Creating a Workflow Instance
 
 To create a new workflow, you need to define a class with methods that represent the different steps of the workflow. You can use decorators to define the nodes and activities of the workflow. Here's an example of a simple workflow:
 
 ```ts
-import { Process, Node, Value, Data, Activity } from '@vhidvz/wfjs';
+import { Act, Node, Process } from '@vhidvz/wfjs';
+import { EventActivity } from '@vhidvz/wfjs';
 
 @Process({ name: 'Simple Workflow' })
 class SimpleWorkflow {
   @Node({ name: 'Start' })
-  start(@Value() value: string, @Activity() activity: any) {
-    console.log(value);
-
+  public start(@Act() activity: EventActivity) {
     activity.takeOutgoing();
-  }
-
-  @Node({ name: 'End' })
-  end( @Data() data: { value: string }, @Activity() activity: any) {
-    console.log(data);
   }
 }
 ```
@@ -91,20 +99,18 @@ class SimpleWorkflow {
 Once you have defined the workflow, you can build and execute it using the WorkflowJS library. Here's how you can do it:
 
 ```ts
-import { WorkflowJS, Context } from '@vhidvz/wfjs';
+import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 
 const workflow = WorkflowJS.build();
 
+const xml = readFile('./example/simple-workflow.bpmn');
+
 const { context } = workflow.execute({
   factory: () => new SimpleWorkflow(),
-  data: { value: 'pizza' },
-  value: 'pepperoni',
-  path: './assets/simple-workflow.bpmn',
+  schema: parse(xml)['bpmn:definitions'],
 });
 
-const serializedContext = context.serialize()
-
-const deserializedContext = Context.deserialize(serializedContext)
+console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
 ```
 
 ## [More Example](./example/)
