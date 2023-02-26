@@ -54,6 +54,16 @@ export class Token implements TokenInterface {
   }
 
   /**
+   * If the status property of the current instance is equal to the Ready constant, return true,
+   * otherwise return false.
+   *
+   * @returns A boolean value.
+   */
+  isReady() {
+    return this.status === Status.Ready;
+  }
+
+  /**
    * If the status is equal to the Paused value, then return true, otherwise return false.
    *
    * @returns A boolean value.

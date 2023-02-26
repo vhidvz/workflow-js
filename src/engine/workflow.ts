@@ -131,6 +131,7 @@ export class WorkflowJS {
       throw new Error('Cannot execute workflow at completed or terminated state');
 
     if (this.context.status !== Status.Ready) this.context.resume();
+    if (!this.context.isReady()) throw new Error('Context is not ready to consume');
 
     /* Checking if the options has a node, if it does, it will get the activity from the process. If it
     does not, it will check if the context has tokens. If it does not, it will get the start event
@@ -154,13 +155,20 @@ export class WorkflowJS {
     let token: Token | undefined;
     if (this.context.tokens.length == 0) {
       const state = State.build(activity.id, { name: activity.name, value, status: Status.Ready });
+
       token = Token.build();
+
       token.push(state);
 
       this.context.addToken(token);
     } else {
       token = this.context.getTokens(activity.$)?.pop();
-      if (token?.isPaused()) token.resume();
+
+      if (token?.isPaused()) {
+        token.resume();
+
+        if (!token.isReady()) throw new Error('Token is not ready to consume');
+      }
     }
 
     if (!token) throw new Error('Token not found');

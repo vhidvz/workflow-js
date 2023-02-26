@@ -34,6 +34,16 @@ export class Context<D = any> implements ContextInterface<D> {
   }
 
   /**
+   * If the status property of the current instance is equal to the Ready constant, return true,
+   * otherwise return false.
+   *
+   * @returns A boolean value.
+   */
+  isReady() {
+    return this.status === Status.Ready;
+  }
+
+  /**
    * It adds a token to the tokens array
    *
    * @param {Token} token - The token to add to the list of tokens.
