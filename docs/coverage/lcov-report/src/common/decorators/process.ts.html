@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/37</span>
+                <span class='fraction'>37/37</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">37.5% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/37</span>
+                <span class='fraction'>37/37</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -119,24 +119,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProcessOptions, IdentityOptions, Metadata } from '../types';
@@ -156,24 +156,24 @@ import 'reflect-metadata';
  *
  * @returns A function that returns a class that extends the class passed in.
  */
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export function Process(options: Partial&lt;ProcessOptions &amp; IdentityOptions&gt;, id: string = Default): any {</span></span>
-<span class="cstat-no" title="statement not covered" >  if ('schema' in options) Container.add(id, options.schema!);</span>
-<span class="cstat-no" title="statement not covered" >  if ('xml' in options) Container.add(id, parse(options.xml!)['bpmn:definitions']);</span>
-<span class="cstat-no" title="statement not covered" >  if ('path' in options) Container.add(id, parse(readFile(options.path!))['bpmn:definitions']);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types</span>
-<span class="cstat-no" title="statement not covered" >  return function &lt;T extends { new (...args: any[]): {} }&gt;(constructor: T) {</span>
-<span class="cstat-no" title="statement not covered" >    return class extends constructor {</span>
-<span class="cstat-no" title="statement not covered" >      $__metadata__: Metadata = {</span>
-<span class="cstat-no" title="statement not covered" >        definition: { id },</span>
-<span class="cstat-no" title="statement not covered" >        process: {</span>
-<span class="cstat-no" title="statement not covered" >          ...('id' in options ? { id: options.id } : {}),</span>
-<span class="cstat-no" title="statement not covered" >          ...('name' in options ? { name: options.name } : {}),</span>
-<span class="cstat-no" title="statement not covered" >        } as Metadata['process'],</span>
-<span class="cstat-no" title="statement not covered" >      };</span>
-<span class="cstat-no" title="statement not covered" >    };</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+export function Process(options: Partial&lt;ProcessOptions &amp; IdentityOptions&gt;, id: string = Default): any {
+  if ('schema' in options) <span class="branch-0 cbranch-no" title="branch not covered" >Container.add(id, options.schema!);</span>
+  if ('xml' in options) <span class="branch-0 cbranch-no" title="branch not covered" >Container.add(id, parse(options.xml!)['bpmn:definitions']);</span>
+  if ('path' in options) <span class="branch-0 cbranch-no" title="branch not covered" >Container.add(id, parse(readFile(options.path!))['bpmn:definitions']);</span>
+&nbsp;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+  return function &lt;T extends { new (...args: any[]): {} }&gt;(constructor: T) {
+    return class extends constructor {
+      $__metadata__: Metadata = {
+        definition: { id },
+        process: {
+          ...('id' in options <span class="branch-0 cbranch-no" title="branch not covered" >? { id: options.id } </span>: {}),
+          ...('name' in options ? { name: options.name } <span class="branch-0 cbranch-no" title="branch not covered" >: {})</span>,
+        } as Metadata['process'],
+      };
+    };
+  };
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -181,7 +181,7 @@ import 'reflect-metadata';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-27T11:22:58.108Z
+                at 2023-02-27T12:34:08.035Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
