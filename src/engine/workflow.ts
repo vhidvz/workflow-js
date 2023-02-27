@@ -55,7 +55,7 @@ function run(target: any, method: string, options: MethodOptions) {
 
     if (options.activity.isEnd()) options.token.status = Status.Terminated;
 
-    if (!outgoing?.length && !method && !options.activity.isEnd()) options.token.status = Status.Paused;
+    if (!outgoing?.length && !method && !options.activity.isEnd()) options.token.pause();
   } catch (error) {
     options.context!.status = Status.Failed;
     options.token.status = Status.Failed;
