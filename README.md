@@ -28,7 +28,7 @@ npm install --save @vhidvz/wfjs
 
 To define a BPMN schema, you need to create a file with the extension `.bpmn` and define the schema using the BPMN 2.0 standard or use the online BPMN [editor](https://demo.bpmn.io/new). Here's an example of a simple BPMN schema:
 
-![Simple Workflow](./assets/simple-workflow.svg)
+![Simple Workflow](https://raw.githubusercontent.com/vhidvz/workflow-js/master/assets/simple-workflow.svg)
 
 ```xml
 <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
