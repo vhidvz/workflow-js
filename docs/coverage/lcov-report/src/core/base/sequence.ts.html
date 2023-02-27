@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/48</span>
+                <span class='fraction'>48/48</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">66.66% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>4/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>36/48</span>
+                <span class='fraction'>48/48</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -122,30 +122,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -156,8 +132,32 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BPMNProcess, BPMNSequenceFlow } from '../../type';
 import { getBPMNActivity } from '../../utils';
@@ -169,31 +169,31 @@ import { Activity } from './activity';
 export class Sequence extends Attribute {
   $!: { id: string; name?: string; sourceRef: string; targetRef: string };
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(process: BPMNProcess, data?: Partial&lt;Sequence&gt;) {</span>
-<span class="cstat-no" title="statement not covered" >    super(process, data);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  constructor(process: BPMNProcess, data?: Partial&lt;Sequence&gt;) {
+    super(process, data);
+  }
 &nbsp;
   /**
    * It returns the sourceRef of the sequence flow.
    *
    * @returns The sourceRef property is being returned.
    */
-<span class="fstat-no" title="function not covered" >  get sourceRef(): Activity | undefined {</span>
-<span class="cstat-no" title="statement not covered" >    if (!this.$.sourceRef) return;</span>
-<span class="cstat-no" title="statement not covered" >    const options = getBPMNActivity(this.process, { id: this.$.sourceRef });</span>
-<span class="cstat-no" title="statement not covered" >    if (options) return getActivity(this.process, options);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  get sourceRef(): Activity | undefined {
+    if (!this.$.sourceRef) <span class="branch-0 cbranch-no" title="branch not covered" >return;</span>
+    const options = getBPMNActivity(this.process, { id: this.$.sourceRef });
+    if (options) return getActivity(this.process, options);
+  }
 &nbsp;
   /**
    * It returns the targetRef of the sequence flow.
    *
    * @returns The targetRef property of the SequenceFlow object.
    */
-<span class="fstat-no" title="function not covered" >  get targetRef(): Activity | undefined {</span>
-<span class="cstat-no" title="statement not covered" >    if (!this.$.targetRef) return;</span>
-<span class="cstat-no" title="statement not covered" >    const options = getBPMNActivity(this.process, { id: this.$.targetRef });</span>
-<span class="cstat-no" title="statement not covered" >    if (options) return getActivity(this.process, options);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  get targetRef(): Activity | undefined {
+    if (!this.$.targetRef) <span class="branch-0 cbranch-no" title="branch not covered" >return;</span>
+    const options = getBPMNActivity(this.process, { id: this.$.targetRef });
+    if (options) return getActivity(this.process, options);
+  }
 &nbsp;
   /**
    * It takes a BPMNSequenceFlow and a BPMNProcess and returns a Sequence
@@ -203,9 +203,9 @@ export class Sequence extends Attribute {
    *
    * @returns A new instance of the Sequence class.
    */
-  static <span class="fstat-no" title="function not covered" >build(el: BPMNSequenceFlow, process: BPMNProcess) {</span>
-<span class="cstat-no" title="statement not covered" >    return new Sequence(process, { ...el });</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  static build(el: BPMNSequenceFlow, process: BPMNProcess) {
+    return new Sequence(process, { ...el });
+  }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -214,7 +214,7 @@ export class Sequence extends Attribute {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-27T09:30:09.667Z
+                at 2023-02-27T10:10:07.455Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

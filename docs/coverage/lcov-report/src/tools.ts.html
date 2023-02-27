@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/50</span>
+                <span class='fraction'>50/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.15% </span>
+                <span class="strong">71.05% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/19</span>
+                <span class='fraction'>27/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/50</span>
+                <span class='fraction'>50/50</span>
             </div>
         
             
@@ -127,20 +127,17 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -156,13 +153,16 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Activity, EventActivity, GatewayActivity, Sequence, TaskActivity } from './core';
 import { BPMNActivity, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
@@ -177,7 +177,7 @@ import { IdentityOptions } from './common';
  * @returns A new Activity object
  */
 export const getActivity = (process: BPMNProcess, options?: { key: string; activity: BPMNActivity }) =&gt; {
-  if (!options) <span class="branch-0 cbranch-no" title="branch not covered" >return new Activity(process);</span>
+  if (!options) return new Activity(process);
 &nbsp;
   const { key, activity } = options;
 &nbsp;
@@ -205,14 +205,14 @@ export const getActivity = (process: BPMNProcess, options?: { key: string; activ
  * filter the sequence by the id or name of the identity. If the identity is not defined, it will
  * return the sequence.
  */
-export const takeOutgoing = <span class="fstat-no" title="function not covered" >(outgoing: Sequence[], identity?: IdentityOptions) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  if (identity) {</span>
-<span class="cstat-no" title="statement not covered" >    if (identity &amp;&amp; 'id' in identity)</span>
-<span class="cstat-no" title="statement not covered" >      return outgoing?.filter((o) =&gt; o.targetRef?.id === identity.id).map((o) =&gt; o.targetRef!);</span>
-<span class="cstat-no" title="statement not covered" >    if (identity &amp;&amp; 'name' in identity)</span>
-<span class="cstat-no" title="statement not covered" >      return outgoing?.filter((o) =&gt; o.targetRef?.name === identity.name).map((o) =&gt; o.targetRef!);</span>
-<span class="cstat-no" title="statement not covered" >  } else return outgoing?.map((o) =&gt; o.targetRef!);</span>
-<span class="cstat-no" title="statement not covered" >};</span>
+export const takeOutgoing = (outgoing: Sequence[], identity?: IdentityOptions) =&gt; {
+  if (identity) {
+    if (identity &amp;&amp; 'id' in identity)
+      return outgoing<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter((o) =&gt; o.targetRef<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d === identity.id).map((o) =&gt; o.targetRef!);
+    if (identity &amp;&amp; 'name' in identity)
+      return outgoing<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ilter((o) =&gt; o.targetRef<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame === identity.name).map((o) =&gt; o.targetRef!);
+  } else return outgoing<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap((o) =&gt; o.targetRef!);
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -220,7 +220,7 @@ export const takeOutgoing = <span class="fstat-no" title="function not covered" 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-27T09:30:09.667Z
+                at 2023-02-27T10:10:07.455Z
             </div>
         <script src="../prettify.js"></script>
         <script>

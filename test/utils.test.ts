@@ -1,4 +1,13 @@
-import { readFile, parse, getBPMNProcess, BPMNSchema, getBPMNActivity, BPMNProcess, uid } from '../src';
+import {
+  readFile,
+  parse,
+  getBPMNProcess,
+  BPMNSchema,
+  getBPMNActivity,
+  BPMNProcess,
+  uid,
+  logger,
+} from '../src';
 
 describe('test util functions', () => {
   let xml: string;
@@ -38,7 +47,20 @@ describe('test util functions', () => {
     expect(activity).toBeDefined();
   });
 
+  it('should return bpmn undefined activity', () => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const activity = getBPMNActivity(process!, { name: 'no name' });
+    expect(activity).toBeUndefined();
+  });
+
   it('should return uid', () => {
     expect(uid()).toBeDefined();
+  });
+
+  it('should print log', () => {
+    const log = logger('test');
+
+    expect(log).toBeDefined();
+    expect(log.log('test')).toBeUndefined();
   });
 });
