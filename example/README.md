@@ -34,3 +34,7 @@ npm run start:example04
 ```sh
 npm run start:example05
 ```
+
+```sh
+npm run start:example06
+```

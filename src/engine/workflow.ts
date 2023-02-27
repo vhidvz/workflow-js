@@ -8,7 +8,7 @@ import { Activity, Container } from '../core';
 import { getActivity } from '../tools';
 import { Execute } from './types';
 
-export interface ExecuteInterface {
+export interface ExecutionInterface {
   id?: string;
   factory?: () => any;
   handler?: any;
@@ -19,7 +19,7 @@ export interface ExecuteInterface {
   xml?: string;
   path?: string;
   schema?: BPMNDefinition;
-  exec?: Execute;
+  exec?: Partial<Execute>;
 }
 
 /**
@@ -74,14 +74,14 @@ export class WorkflowJS {
    *
    * @returns A new instance of the WorkflowJS class.
    */
-  static build(exec?: Execute): WorkflowJS {
+  static build(exec?: Partial<Execute>): WorkflowJS {
     const workflow = new this();
 
     if (exec) {
-      workflow.target = exec.target;
-      workflow.context = exec.context;
-      workflow.process = exec.process;
-      workflow.definition = exec.definition;
+      workflow.target = exec?.target;
+      workflow.context = exec?.context;
+      workflow.process = exec?.process;
+      workflow.definition = exec?.definition;
     }
 
     return workflow;
@@ -90,11 +90,11 @@ export class WorkflowJS {
   /**
    * It executes a workflow
    *
-   * @param {ExecuteInterface} options - ExecuteInterface
+   * @param {ExecutionInterface} options - ExecutionInterface
    *
    * @returns The return value is an object with the following properties:
    */
-  public execute(options: ExecuteInterface): Execute {
+  public execute(options: ExecutionInterface): Execute {
     if (!this.target && options?.exec?.target) this.target = options.exec.target;
     if (!this.context && options?.exec?.context) this.context = options.exec.context;
     if (!this.process && options?.exec?.process) this.process = options.exec.process;
