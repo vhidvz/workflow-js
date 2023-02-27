@@ -112,7 +112,7 @@ const { context } = workflow.execute({
 console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
 ```
 
-## [More Example](./example/)
+## [More Example](https://github.com/vhidvz/workflow-js/tree/master/example)
 
 ## License
 
