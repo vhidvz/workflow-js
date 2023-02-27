@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54% </span>
+                <span class="strong">86% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/50</span>
+                <span class='fraction'>43/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">63.15% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>12/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54% </span>
+                <span class="strong">86% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/50</span>
+                <span class='fraction'>43/50</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -127,22 +127,22 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -176,23 +176,23 @@ import { IdentityOptions } from './common';
  *
  * @returns A new Activity object
  */
-export const getActivity = <span class="fstat-no" title="function not covered" >(process: BPMNProcess, options?: { key: string; activity: BPMNActivity }) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  if (!options) return new Activity(process);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const { key, activity } = options;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  if (key?.toLowerCase()?.includes('task')) {</span>
-<span class="cstat-no" title="statement not covered" >    return TaskActivity.build(activity as BPMNTask, process, key);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  if (key?.toLowerCase()?.includes('event')) {</span>
-<span class="cstat-no" title="statement not covered" >    return EventActivity.build(activity as BPMNEvent, process, key);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  if (key?.toLowerCase()?.includes('gateway')) {</span>
-<span class="cstat-no" title="statement not covered" >    return GatewayActivity.build(activity as BPMNGateway, process, key);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return new Activity(process, activity, key);</span>
-<span class="cstat-no" title="statement not covered" >};</span>
+export const getActivity = (process: BPMNProcess, options?: { key: string; activity: BPMNActivity }) =&gt; {
+  if (!options) <span class="branch-0 cbranch-no" title="branch not covered" >return new Activity(process);</span>
+&nbsp;
+  const { key, activity } = options;
+&nbsp;
+  if (key<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLowerCase()<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('task')) {
+    return TaskActivity.build(activity as BPMNTask, process, key);
+  }
+  if (key<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLowerCase()<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('event')) {
+    return EventActivity.build(activity as BPMNEvent, process, key);
+  }
+  if (key<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLowerCase()<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('gateway')) {
+    return GatewayActivity.build(activity as BPMNGateway, process, key);
+  }
+&nbsp;
+  return new Activity(process, activity, key);
+};
 &nbsp;
 /**
  * It takes a list of outgoing sequences and an optional identity, and returns a list of target
@@ -220,7 +220,7 @@ export const takeOutgoing = <span class="fstat-no" title="function not covered" 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-27T06:20:56.433Z
+                at 2023-02-27T09:30:09.667Z
             </div>
         <script src="../prettify.js"></script>
         <script>

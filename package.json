@@ -43,6 +43,7 @@
   ],
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
   "dependencies": {
+    "log4js": "^6.8.0",
     "reflect-metadata": "^0.1.13",
     "xml2js": "^0.4.23"
   },

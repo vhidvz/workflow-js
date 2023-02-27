@@ -1,4 +1,7 @@
 import { BPMNDefinition } from '../type';
+import { logger } from '../utils';
+
+const log = logger('container');
 
 /* It's a container for BPMN definitions */
 export class Container {
@@ -12,6 +15,8 @@ export class Container {
    */
   public static add(id: string, definition: BPMNDefinition) {
     this.definitions[id] = definition;
+
+    log.info(`Definition ${id} added to the container`);
   }
 
   /**
@@ -32,5 +37,7 @@ export class Container {
    */
   public static del(id: string) {
     delete this.definitions[id];
+
+    log.info(`Definition ${id} deleted from the container`);
   }
 }
