@@ -11,7 +11,7 @@ import {
   Sequence,
 } from '../src';
 
-describe('test util functions', () => {
+describe('test tool functions', () => {
   let xml: string;
   let schema: BPMNSchema;
 
@@ -27,7 +27,7 @@ describe('test util functions', () => {
   });
 
   it('should return activity', () => {
-    const bpmnActivity = getBPMNActivity(process!, { id: 'Event_0yc597t' });
+    const bpmnActivity = getBPMNActivity(process!, { id: 'Event_0yc597t' })?.activity;
 
     expect(bpmnActivity).toBeDefined();
 
