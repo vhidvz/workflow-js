@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.86% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/232</span>
+                <span class='fraction'>60/240</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.86% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>60/232</span>
+                <span class='fraction'>60/240</span>
             </div>
         
             
@@ -295,7 +295,15 @@
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -355,6 +363,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -392,6 +406,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -571,14 +587,20 @@ export interface ExecutionInterface {
 <span class="cstat-no" title="statement not covered" >    options.token.status = Status.Running;</span>
 <span class="cstat-no" title="statement not covered" >    options.context!.status = Status.Running;</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    let outgoing: Activity[] | undefined;</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    if (!method) {</span>
 <span class="cstat-no" title="statement not covered" >      value = options.value;</span>
-<span class="cstat-no" title="statement not covered" >      options.activity.takeOutgoing();</span>
+<span class="cstat-no" title="statement not covered" >      outgoing = options.activity.takeOutgoing();</span>
 <span class="cstat-no" title="statement not covered" >    } else value = (target as any)[method](options);</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    /* This is the code that is responsible for pausing the workflow token. */</span>
 <span class="cstat-no" title="statement not covered" >    if (method &amp;&amp; options.activity.id === options.token.state.ref)</span>
 <span class="cstat-no" title="statement not covered" >      options.activity.takeOutgoing(undefined, { pause: true });</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    if (options.activity.isEnd()) options.token.status = Status.Terminated;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    if (!outgoing?.length &amp;&amp; !method &amp;&amp; !options.activity.isEnd()) options.token.status = Status.Paused;</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >    options.context!.status = Status.Failed;</span>
 <span class="cstat-no" title="statement not covered" >    options.token.status = Status.Failed;</span>
@@ -751,6 +773,8 @@ export class WorkflowJS {
 <span class="cstat-no" title="statement not covered" >    else if (this.context.isCompleted()) this.context.status = Status.Completed;</span>
 <span class="cstat-no" title="statement not covered" >    else if (this.context.isTerminated()) this.context.status = Status.Terminated;</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    if (this.context.status === Status.Running) this.context.status = Status.Paused;</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    return {</span>
 <span class="cstat-no" title="statement not covered" >      target: this.target,</span>
 <span class="cstat-no" title="statement not covered" >      context: this.context,</span>
@@ -766,7 +790,7 @@ export class WorkflowJS {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-27T06:00:05.849Z
+                at 2023-02-27T06:20:56.433Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
