@@ -42,14 +42,20 @@ function run(target: any, method: string, options: MethodOptions) {
     options.token.status = Status.Running;
     options.context!.status = Status.Running;
 
+    let outgoing: Activity[] | undefined;
+
     if (!method) {
       value = options.value;
-      options.activity.takeOutgoing();
+      outgoing = options.activity.takeOutgoing();
     } else value = (target as any)[method](options);
 
+    /* This is the code that is responsible for pausing the workflow token. */
     if (method && options.activity.id === options.token.state.ref)
       options.activity.takeOutgoing(undefined, { pause: true });
+
     if (options.activity.isEnd()) options.token.status = Status.Terminated;
+
+    if (!outgoing?.length && !method && !options.activity.isEnd()) options.token.status = Status.Paused;
   } catch (error) {
     options.context!.status = Status.Failed;
     options.token.status = Status.Failed;
@@ -221,6 +227,8 @@ export class WorkflowJS {
     if (this.context.isPaused()) this.context.status = Status.Paused;
     else if (this.context.isCompleted()) this.context.status = Status.Completed;
     else if (this.context.isTerminated()) this.context.status = Status.Terminated;
+
+    if (this.context.status === Status.Running) this.context.status = Status.Paused;
 
     return {
       target: this.target,

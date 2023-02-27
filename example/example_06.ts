@@ -14,6 +14,11 @@ class PizzaVendor {
   public deliverThePizza() {
     // Waiting for delivery
   }
+
+  @Node({ name: 'Receive Payment' })
+  public receivePayment(@Act() activity: EventActivity) {
+    activity.takeOutgoing();
+  }
 }
 
 const workflow = WorkflowJS.build();
@@ -27,7 +32,9 @@ const { context, definition } = workflow.execute({
 
 // After a while
 
-WorkflowJS.build({ context, definition }).execute({
+const exec = WorkflowJS.build({ context, definition }).execute({
   factory: () => new PizzaVendor(),
   node: { name: 'Receive Payment' },
 });
+
+console.debug(exec);
