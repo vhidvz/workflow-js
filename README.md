@@ -75,7 +75,7 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
 </bpmn:definitions>
 ```
 
-> The full definition of the simple workflow schema `.bpmn` file located in [this link](./example/simple-workflow.bpmn).
+> The full definition of the simple workflow schema `.bpmn` file located in [this link](https://github.com/vhidvz/workflow-js/tree/master/example).
 
 ### Creating a Workflow Instance
 
