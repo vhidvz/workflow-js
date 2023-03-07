@@ -17,7 +17,7 @@ WorkflowJS is a lightweight and flexible library for building workflows and proc
 This is a JavaScript library for building and executing workflows. It provides a simple, declarative syntax for defining processes, and offers a flexible and extensible framework for handling workflow events and activities.
 
   + [Installation](#installation)
-  + [Getting Started](#getting-started)
+  + [Quick Start](#getting-started)
   + [Tutorial]()
   + [Examples](https://github.com/vhidvz/workflow-js/tree/master/example)
   + [License](license)
