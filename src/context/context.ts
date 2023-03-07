@@ -5,7 +5,7 @@ import { Status } from './enums';
 
 export interface ContextInterface<D = any> {
   data?: D;
-  status?: Status;
+  status: Status;
   tokens: TokenInterface[];
 }
 
@@ -13,7 +13,7 @@ export interface ContextInterface<D = any> {
 export class Context<D = any> implements ContextInterface<D> {
   public data?: D;
   public tokens: Token[] = [];
-  public status?: Status;
+  public status: Status = Status.Ready;
 
   constructor(data?: Partial<ContextInterface>) {
     if (data) Object.assign(this, data);
@@ -30,7 +30,9 @@ export class Context<D = any> implements ContextInterface<D> {
    * If the status is paused, set the status to ready
    */
   resume() {
-    if (this.status === Status.Paused) this.status = Status.Ready;
+    if ([Status.Running, Status.Paused].includes(this.status)) this.status = Status.Ready;
+
+    return this;
   }
 
   /**
@@ -80,7 +82,7 @@ export class Context<D = any> implements ContextInterface<D> {
    * @returns A boolean value.
    */
   isPaused() {
-    return this.tokens.every((t) => t.status === Status.Paused);
+    return this.tokens.filter((t) => !t.locked).every((t) => t.status === Status.Paused);
   }
 
   /**
@@ -89,7 +91,7 @@ export class Context<D = any> implements ContextInterface<D> {
    * @returns A boolean value.
    */
   isCompleted() {
-    return this.tokens.every((t) => t.status === Status.Completed);
+    return this.tokens.filter((t) => !t.locked).every((t) => t.status === Status.Completed);
   }
 
   /**
@@ -98,7 +100,7 @@ export class Context<D = any> implements ContextInterface<D> {
    * @returns A boolean value that is true if all the tokens have a status of Terminated.
    */
   isTerminated() {
-    return this.tokens.every((t) => t.status === Status.Terminated);
+    return this.tokens.filter((t) => !t.locked).every((t) => t.status === Status.Terminated);
   }
 
   /**

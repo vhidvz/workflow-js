@@ -252,8 +252,6 @@ export class WorkflowJS {
     else if (this.context.isCompleted()) this.context.status = Status.Completed;
     else if (this.context.isTerminated()) this.context.status = Status.Terminated;
 
-    if (this.context.status === Status.Running) this.context.status = Status.Paused;
-
     log.info(`Context status is ${this.context.status}`);
 
     return {

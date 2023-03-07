@@ -32,7 +32,8 @@ const { context, definition } = workflow.execute({
 
 // After a while
 
-const exec = WorkflowJS.build({ context, definition }).execute({
+const exec = WorkflowJS.build({ definition }).execute({
+  context: context.resume(),
   factory: () => new PizzaVendor(),
   node: { name: 'Receive Payment' },
 });

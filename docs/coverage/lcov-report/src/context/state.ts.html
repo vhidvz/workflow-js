@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.48% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/62</span>
+                <span class='fraction'>62/62</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">75% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>6/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.48% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/62</span>
+                <span class='fraction'>62/62</span>
             </div>
         
             
@@ -144,8 +144,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -155,13 +155,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -171,8 +171,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -184,8 +184,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Status } from './enums';
@@ -216,14 +216,14 @@ export class State&lt;V = any&gt; {
    *
    * @returns An object with the ref, name, status, and value properties.
    */
-<span class="fstat-no" title="function not covered" >  serialize(options = { value: true }) {</span>
-<span class="cstat-no" title="statement not covered" >    return {</span>
-<span class="cstat-no" title="statement not covered" >      ref: this.ref,</span>
-<span class="cstat-no" title="statement not covered" >      status: this.status,</span>
-<span class="cstat-no" title="statement not covered" >      ...(this.name ? { name: this.name } : {}),</span>
-<span class="cstat-no" title="statement not covered" >      ...(options?.value ? { value: this.value } : {}),</span>
-<span class="cstat-no" title="statement not covered" >    };</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  serialize(options = { value: true }) {
+    return {
+      ref: this.ref,
+      status: this.status,
+      ...(this.name ? { name: this.name } : {}),
+      ...(options<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue <span class="branch-0 cbranch-no" title="branch not covered" >? { value: this.value } </span>: {}),
+    };
+  }
 &nbsp;
   /**
    * It takes a State object and returns a new State object with the same properties
@@ -232,9 +232,9 @@ export class State&lt;V = any&gt; {
    *
    * @returns A new instance of the State class.
    */
-  static <span class="fstat-no" title="function not covered" >deserialize&lt;V = any&gt;(data: StateInterface&lt;V&gt;) {</span>
-<span class="cstat-no" title="statement not covered" >    return new State&lt;V&gt;({ ...data });</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+  static deserialize&lt;V = any&gt;(data: StateInterface&lt;V&gt;) {
+    return new State&lt;V&gt;({ ...data });
+  }
 &nbsp;
   /**
    * It returns a new instance of the State class, with the ref and options parameters passed to the
@@ -256,7 +256,7 @@ export class State&lt;V = any&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-06T06:05:24.889Z
+                at 2023-03-07T11:47:45.980Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

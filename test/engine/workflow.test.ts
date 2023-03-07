@@ -11,9 +11,13 @@ import {
   Act,
   EventActivity,
   WorkflowJS,
-  Status,
   Data,
   Value,
+  Param,
+  Ctx,
+  Context,
+  Sign,
+  Token,
 } from '../../src';
 
 @Process({ name: 'Simple Workflow' })
@@ -24,16 +28,35 @@ class SimpleWorkflow {
 
     return data && value;
   }
+
+  @Node({ id: 'Activity_0xzkax6' })
+  public task01(@Act() activity: EventActivity, @Param('data') data: any, @Ctx() context: Context) {
+    activity.takeOutgoing(undefined, { pause: true });
+
+    return data && context;
+  }
+
+  @Node({ name: 'Task02' })
+  public task02(@Param('activity') activity: EventActivity) {
+    activity.takeOutgoing();
+  }
+
+  @Node({ name: 'End' })
+  public end(@Sign() token: Token) {
+    return token;
+  }
 }
 
 describe('test workflow engine class', () => {
+  const path = './example/simple-workflow.bpmn';
+
   let xml: string;
   let schema: BPMNSchema;
 
   let process: BPMNProcess | undefined;
 
   it('should return process', () => {
-    xml = readFile('./example/simple-workflow.bpmn');
+    xml = readFile(path);
 
     schema = parse(xml);
     process = getBPMNProcess(schema['bpmn:definitions'], { id: 'Process_1igpwhg' });
@@ -41,7 +64,7 @@ describe('test workflow engine class', () => {
     expect(process).toBeDefined();
   });
 
-  it('should return workflow', () => {
+  it('should return workflow by schema', () => {
     const workflow = WorkflowJS.build();
 
     expect(workflow).toBeDefined();
@@ -51,6 +74,44 @@ describe('test workflow engine class', () => {
       schema: parse(xml)['bpmn:definitions'],
     });
 
-    expect(context.status).toBe(Status.Terminated);
+    expect(context.isPaused()).toBeTruthy();
+  });
+
+  it('should return workflow by path', () => {
+    const workflow = WorkflowJS.build();
+
+    expect(workflow).toBeDefined();
+
+    const { context } = workflow.execute({
+      path,
+      handler: new SimpleWorkflow(),
+    });
+
+    expect(context.isPaused()).toBeTruthy();
+  });
+
+  it('should return workflow by context deserialized', () => {
+    const workflow = WorkflowJS.build();
+
+    expect(workflow).toBeDefined();
+
+    const { context } = workflow.execute({
+      path,
+      handler: new SimpleWorkflow(),
+    });
+
+    expect(context.isPaused()).toBeTruthy();
+
+    const ctx = context.serialize({ data: false, value: false });
+
+    expect(ctx).toBeDefined();
+
+    const exec = WorkflowJS.build({ context: Context.deserialize(ctx) }).execute({
+      xml,
+      handler: new SimpleWorkflow(),
+      node: { id: 'Activity_1r8gmbw' },
+    });
+
+    expect(exec.context.isTerminated()).toBeTruthy();
   });
 });
