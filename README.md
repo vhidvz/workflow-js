@@ -20,7 +20,7 @@ This is a JavaScript library for building and executing workflows. It provides a
   + [Quick Start](#getting-started)
   + [Tutorial]()
   + [Examples](https://github.com/vhidvz/workflow-js/tree/master/example)
-  + [License](license)
+  + [License](#license)
 
 ## Installation
 
