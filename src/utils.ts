@@ -1,5 +1,6 @@
 import { $, BPMNDefinition, BPMNProcess, BPMNSchema } from './type';
 import { IdentityOptions } from './common';
+import { Container } from './core';
 
 import { parseString } from 'xml2js';
 import * as dotenv from 'dotenv';
@@ -35,24 +36,30 @@ export const parse = (xml: string): BPMNSchema => {
 };
 
 /**
- * It takes a BPMNProcess and an IdentityOptions and returns an object with a key and an activity
+ * It returns the activity that matches the identity options
  *
  * @param {BPMNProcess} process - The BPMNProcess object
  * @param {IdentityOptions} identity - IdentityOptions
  *
- * @returns An object with two properties: key and activity.
+ * @returns An object with a key and an activity.
  */
 export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions) => {
-  for (const [key, activities] of Object.entries(process)) {
-    if (typeof activities === 'object' && Array.isArray(activities)) {
-      for (const activity of activities) {
-        if ('id' in identity && '$' in activity && (activity.$ as $).id === identity.id)
-          return { key, activity };
-        if ('name' in identity && '$' in activity && (activity.$ as $).name === identity.name)
-          return { key, activity };
+  const element = Container.getElement(process.$.id, identity);
+
+  if (!element) {
+    for (const [key, activities] of Object.entries(process)) {
+      if (typeof activities === 'object' && Array.isArray(activities)) {
+        for (const activity of activities) {
+          Container.addElement(process.$.id, { key, element: activity });
+
+          if ('id' in identity && '$' in activity && (activity.$ as $).id === identity.id)
+            return { key, activity };
+          if ('name' in identity && '$' in activity && (activity.$ as $).name === identity.name)
+            return { key, activity };
+        }
       }
     }
-  }
+  } else return { key: element.key, activity: element.element };
 };
 
 /**

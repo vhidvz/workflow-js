@@ -233,7 +233,11 @@ export class WorkflowJS {
 
         if (!token) throw new Error('Token not found at running stage');
 
-        const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
+        const element = getBPMNActivity(this.process, { id: next.ref });
+
+        if (!element) throw new Error('BPMN activity element not found');
+
+        const activity = getActivity(this.process, element);
 
         log.info(`Next Activity is ${activity?.name ?? activity?.id ?? 'undefined'}`);
 
