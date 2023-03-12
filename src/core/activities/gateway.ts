@@ -1,10 +1,9 @@
 /* eslint-disable no-case-declarations */
 import { BPMNGateway, BPMNProcess, BPMNSequenceFlow } from '../../type';
+import { takeOutgoing, getBPMNActivity } from '../../tools';
 import { State, Token, Status } from '../../context';
 import { IdentityOptions } from '../../common';
-import { getBPMNActivity } from '../../utils';
 import { Activity, Sequence } from '../base';
-import { takeOutgoing } from '../../tools';
 
 export enum GatewayType {
   Complex = 'complex',
@@ -27,7 +26,7 @@ export class GatewayActivity extends Activity {
    * executed
    *
    * @param {IdentityOptions} [identity] - IdentityOptions
-   * @param [options] - { pause: boolean }
+   * @param [options] - pause: boolean
    *
    * @returns The outgoing activity
    */

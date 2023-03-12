@@ -1,6 +1,5 @@
 import { BPMNProcess, BPMNSequenceFlow } from '../../type';
-import { getBPMNActivity } from '../../utils';
-import { getActivity } from '../../tools';
+import { getActivity, getBPMNActivity } from '../../tools';
 import { Attribute } from './attribute';
 import { Activity } from './activity';
 

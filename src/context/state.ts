@@ -23,7 +23,7 @@ export class State<V = any> {
   /**
    * It returns an object with the properties ref, name, status, and value.
    *
-   * @param options - { value: true }
+   * @param options - value: true
    *
    * @returns An object with the ref, name, status, and value properties.
    */
@@ -52,7 +52,7 @@ export class State<V = any> {
    * constructor
    *
    * @param {string} ref - The name of the state.
-   * @param options - {
+   * @param options - options
    *
    * @returns A new instance of the State class.
    */

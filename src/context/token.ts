@@ -75,7 +75,7 @@ export class Token implements TokenInterface {
   /**
    * It serializes the object.
    *
-   * @param options - { value: true }
+   * @param options - value: true
    *
    * @returns An object with the id, parent, histories, and locked properties.
    */

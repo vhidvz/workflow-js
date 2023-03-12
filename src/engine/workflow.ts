@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getBPMNActivity, getBPMNProcess, logger, parse, readFile } from '../utils';
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
+import { getActivity, getBPMNActivity, getBPMNProcess } from '../tools';
 import { Context, Status, State, Token } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
+import { logger, parse, readFile } from '../utils';
 import { Activity, Container } from '../core';
-import { getActivity } from '../tools';
 import { Execute } from './types';
 
 const log = logger('workflow');
@@ -233,7 +233,11 @@ export class WorkflowJS {
 
         if (!token) throw new Error('Token not found at running stage');
 
-        const activity = getActivity(this.process, getBPMNActivity(this.process, { id: next.ref }));
+        const element = getBPMNActivity(this.process, { id: next.ref });
+
+        if (!element) throw new Error('BPMN activity element not found');
+
+        const activity = getActivity(this.process, element);
 
         log.info(`Next Activity is ${activity?.name ?? activity?.id ?? 'undefined'}`);
 

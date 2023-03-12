@@ -115,7 +115,7 @@ export class Context<D = any> implements ContextInterface<D> {
   /**
    * It returns an object with the data, status, and tokens.
    *
-   * @param options - { data: true, value: true }
+   * @param options - data: true, value: true
    *
    * @returns An object with the data, status, and tokens.
    */

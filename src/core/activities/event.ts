@@ -1,6 +1,5 @@
+import { getActivity, getBPMNActivity } from '../../tools';
 import { BPMNEvent, BPMNProcess } from '../../type';
-import { getBPMNActivity } from '../../utils';
-import { getActivity } from '../../tools';
 import { Activity } from '../base';
 
 export enum EventType {

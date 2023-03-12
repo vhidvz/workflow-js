@@ -2,9 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BPMNActivity, BPMNProcess, BPMNSequenceFlow } from '../../type';
 import { Context, State, Token, Status } from '../../context';
+import { takeOutgoing, getBPMNActivity } from '../../tools';
 import { IdentityOptions } from '../../common';
-import { getBPMNActivity } from '../../utils';
-import { takeOutgoing } from '../../tools';
 import { Attribute } from './attribute';
 import { Sequence } from './sequence';
 
@@ -54,7 +53,7 @@ export class Activity extends Attribute {
    * one
    *
    * @param {IdentityOptions} [identity] - IdentityOptions
-   * @param [options] - { pause: boolean }
+   * @param [options] - pause: boolean
    *
    * @returns The outgoing activity
    */

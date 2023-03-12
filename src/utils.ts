@@ -1,5 +1,4 @@
-import { $, BPMNDefinition, BPMNProcess, BPMNSchema } from './type';
-import { IdentityOptions } from './common';
+import { BPMNSchema } from './type';
 
 import { parseString } from 'xml2js';
 import * as dotenv from 'dotenv';
@@ -32,53 +31,6 @@ export const parse = (xml: string): BPMNSchema => {
   if (!parse) throw new Error('Input string is not parsable');
 
   return parse;
-};
-
-/**
- * It takes a BPMNProcess and an IdentityOptions and returns an object with a key and an activity
- *
- * @param {BPMNProcess} process - The BPMNProcess object
- * @param {IdentityOptions} identity - IdentityOptions
- *
- * @returns An object with two properties: key and activity.
- */
-export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions) => {
-  for (const [key, activities] of Object.entries(process)) {
-    if (typeof activities === 'object' && Array.isArray(activities)) {
-      for (const activity of activities) {
-        if ('id' in identity && '$' in activity && (activity.$ as $).id === identity.id)
-          return { key, activity };
-        if ('name' in identity && '$' in activity && (activity.$ as $).name === identity.name)
-          return { key, activity };
-      }
-    }
-  }
-};
-
-/**
- * It takes a BPMN definition and an identity object, and returns the process that matches the identity
- *
- * @param {BPMNDefinition} definition - The BPMN definition object.
- * @param {IdentityOptions} identity - IdentityOptions
- *
- * @returns A BPMNProcess
- */
-export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOptions) => {
-  const processes = definition['bpmn:process'];
-  const collaborations = definition['bpmn:collaboration'];
-
-  if ('name' in identity) {
-    let processId: string | undefined;
-
-    collaborations.some((collaboration) => {
-      const participant = collaboration['bpmn:participant'].find((el) => el.$.name === identity.name);
-      return !!(processId = participant?.$?.processRef);
-    });
-
-    return processes.find((process) => process.$.id === processId);
-  }
-
-  return processes.find((process) => process.$.id === identity.id);
 };
 
 /**
