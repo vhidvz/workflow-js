@@ -2,8 +2,11 @@ import { $, BPMNDefinition, BPMNProcess, BPMNSchema } from './type';
 import { IdentityOptions } from './common';
 
 import { parseString } from 'xml2js';
+import * as dotenv from 'dotenv';
 import * as log4js from 'log4js';
 import * as fs from 'fs';
+
+dotenv.config();
 
 /**
  * ReadFile takes a string and returns a string
