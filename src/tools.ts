@@ -3,9 +3,6 @@ import { Activity, EventActivity, GatewayActivity, Sequence, TaskActivity } from
 import { BPMNActivity, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
 import { IdentityOptions } from './common';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 /**
  * It takes a BPMNProcess and an optional options object, and returns an Activity
  *
