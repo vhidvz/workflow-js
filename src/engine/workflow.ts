@@ -210,7 +210,7 @@ export class WorkflowJS {
     do {
       const result = run(this.target, runOptions.method, runOptions.options);
 
-      log.debug(`Result of ${runOptions.method} is ${result.value}`);
+      log.debug(`Result of ${runOptions.method || 'METHOD'} is ${result.value || 'UNDEFINED'}`);
 
       if (result.exception) throw result.exception;
 
