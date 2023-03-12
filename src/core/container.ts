@@ -1,8 +1,5 @@
 import { BPMNDefinition, BPMNElement } from '../type';
 import { IdentityOptions } from '../common';
-import { logger } from '../utils';
-
-const log = logger('container');
 
 /* It's a container for BPMN definitions */
 export interface ContainerDefinition {
@@ -32,8 +29,6 @@ export class Container {
     this.elements[id][element.$.id] = { element, key };
 
     if (element.$.name) this.elements[id][element.$.name] = { element, key };
-
-    log.info(`Process ${id} element ${element.$.id} added to the container`);
   }
 
   /**
@@ -59,8 +54,6 @@ export class Container {
   public static delElement(id: string, identity: IdentityOptions) {
     if ('id' in identity) delete (this.elements[id] ?? {})[identity.id];
     else if ('name' in identity) delete (this.elements[id] ?? {})[identity.name];
-
-    log.info(`Process ${id} element identity %o deleted from the container`, identity);
   }
 
   /**
@@ -71,8 +64,6 @@ export class Container {
    */
   public static add(id: string, definition: BPMNDefinition) {
     this.definitions[id] = definition;
-
-    log.info(`Definition ${id} added to the container`);
   }
 
   /**
@@ -93,7 +84,5 @@ export class Container {
    */
   public static del(id: string) {
     delete this.definitions[id];
-
-    log.info(`Definition ${id} deleted from the container`);
   }
 }

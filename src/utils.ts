@@ -1,11 +1,7 @@
 import { BPMNSchema } from './type';
 
 import { parseString } from 'xml2js';
-import * as dotenv from 'dotenv';
-import * as log4js from 'log4js';
 import * as fs from 'fs';
-
-dotenv.config();
 
 /**
  * ReadFile takes a string and returns a string
@@ -37,16 +33,3 @@ export const parse = (xml: string): BPMNSchema => {
  * It returns a random string of 36 characters
  */
 export const uid = () => Math.round(Date.now() * Math.random() * 10).toString(36);
-
-/**
- * It takes a string and returns a function that takes a string and returns a string.
- *
- * @param {string} scope - The scope of the logger. This is used to filter the logs.
- */
-export const logger = (scope: string) => {
-  const log = log4js.getLogger(scope);
-
-  log.level = process.env?.LOG4JS_CONFIG ?? log4js.levels.ALL;
-
-  return log;
-};

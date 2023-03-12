@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,7 +43,6 @@
   ],
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
   "dependencies": {
-    "log4js": "^6.9.1",
     "reflect-metadata": "^0.1.13",
     "xml2js": "^0.4.23"
   },

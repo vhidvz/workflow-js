@@ -9,42 +9,63 @@ import {
   getActivity,
   takeOutgoing,
   Sequence,
+  BPMNActivity,
+  BPMNSequenceFlow,
 } from '../src';
 
 describe('test tool functions', () => {
-  let xml: string;
   let schema: BPMNSchema;
 
-  let process: BPMNProcess | undefined;
+  let processPizzaVendor: BPMNProcess;
+  let processPizzaCustomer: BPMNProcess;
 
-  it('should return process', () => {
-    xml = readFile('./example/supplying-pizza.bpmn');
+  it('should return bpmn process by id', () => {
+    schema = parse(readFile('./example/supplying-pizza.bpmn'));
 
-    schema = parse(xml);
-    process = getBPMNProcess(schema['bpmn:definitions'], { id: 'Process_166h0sl' });
+    processPizzaCustomer = getBPMNProcess(schema['bpmn:definitions'], { id: 'Process_166h0sl' })!;
 
-    expect(process).toBeDefined();
+    expect(processPizzaCustomer).toBeDefined();
   });
 
-  it('should return activity', () => {
-    const bpmnActivity = getBPMNActivity(process!, { id: 'Event_0yc597t' })?.activity;
+  it('should return bpmn process by name', () => {
+    processPizzaVendor = getBPMNProcess(schema['bpmn:definitions'], { name: 'Pizza Vendor' })!;
+
+    expect(processPizzaVendor).toBeDefined();
+  });
+
+  it('should return bpmn activity by id', () => {
+    const activity = getBPMNActivity(processPizzaCustomer, { id: 'Event_0yc597t' });
+
+    expect(activity).toBeDefined();
+  });
+
+  it('should return bpmn activity by name and id', () => {
+    const activity = getBPMNActivity(processPizzaVendor, { name: 'Bake the Pizza' });
+
+    expect(activity).toBeDefined();
+  });
+
+  it('should return activity instance', () => {
+    const bpmnActivity = getBPMNActivity(processPizzaCustomer, { id: 'Event_0yc597t' })
+      ?.activity as BPMNActivity;
 
     expect(bpmnActivity).toBeDefined();
 
-    expect(getActivity(process!)).toBeDefined();
+    expect(getActivity(processPizzaCustomer)).toBeDefined();
 
-    expect(getActivity(process!, { key: '', activity: bpmnActivity! as any })).toBeDefined();
-    expect(getActivity(process!, { key: 'task', activity: bpmnActivity! as any })).toBeDefined();
-    expect(getActivity(process!, { key: 'event', activity: bpmnActivity! as any })).toBeDefined();
-    expect(getActivity(process!, { key: 'gateway', activity: bpmnActivity! as any })).toBeDefined();
+    expect(getActivity(processPizzaCustomer, { key: '', activity: bpmnActivity })).toBeDefined();
+    expect(getActivity(processPizzaCustomer, { key: 'task', activity: bpmnActivity })).toBeDefined();
+    expect(getActivity(processPizzaCustomer, { key: 'event', activity: bpmnActivity })).toBeDefined();
+    expect(getActivity(processPizzaCustomer, { key: 'gateway', activity: bpmnActivity })).toBeDefined();
   });
 
-  it('should return takeOutgoing', () => {
-    const bpmnSequence = getBPMNActivity(process!, { id: 'Flow_0yrk5s4' })?.activity;
+  it('should return outgoing activities ', () => {
+    const bpmnSequence = getBPMNActivity(processPizzaCustomer, { id: 'Flow_0yrk5s4' })
+      ?.activity as BPMNSequenceFlow;
 
     expect(bpmnSequence).toBeDefined();
 
-    const sequence = Sequence.build(bpmnSequence! as any, process!);
+    const sequence = Sequence.build(bpmnSequence, processPizzaCustomer);
 
     expect(sequence).toBeDefined();
     expect(sequence.sourceRef).toBeDefined();
