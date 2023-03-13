@@ -30,21 +30,26 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
 };
 
 /**
- * It returns the activity that matches the identity options
+ * It returns the activity object from the BPMN process object
  *
  * @param {BPMNProcess} process - The BPMNProcess object
  * @param {IdentityOptions} identity - IdentityOptions
+ * @param options - { cache: boolean } = { cache: true }
  *
- * @returns An object with a key and an activity.
+ * @returns An object with a key and activity.
  */
-export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions) => {
-  const element = Container.getElement(process.$.id, identity);
+export const getBPMNActivity = (
+  process: BPMNProcess,
+  identity: IdentityOptions,
+  options: { cache: boolean } = { cache: true },
+) => {
+  const activity = !options?.cache || Container.getActivity(process.$.id, identity);
 
-  if (!element) {
+  if (typeof activity !== 'object') {
     for (const [key, activities] of Object.entries(process)) {
       if (typeof activities === 'object' && Array.isArray(activities)) {
         for (const activity of activities) {
-          Container.addElement(process.$.id, { key, element: activity });
+          options?.cache && Container.addActivity(process.$.id, { key, activity });
 
           if ('id' in identity && '$' in activity && (activity.$ as $).id === identity.id)
             return { key, activity };
@@ -53,7 +58,7 @@ export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions)
         }
       }
     }
-  } else return { key: element.key, activity: element.element };
+  } else return activity;
 };
 
 /**

@@ -1,59 +1,59 @@
-import { BPMNDefinition, BPMNElement } from '../type';
+import { BPMNActivity, BPMNDefinition } from '../type';
 import { IdentityOptions } from '../common';
 
 /* It's a container for BPMN definitions */
-export interface ContainerDefinition {
+export interface DefinitionContainer {
   [id: string]: BPMNDefinition;
 }
 
-/* It's a container for BPMN elements. */
-export interface ContainerElement {
-  [id: string]: { [id: string]: ContainerElementItem };
+/* It's a container for BPMN activities. */
+export interface ActivityContainer {
+  [id: string]: { [id: string]: { activity: BPMNActivity; key: string } };
 }
 
-export type ContainerElementItem = { element: BPMNElement; key: string };
-
-/* It's a container for BPMN definitions */
+/* It's a container for BPMN definitions and activities */
 export class Container {
-  private static elements: ContainerElement = {};
-  private static definitions: ContainerDefinition = {};
+  private static activities: ActivityContainer = {};
+  private static definitions: DefinitionContainer = {};
 
   /**
-   * It adds an element to the container
+   * It adds an activity to the activities object
    *
-   * @param {string} id - The id of the process
-   * @param {ContainerElementItem}  - id - the process id
+   * @param {string} id - string - The id of the process
+   * @param activity - { activity: BPMNActivity; key: string }
    */
-  public static addElement(id: string, { element, key }: ContainerElementItem) {
-    this.elements[id] = this.elements[id] ?? {};
-    this.elements[id][element.$.id] = { element, key };
+  public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
+    this.activities[id] = this.activities[id] ?? {};
 
-    if (element.$.name) this.elements[id][element.$.name] = { element, key };
+    const $ = activity.activity.$;
+    this.activities[id][$.id] = activity;
+
+    if ($.name) this.activities[id][$.name] = activity;
   }
 
   /**
-   * If the identity object has an id property, return the element with that id, otherwise if it has a
-   * name property, return the element with that name
+   * If the identity object has an id property, return the activity with that id, otherwise if it has a
+   * name property, return the activity with that name
    *
-   * @param {string} id - The id of the process.
-   * @param {IdentityOptions} identity - IdentityOptions of element
+   * @param {string} id - The ID of the activity.
+   * @param {IdentityOptions} identity - IdentityOptions
    *
-   * @returns The element with the given id and identity.
+   * @returns The activity of the user with the given identity.
    */
-  public static getElement(id: string, identity: IdentityOptions) {
-    if ('id' in identity) return (this.elements[id] ?? {})[identity.id];
-    else if ('name' in identity) return (this.elements[id] ?? {})[identity.name];
+  public static getActivity(id: string, identity: IdentityOptions) {
+    if ('id' in identity) return (this.activities[id] ?? {})[identity.id];
+    else if ('name' in identity) return (this.activities[id] ?? {})[identity.name];
   }
 
   /**
-   * It deletes an element from the container
+   * It deletes an activity from the activities object
    *
-   * @param {string} id - The process id
+   * @param {string} id - The ID of the activity.
    * @param {IdentityOptions} identity - IdentityOptions
    */
-  public static delElement(id: string, identity: IdentityOptions) {
-    if ('id' in identity) delete (this.elements[id] ?? {})[identity.id];
-    else if ('name' in identity) delete (this.elements[id] ?? {})[identity.name];
+  public static delActivity(id: string, identity: IdentityOptions) {
+    if ('id' in identity) delete (this.activities[id] ?? {})[identity.id];
+    else if ('name' in identity) delete (this.activities[id] ?? {})[identity.name];
   }
 
   /**
@@ -62,7 +62,7 @@ export class Container {
    * @param {string} id - The id of the BPMN definition.
    * @param {BPMNDefinition} definition - BPMNDefinition
    */
-  public static add(id: string, definition: BPMNDefinition) {
+  public static addDefinition(id: string, definition: BPMNDefinition) {
     this.definitions[id] = definition;
   }
 
@@ -73,7 +73,7 @@ export class Container {
    *
    * @returns The definition of the id.
    */
-  public static get(id: string) {
+  public static getDefinition(id: string) {
     return this.definitions[id];
   }
 
@@ -82,7 +82,7 @@ export class Container {
    *
    * @param {string} id - The id of the definition.
    */
-  public static del(id: string) {
+  public static delDefinition(id: string) {
     delete this.definitions[id];
   }
 }

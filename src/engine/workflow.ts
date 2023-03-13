@@ -108,7 +108,7 @@ export class WorkflowJS {
 
     const { handler, factory, path, xml, schema } = options;
 
-    if (!this.definition && options.id) this.definition = Container.get(options.id);
+    if (!this.definition && options.id) this.definition = Container.getDefinition(options.id);
 
     if (!this.definition && schema) this.definition = schema;
     else if (!this.definition && xml) this.definition = parse(xml)['bpmn:definitions'];
@@ -122,7 +122,7 @@ export class WorkflowJS {
     const metadata = (this.target as any).$__metadata__ as Metadata;
     const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
 
-    this.definition = this.definition ?? Container.get(metadata.definition.id);
+    this.definition = this.definition ?? Container.getDefinition(metadata.definition.id);
     if (!this.definition) throw new Error('Definition schema not found');
 
     this.process = this.process ?? getBPMNProcess(this.definition, metadata.process);
@@ -211,11 +211,11 @@ export class WorkflowJS {
 
         if (!token) throw new Error('Token not found at running stage');
 
-        const element = getBPMNActivity(this.process, { id: next.ref });
+        const instance = getBPMNActivity(this.process, { id: next.ref });
 
-        if (!element) throw new Error('BPMN activity element not found');
+        if (!instance) throw new Error('BPMN activity instance not found');
 
-        const activity = getActivity(this.process, element);
+        const activity = getActivity(this.process, instance);
 
         runOptions.options = {
           token,

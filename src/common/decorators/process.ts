@@ -18,9 +18,9 @@ import 'reflect-metadata';
  * @returns A function that returns a class that extends the class passed in.
  */
 export function Process(options: Partial<ProcessOptions & IdentityOptions>, id: string = Default): any {
-  if ('schema' in options) Container.add(id, options.schema!);
-  if ('xml' in options) Container.add(id, parse(options.xml!)['bpmn:definitions']);
-  if ('path' in options) Container.add(id, parse(readFile(options.path!))['bpmn:definitions']);
+  if ('schema' in options) Container.addDefinition(id, options.schema!);
+  if ('xml' in options) Container.addDefinition(id, parse(options.xml!)['bpmn:definitions']);
+  if ('path' in options) Container.addDefinition(id, parse(readFile(options.path!))['bpmn:definitions']);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
   return function <T extends { new (...args: any[]): {} }>(constructor: T) {
