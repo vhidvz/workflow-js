@@ -43,7 +43,8 @@ To define a BPMN schema, you need to create a file with the extension `.bpmn` an
 To create a new workflow, you need to define a class with methods that represent the different steps of the workflow. You can use decorators to define the nodes and activities of the workflow. Here's an example of a simple workflow:
 
 ```ts
-import { Act, Node, Process, EventActivity } from '@vhidvz/wfjs';
+import { Act, Node, Process } from "@vhidvz/wfjs/lib/common";
+import { EventActivity } from "@vhidvz/wfjs/lib/core";
 
 @Process({ name: 'Simple Workflow' })
 class SimpleWorkflow {
