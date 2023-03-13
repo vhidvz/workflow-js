@@ -34,7 +34,7 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
  *
  * @param {BPMNProcess} process - The BPMNProcess object
  * @param {IdentityOptions} identity - IdentityOptions
- * @param options - { cache: boolean } = { cache: true }
+ * @param options - cache: boolean = cache: true
  *
  * @returns An object with a key and activity.
  */

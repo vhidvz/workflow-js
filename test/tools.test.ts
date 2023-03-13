@@ -1,17 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  readFile,
-  parse,
-  getBPMNProcess,
-  BPMNSchema,
-  getBPMNActivity,
-  BPMNProcess,
-  getActivity,
-  takeOutgoing,
-  Sequence,
-  BPMNActivity,
-  BPMNSequenceFlow,
-} from '../src';
+import { readFile, parse, getBPMNProcess, getBPMNActivity, getActivity, takeOutgoing } from '../src';
+import { BPMNActivity, BPMNProcess, BPMNSchema, BPMNSequenceFlow } from '../src/type';
+import { Sequence } from '../src/core';
 
 describe('test tool functions', () => {
   let schema: BPMNSchema;

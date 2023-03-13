@@ -4,9 +4,11 @@ import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
 import { getActivity, getBPMNActivity, getBPMNProcess } from '../tools';
 import { Context, Status, State, Token } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
+import { logger, parse, readFile } from '../utils';
 import { Activity, Container } from '../core';
-import { parse, readFile } from '../utils';
 import { Execute } from './types';
+
+const log = logger('engine');
 
 export interface ExecutionInterface {
   id?: string;
@@ -44,10 +46,16 @@ function run(target: any, method: string, options: MethodOptions) {
 
     let outgoing: Activity[] | undefined;
 
+    log.info(`Activity ${options.activity.id ?? options.activity.name} is running`);
+
     if (!method) {
+      log.warn(`Activity ${options.activity.id ?? options.activity.name} method not defined`);
+
       value = options.value;
       outgoing = options.activity.takeOutgoing();
     } else value = (target as any)[method](options);
+
+    log.info(`Activity ${options.activity.id ?? options.activity.name} completed`);
 
     /* This is the code that is responsible for pausing the workflow token. */
     if (method && options.activity.id === options.token.state.ref)
@@ -60,6 +68,8 @@ function run(target: any, method: string, options: MethodOptions) {
     options.context!.status = Status.Failed;
     options.token.status = Status.Failed;
     exception = error;
+
+    log.error(`Activity ${options.activity.id ?? options.activity.name} failed with error %O`, error);
   }
 
   return { value, exception };
@@ -125,8 +135,12 @@ export class WorkflowJS {
     this.definition = this.definition ?? Container.getDefinition(metadata.definition.id);
     if (!this.definition) throw new Error('Definition schema not found');
 
+    log.info(`Definition %o is loaded`, metadata.definition);
+
     this.process = this.process ?? getBPMNProcess(this.definition, metadata.process);
     if (!this.process) throw new Error('Process definition not found');
+
+    log.info(`Process %o is loaded`, metadata.process);
 
     const { context, data, value } = options;
     this.context = this.context ?? context ?? Context.build({ data, status: Status.Ready });
@@ -162,18 +176,14 @@ export class WorkflowJS {
     if (this.context.tokens.length == 0) {
       const state = State.build(activity.id, { name: activity.name, value, status: Status.Ready });
 
-      token = Token.build();
-
-      token.push(state);
+      token = Token.build().push(state);
 
       this.context.addToken(token);
     } else {
       token = this.context.getTokens(activity.$)?.pop();
 
       if (token?.isPaused()) {
-        token.resume();
-
-        if (!token.isReady()) throw new Error('Token is not ready to consume');
+        if (!token.resume().isReady()) throw new Error('Token is not ready to consume');
       }
     }
 
@@ -183,10 +193,11 @@ export class WorkflowJS {
 
     if (activity.name) node = nodes[activity.name];
     if (!node && activity.id) node = nodes[activity.id];
-    if (!node) throw new Error('Requested node not found');
+
+    log.info(`Node %o is loaded`, node);
 
     const runOptions: { method: string; options: MethodOptions } = {
-      method: node.propertyName,
+      method: node?.propertyName ?? '',
       options: { activity, token, value, data: data ?? this.context.data, context: this.context },
     };
 
@@ -194,10 +205,14 @@ export class WorkflowJS {
     do {
       const result = run(this.target, runOptions.method, runOptions.options);
 
+      log.debug(`Result of %o method is %O`, runOptions.method, result.value ?? '[null]');
+
       if (result.exception) throw result.exception;
 
       if (this.context.status === Status.Running) {
         const next = this.context.next();
+
+        log.info(`Next node is ${next?.name ?? next?.ref ?? '[undefined]'}`);
 
         if (!next) break;
 
@@ -206,6 +221,8 @@ export class WorkflowJS {
 
         if (next.name) runOptions.method = nodes[next.name]?.propertyName ?? '';
         if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName ?? '';
+
+        log.info(`Next method is ${runOptions.method ?? '[undefined]'}`);
 
         const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
@@ -216,6 +233,8 @@ export class WorkflowJS {
         if (!instance) throw new Error('BPMN activity instance not found');
 
         const activity = getActivity(this.process, instance);
+
+        log.info(`Next Activity is ${activity?.name ?? activity?.id ?? '[undefined]'}`);
 
         runOptions.options = {
           token,
@@ -231,6 +250,8 @@ export class WorkflowJS {
     if (this.context.isPaused()) this.context.status = Status.Paused;
     else if (this.context.isCompleted()) this.context.status = Status.Completed;
     else if (this.context.isTerminated()) this.context.status = Status.Terminated;
+
+    log.info(`Context status is ${this.context.status}`);
 
     return {
       target: this.target,

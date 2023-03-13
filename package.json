@@ -1,17 +1,17 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Workflow Engine (BPMN Engine)",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "debug": "jest --watch",
-    "prebuild": "rimraf dist",
-    "doc": "typedoc --out docs src/",
+    "prebuild": "rimraf lib",
     "build": "tsc -p ./tsconfig.json",
-    "clean": "rm -rf ./dist && rm -rf ./docs",
+    "clean": "rm -rf ./lib && rm -rf ./docs",
     "lint": "eslint . '*/**/*.{js,ts}' --quiet --fix",
     "format": "prettier --write \"(src|test)/**/*.(ts|js)\"",
+    "doc": "typedoc --entryPointStrategy expand --out docs src/",
     "start:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register src/index.ts",
     "start:example01": "node -r tsconfig-paths/register -r ts-node/register example/example_01.ts",
     "start:example02": "node -r tsconfig-paths/register -r ts-node/register example/example_02.ts",
@@ -43,10 +43,12 @@
   ],
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
   "dependencies": {
+    "debug": "^4.3.4",
     "reflect-metadata": "^0.1.13",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/jest": "^29.4.0",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
@@ -75,6 +77,9 @@
     "npm": ">=9.3.1"
   },
   "files": [
-    "/dist"
+    "/lib",
+    "/lib/core",
+    "/lib/type",
+    "/lib/common"
   ]
 }

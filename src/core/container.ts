@@ -1,5 +1,8 @@
 import { BPMNActivity, BPMNDefinition } from '../type';
 import { IdentityOptions } from '../common';
+import { logger } from '../utils';
+
+const log = logger('container');
 
 /* It's a container for BPMN definitions */
 export interface DefinitionContainer {
@@ -20,7 +23,7 @@ export class Container {
    * It adds an activity to the activities object
    *
    * @param {string} id - string - The id of the process
-   * @param activity - { activity: BPMNActivity; key: string }
+   * @param activity - activity: BPMNActivity; key: string
    */
   public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
     this.activities[id] = this.activities[id] ?? {};
@@ -29,6 +32,8 @@ export class Container {
     this.activities[id][$.id] = activity;
 
     if ($.name) this.activities[id][$.name] = activity;
+
+    log.info(`Process ${id} activity ${$.id} added to the container`);
   }
 
   /**
@@ -54,6 +59,8 @@ export class Container {
   public static delActivity(id: string, identity: IdentityOptions) {
     if ('id' in identity) delete (this.activities[id] ?? {})[identity.id];
     else if ('name' in identity) delete (this.activities[id] ?? {})[identity.name];
+
+    log.info(`Process ${id} activity identity %o deleted from the container`, identity);
   }
 
   /**
@@ -64,6 +71,8 @@ export class Container {
    */
   public static addDefinition(id: string, definition: BPMNDefinition) {
     this.definitions[id] = definition;
+
+    log.info(`Definition ${id} added to the container`);
   }
 
   /**
@@ -84,5 +93,7 @@ export class Container {
    */
   public static delDefinition(id: string) {
     delete this.definitions[id];
+
+    log.info(`Definition ${id} deleted from the container`);
   }
 }

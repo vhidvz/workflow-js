@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.77% </span>
+                <span class="strong">84.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>79/88</span>
+                <span class='fraction'>84/99</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.77% </span>
+                <span class="strong">84.84% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>79/88</span>
+                <span class='fraction'>84/99</span>
             </div>
         
             
@@ -151,7 +151,18 @@
 <a name='L86'></a><a href='#L86'>86</a>
 <a name='L87'></a><a href='#L87'>87</a>
 <a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -178,6 +189,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">113x</span>
+<span class="cline-any cline-yes">113x</span>
+<span class="cline-any cline-yes">113x</span>
+<span class="cline-any cline-yes">113x</span>
 <span class="cline-any cline-yes">113x</span>
 <span class="cline-any cline-yes">113x</span>
 <span class="cline-any cline-yes">113x</span>
@@ -208,6 +224,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -216,6 +234,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -238,63 +258,72 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BPMNDefinition, BPMNElement } from '../type';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BPMNActivity, BPMNDefinition } from '../type';
 import { IdentityOptions } from '../common';
+import { logger } from '../utils';
+&nbsp;
+const log = logger('container');
 &nbsp;
 /* It's a container for BPMN definitions */
-export interface ContainerDefinition {
+export interface DefinitionContainer {
   [id: string]: BPMNDefinition;
 }
 &nbsp;
-/* It's a container for BPMN elements. */
-export interface ContainerElement {
-  [id: string]: { [id: string]: ContainerElementItem };
+/* It's a container for BPMN activities. */
+export interface ActivityContainer {
+  [id: string]: { [id: string]: { activity: BPMNActivity; key: string } };
 }
 &nbsp;
-export type ContainerElementItem = { element: BPMNElement; key: string };
-&nbsp;
-/* It's a container for BPMN definitions */
+/* It's a container for BPMN definitions and activities */
 export class Container {
-  private static elements: ContainerElement = {};
-  private static definitions: ContainerDefinition = {};
+  private static activities: ActivityContainer = {};
+  private static definitions: DefinitionContainer = {};
 &nbsp;
   /**
-   * It adds an element to the container
+   * It adds an activity to the activities object
    *
-   * @param {string} id - The id of the process
-   * @param {ContainerElementItem}  - id - the process id
+   * @param {string} id - string - The id of the process
+   * @param activity - activity: BPMNActivity; key: string
    */
-  public static addElement(id: string, { element, key }: ContainerElementItem) {
-    this.elements[id] = this.elements[id] ?? {};
-    this.elements[id][element.$.id] = { element, key };
+  public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
+    this.activities[id] = this.activities[id] ?? {};
 &nbsp;
-    if (element.$.name) this.elements[id][element.$.name] = { element, key };
+    const $ = activity.activity.$;
+    this.activities[id][$.id] = activity;
+&nbsp;
+    if ($.name) this.activities[id][$.name] = activity;
+&nbsp;
+    log.info(`Process ${id} activity ${$.id} added to the container`);
   }
 &nbsp;
   /**
-   * If the identity object has an id property, return the element with that id, otherwise if it has a
-   * name property, return the element with that name
+   * If the identity object has an id property, return the activity with that id, otherwise if it has a
+   * name property, return the activity with that name
    *
-   * @param {string} id - The id of the process.
-   * @param {IdentityOptions} identity - IdentityOptions of element
+   * @param {string} id - The ID of the activity.
+   * @param {IdentityOptions} identity - IdentityOptions
    *
-   * @returns The element with the given id and identity.
+   * @returns The activity of the user with the given identity.
    */
-  public static getElement(id: string, identity: IdentityOptions) {
-    if ('id' in identity) return (this.elements[id] ?? {})[identity.id];
-    else if ('name' in identity) return (this.elements[id]<span class="branch-0 cbranch-no" title="branch not covered" > ?? {</span>})[identity.name];
+  public static getActivity(id: string, identity: IdentityOptions) {
+    if ('id' in identity) return (this.activities[id] ?? {})[identity.id];
+    else if ('name' in identity) return (this.activities[id]<span class="branch-0 cbranch-no" title="branch not covered" > ?? {</span>})[identity.name];
   }
 &nbsp;
   /**
-   * It deletes an element from the container
+   * It deletes an activity from the activities object
    *
-   * @param {string} id - The process id
+   * @param {string} id - The ID of the activity.
    * @param {IdentityOptions} identity - IdentityOptions
    */
-  public static <span class="fstat-no" title="function not covered" >delElement(id: string, identity: IdentityOptions) {</span>
-<span class="cstat-no" title="statement not covered" >    if ('id' in identity) delete (this.elements[id] ?? {})[identity.id];</span>
-<span class="cstat-no" title="statement not covered" >    else if ('name' in identity) delete (this.elements[id] ?? {})[identity.name];</span>
+  public static <span class="fstat-no" title="function not covered" >delActivity(id: string, identity: IdentityOptions) {</span>
+<span class="cstat-no" title="statement not covered" >    if ('id' in identity) delete (this.activities[id] ?? {})[identity.id];</span>
+<span class="cstat-no" title="statement not covered" >    else if ('name' in identity) delete (this.activities[id] ?? {})[identity.name];</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    log.info(`Process ${id} activity identity %o deleted from the container`, identity);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
@@ -303,8 +332,10 @@ export class Container {
    * @param {string} id - The id of the BPMN definition.
    * @param {BPMNDefinition} definition - BPMNDefinition
    */
-  public static <span class="fstat-no" title="function not covered" >add(id: string, definition: BPMNDefinition) {</span>
+  public static <span class="fstat-no" title="function not covered" >addDefinition(id: string, definition: BPMNDefinition) {</span>
 <span class="cstat-no" title="statement not covered" >    this.definitions[id] = definition;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    log.info(`Definition ${id} added to the container`);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
@@ -314,7 +345,7 @@ export class Container {
    *
    * @returns The definition of the id.
    */
-  public static <span class="fstat-no" title="function not covered" >get(id: string) {</span>
+  public static <span class="fstat-no" title="function not covered" >getDefinition(id: string) {</span>
 <span class="cstat-no" title="statement not covered" >    return this.definitions[id];</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
@@ -323,8 +354,10 @@ export class Container {
    *
    * @param {string} id - The id of the definition.
    */
-  public static <span class="fstat-no" title="function not covered" >del(id: string) {</span>
+  public static <span class="fstat-no" title="function not covered" >delDefinition(id: string) {</span>
 <span class="cstat-no" title="statement not covered" >    delete this.definitions[id];</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    log.info(`Definition ${id} deleted from the container`);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -334,7 +367,7 @@ export class Container {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-12T13:19:27.739Z
+                at 2023-03-13T07:25:22.432Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

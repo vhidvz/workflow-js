@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { EventActivity, GatewayActivity, TaskActivity } from '../src/core';
 import { Act, Data, Node, Process, Value } from '../src/common';
 import { Context, WorkflowJS } from '../src';

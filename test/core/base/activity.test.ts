@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  BPMNSchema,
-  parse,
-  readFile,
-  getBPMNProcess,
-  BPMNProcess,
-  getActivity,
-  getBPMNActivity,
-} from '../../../src';
+import { parse, readFile, getBPMNProcess, getActivity, getBPMNActivity } from '../../../src';
+import { BPMNProcess, BPMNSchema } from '../../../src/type';
 import { Activity } from '../../../src/core';
 
 describe('test core base activity class', () => {
@@ -39,7 +32,7 @@ describe('test core base activity class', () => {
 
     expect(bpmnActivity).toBeDefined();
 
-    activity = getActivity(process!, { key: 'event', activity: bpmnActivity! as any });
+    activity = getActivity(process!, { key: 'event', activity: bpmnActivity! });
 
     expect(activity).toBeDefined();
 

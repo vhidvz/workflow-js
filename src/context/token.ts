@@ -24,33 +24,49 @@ export class Token implements TokenInterface {
   }
 
   /**
-   * It pushes a new history to the histories array
+   * It pushes a history to the histories array
    *
    * @param {State} history - State
+   *
+   * @returns The current instance of the class.
    */
   push(history: State) {
     this.histories.push(history);
+
+    return this;
   }
 
   /**
-   * It removes the last item from the histories array
+   * Remove the last item from the histories array and return the current instance of the class.
+   *
+   * @returns The object itself.
    */
   pop() {
     this.histories.pop();
+
+    return this;
   }
 
   /**
-   * When the pause() function is called, the status property is set to the value of the Paused enum.
+   * Pause the current animation and return the animation object.
+   *
+   * @returns The object itself.
    */
   pause() {
     this.status = Status.Paused;
+
+    return this;
   }
 
   /**
-   * If the status is paused, set it to ready.
+   * If the status is paused, set the status to ready
+   *
+   * @returns The current instance of the class.
    */
   resume() {
     if (this.isPaused()) this.status = Status.Ready;
+
+    return this;
   }
 
   /**

@@ -1,24 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  BPMNSchema,
-  parse,
-  readFile,
-  getBPMNProcess,
-  BPMNProcess,
-  Process,
-  Node,
-  Act,
-  EventActivity,
-  WorkflowJS,
-  Data,
-  Value,
-  Param,
-  Ctx,
-  Context,
-  Sign,
-  Token,
-} from '../../src';
+import { parse, readFile, getBPMNProcess, WorkflowJS, Context, Token } from '../../src';
+import { Act, Ctx, Data, Node, Param, Process, Sign, Value } from '../../src/common';
+import { BPMNProcess, BPMNSchema } from '../../src/type';
+import { EventActivity } from '../../src/core';
 
 @Process({ name: 'Simple Workflow' })
 class SimpleWorkflow {

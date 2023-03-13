@@ -1,4 +1,5 @@
-import { readFile, parse, BPMNSchema, getBPMNProcess } from '../../../src';
+import { readFile, parse, getBPMNProcess } from '../../../src';
+import { BPMNSchema } from '../../../src/type';
 import { Attribute } from '../../../src/core';
 
 describe('test core base attribute class', () => {

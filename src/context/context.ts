@@ -20,14 +20,20 @@ export class Context<D = any> implements ContextInterface<D> {
   }
 
   /**
-   * When the pause() function is called, the status property is set to the value of the Paused enum.
+   * Pause the current animation and return the animation object.
+   *
+   * @returns The object itself.
    */
   pause() {
     this.status = Status.Paused;
+
+    return this;
   }
 
   /**
-   * If the status is paused, set the status to ready
+   * If the status is running or paused, set the status to ready
+   *
+   * @returns The instance of the class.
    */
   resume() {
     if ([Status.Running, Status.Paused].includes(this.status)) this.status = Status.Ready;

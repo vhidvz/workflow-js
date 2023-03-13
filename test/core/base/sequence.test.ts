@@ -1,4 +1,5 @@
-import { BPMNSchema, parse, readFile } from '../../../src';
+import { parse, readFile } from '../../../src';
+import { BPMNSchema } from '../../../src/type';
 
 describe('test core base sequence class', () => {
   let schema: BPMNSchema;

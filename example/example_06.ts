@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { parse, readFile, WorkflowJS } from '../src';
 import { Act, Node, Process } from '../src/common';
 import { EventActivity } from '../src/core';
