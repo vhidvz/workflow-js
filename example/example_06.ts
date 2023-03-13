@@ -33,6 +33,8 @@ const { context, definition } = workflow.execute({
   schema: parse(xml)['bpmn:definitions'],
 });
 
+console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+
 // After a while
 
 const exec = WorkflowJS.build({ definition }).execute({
@@ -42,3 +44,5 @@ const exec = WorkflowJS.build({ definition }).execute({
 });
 
 console.debug(exec);
+
+console.debug('\nContext is:', JSON.stringify(exec.context.serialize(), null, 2));

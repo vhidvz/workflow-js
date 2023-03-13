@@ -36,7 +36,7 @@ export class Context<D = any> implements ContextInterface<D> {
    * @returns The instance of the class.
    */
   resume() {
-    if ([Status.Running, Status.Paused].includes(this.status)) this.status = Status.Ready;
+    if ([Status.Completed, Status.Paused].includes(this.status)) this.status = Status.Ready;
 
     return this;
   }
@@ -107,6 +107,17 @@ export class Context<D = any> implements ContextInterface<D> {
    */
   isTerminated() {
     return this.tokens.filter((t) => !t.locked).every((t) => t.status === Status.Terminated);
+  }
+
+  /**
+   * It returns true if all the tokens that are not locked have a status of either paused or terminated
+   *
+   * @returns A boolean value.
+   */
+  isPausedOrTerminated() {
+    return this.tokens
+      .filter((t) => !t.locked)
+      .every((t) => [Status.Paused, Status.Terminated].includes(t.status));
   }
 
   /**

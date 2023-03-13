@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.03% </span>
+                <span class="strong">91.86% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>153/161</span>
+                <span class='fraction'>158/172</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>24/27</span>
+                <span class='fraction'>21/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">73.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>12/14</span>
+                <span class='fraction'>11/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.03% </span>
+                <span class="strong">91.86% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>153/161</span>
+                <span class='fraction'>158/172</span>
             </div>
         
             
@@ -224,7 +224,18 @@
 <a name='L159'></a><a href='#L159'>159</a>
 <a name='L160'></a><a href='#L160'>160</a>
 <a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -323,8 +334,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -334,6 +345,17 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -423,7 +445,7 @@ export class Context&lt;D = any&gt; implements ContextInterface&lt;D&gt; {
    * @returns The instance of the class.
    */
   resume() {
-    if ([Status.Running, Status.Paused].includes(this.status)) this.status = Status.Ready;
+    if ([Status.Completed, Status.Paused].includes(this.status)) this.status = Status.Ready;
 &nbsp;
     return this;
   }
@@ -483,9 +505,9 @@ export class Context&lt;D = any&gt; implements ContextInterface&lt;D&gt; {
    *
    * @returns A boolean value.
    */
-  isCompleted() {
-    return this.tokens.filter((t) =&gt; !t.locked).every((t) =&gt; t.status === Status.Completed);
-  }
+<span class="fstat-no" title="function not covered" >  isCompleted() {</span>
+<span class="cstat-no" title="statement not covered" >    return this.tokens.filter((t) =&gt; !t.locked).every((t) =&gt; t.status === Status.Completed);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
    * It returns true if every token in the tokens array has a status of Terminated
@@ -495,6 +517,17 @@ export class Context&lt;D = any&gt; implements ContextInterface&lt;D&gt; {
   isTerminated() {
     return this.tokens.filter((t) =&gt; !t.locked).every((t) =&gt; t.status === Status.Terminated);
   }
+&nbsp;
+  /**
+   * It returns true if all the tokens that are not locked have a status of either paused or terminated
+   *
+   * @returns A boolean value.
+   */
+<span class="fstat-no" title="function not covered" >  isPausedOrTerminated() {</span>
+<span class="cstat-no" title="statement not covered" >    return this.tokens</span>
+<span class="cstat-no" title="statement not covered" >      .filter((t) =&gt; !t.locked)</span>
+<span class="cstat-no" title="statement not covered" >      .every((t) =&gt; [Status.Paused, Status.Terminated].includes(t.status));</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
    * Return the next token's state if it's ready, otherwise return undefined.
@@ -553,7 +586,7 @@ export class Context&lt;D = any&gt; implements ContextInterface&lt;D&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-13T09:03:34.496Z
+                at 2023-03-13T09:32:04.366Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
