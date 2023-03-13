@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.71% </span>
+                <span class="strong">97.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>257/263</span>
+                <span class='fraction'>259/265</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.26% </span>
+                <span class="strong">57.25% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>74/127</span>
+                <span class='fraction'>75/131</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.71% </span>
+                <span class="strong">97.73% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>257/263</span>
+                <span class='fraction'>259/265</span>
             </div>
         
             
@@ -326,7 +326,9 @@
 <a name='L261'></a><a href='#L261'>261</a>
 <a name='L262'></a><a href='#L262'>262</a>
 <a name='L263'></a><a href='#L263'>263</a>
-<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -402,8 +404,6 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -422,6 +422,7 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -487,6 +488,9 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -556,8 +560,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
@@ -666,28 +670,27 @@ function run(target: any, method: string, options: MethodOptions) {
   return { value, exception };
 }
 &nbsp;
+/* Defining the interface for the `WorkflowOptions` object. */
+export interface WorkflowOptions {
+  cache: boolean;
+}
+&nbsp;
 export class WorkflowJS {
   protected target!: any;
 &nbsp;
   protected context?: Context;
   protected process?: BPMNProcess;
+  protected options?: WorkflowOptions;
   protected definition?: BPMNDefinition;
 &nbsp;
-  /**
-   * &gt; The `build` function is a static function that returns a new instance of the `WorkflowJS` class
-   *
-   * @param {Execute} [exec] - Execute - This is the object that is passed to the workflow when it is
-   * executed.
-   *
-   * @returns A new instance of the WorkflowJS class.
-   */
-  static build(exec?: Partial&lt;Execute&gt;): WorkflowJS {
+  static build(exec?: Partial&lt;Execute&gt; &amp; { options?: WorkflowOptions }): WorkflowJS {
     const workflow = new this();
 &nbsp;
     if (exec) {
       workflow.target = exec<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>arget;
       workflow.context = exec<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontext;
       workflow.process = exec<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rocess;
+      workflow.options = exec<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>ptions;
       workflow.definition = exec<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>efinition;
     }
 &nbsp;
@@ -749,7 +752,10 @@ export class WorkflowJS {
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
     if (options<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ode) {
-      activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
+      activity = getActivity(
+        this.process,
+        getBPMNActivity(this.process, options.node, { cache: !!this.options<span class="branch-0 cbranch-no" title="branch not covered" >?.cache </span>}),
+      );
     } else if (!this.context.tokens.length) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
 <span class="branch-0 cbranch-no" title="branch not covered" >        throw new Error('Start event is not defined in process or have more than one start event');</span>
@@ -819,7 +825,7 @@ export class WorkflowJS {
 &nbsp;
         if (!token) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Token not found at running stage');</span>
 &nbsp;
-        const instance = getBPMNActivity(this.process, { id: next.ref });
+        const instance = getBPMNActivity(this.process, { id: next.ref }, { cache: !!this.options<span class="branch-0 cbranch-no" title="branch not covered" >?.cache </span>});
 &nbsp;
         if (!instance) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('BPMN activity instance not found');</span>
 &nbsp;
@@ -859,7 +865,7 @@ export class WorkflowJS {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-13T08:08:48.837Z
+                at 2023-03-13T09:03:34.496Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

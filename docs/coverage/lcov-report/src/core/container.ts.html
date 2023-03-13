@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.84% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>84/99</span>
+                <span class='fraction'>72/99</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.84% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>84/99</span>
+                <span class='fraction'>72/99</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -190,15 +190,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">113x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -210,9 +210,9 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">139x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">139x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -288,16 +288,16 @@ export class Container {
    * @param {string} id - string - The id of the process
    * @param activity - activity: BPMNActivity; key: string
    */
-  public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
-    this.activities[id] = this.activities[id] ?? {};
-&nbsp;
-    const $ = activity.activity.$;
-    this.activities[id][$.id] = activity;
-&nbsp;
-    if ($.name) this.activities[id][$.name] = activity;
-&nbsp;
-    log.info(`Process ${id} activity ${$.id} added to the container`);
-  }
+  public static <span class="fstat-no" title="function not covered" >addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {</span>
+<span class="cstat-no" title="statement not covered" >    Container.activities[id] = Container.activities[id] ?? {};</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    const $ = activity.activity.$;</span>
+<span class="cstat-no" title="statement not covered" >    Container.activities[id][$.id] = activity;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    if ($.name) Container.activities[id][$.name] = activity;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    log.info(`Process ${id} activity ${$.id} added to the container`);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
    * If the identity object has an id property, return the activity with that id, otherwise if it has a
@@ -308,10 +308,10 @@ export class Container {
    *
    * @returns The activity of the user with the given identity.
    */
-  public static getActivity(id: string, identity: IdentityOptions) {
-    if ('id' in identity) return (this.activities[id] ?? {})[identity.id];
-    else if ('name' in identity) return (this.activities[id]<span class="branch-0 cbranch-no" title="branch not covered" > ?? {</span>})[identity.name];
-  }
+  public static <span class="fstat-no" title="function not covered" >getActivity(id: string, identity: IdentityOptions) {</span>
+<span class="cstat-no" title="statement not covered" >    if ('id' in identity) return (Container.activities[id] ?? {})[identity.id];</span>
+<span class="cstat-no" title="statement not covered" >    else if ('name' in identity) return (Container.activities[id] ?? {})[identity.name];</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
    * It deletes an activity from the activities object
@@ -320,8 +320,8 @@ export class Container {
    * @param {IdentityOptions} identity - IdentityOptions
    */
   public static <span class="fstat-no" title="function not covered" >delActivity(id: string, identity: IdentityOptions) {</span>
-<span class="cstat-no" title="statement not covered" >    if ('id' in identity) delete (this.activities[id] ?? {})[identity.id];</span>
-<span class="cstat-no" title="statement not covered" >    else if ('name' in identity) delete (this.activities[id] ?? {})[identity.name];</span>
+<span class="cstat-no" title="statement not covered" >    if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];</span>
+<span class="cstat-no" title="statement not covered" >    else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    log.info(`Process ${id} activity identity %o deleted from the container`, identity);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
@@ -333,7 +333,7 @@ export class Container {
    * @param {BPMNDefinition} definition - BPMNDefinition
    */
   public static <span class="fstat-no" title="function not covered" >addDefinition(id: string, definition: BPMNDefinition) {</span>
-<span class="cstat-no" title="statement not covered" >    this.definitions[id] = definition;</span>
+<span class="cstat-no" title="statement not covered" >    Container.definitions[id] = definition;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    log.info(`Definition ${id} added to the container`);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
@@ -346,7 +346,7 @@ export class Container {
    * @returns The definition of the id.
    */
   public static <span class="fstat-no" title="function not covered" >getDefinition(id: string) {</span>
-<span class="cstat-no" title="statement not covered" >    return this.definitions[id];</span>
+<span class="cstat-no" title="statement not covered" >    return Container.definitions[id];</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
@@ -355,7 +355,7 @@ export class Container {
    * @param {string} id - The id of the definition.
    */
   public static <span class="fstat-no" title="function not covered" >delDefinition(id: string) {</span>
-<span class="cstat-no" title="statement not covered" >    delete this.definitions[id];</span>
+<span class="cstat-no" title="statement not covered" >    delete Container.definitions[id];</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    log.info(`Definition ${id} deleted from the container`);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
@@ -367,7 +367,7 @@ export class Container {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-13T08:08:48.837Z
+                at 2023-03-13T09:03:34.496Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

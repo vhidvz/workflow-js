@@ -75,7 +75,7 @@ class PizzaCustomer extends WorkflowJS {
   }
 }
 
-const workflow = new PizzaCustomer();
+const workflow = PizzaCustomer.build({ options: { cache: true } });
 
 const { context } = workflow.execute({ data: { value: 'pizza' }, value: 'pepperoni' });
 

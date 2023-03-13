@@ -26,12 +26,12 @@ export class Container {
    * @param activity - activity: BPMNActivity; key: string
    */
   public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
-    this.activities[id] = this.activities[id] ?? {};
+    Container.activities[id] = Container.activities[id] ?? {};
 
     const $ = activity.activity.$;
-    this.activities[id][$.id] = activity;
+    Container.activities[id][$.id] = activity;
 
-    if ($.name) this.activities[id][$.name] = activity;
+    if ($.name) Container.activities[id][$.name] = activity;
 
     log.info(`Process ${id} activity ${$.id} added to the container`);
   }
@@ -46,8 +46,8 @@ export class Container {
    * @returns The activity of the user with the given identity.
    */
   public static getActivity(id: string, identity: IdentityOptions) {
-    if ('id' in identity) return (this.activities[id] ?? {})[identity.id];
-    else if ('name' in identity) return (this.activities[id] ?? {})[identity.name];
+    if ('id' in identity) return (Container.activities[id] ?? {})[identity.id];
+    else if ('name' in identity) return (Container.activities[id] ?? {})[identity.name];
   }
 
   /**
@@ -57,8 +57,8 @@ export class Container {
    * @param {IdentityOptions} identity - IdentityOptions
    */
   public static delActivity(id: string, identity: IdentityOptions) {
-    if ('id' in identity) delete (this.activities[id] ?? {})[identity.id];
-    else if ('name' in identity) delete (this.activities[id] ?? {})[identity.name];
+    if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];
+    else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];
 
     log.info(`Process ${id} activity identity %o deleted from the container`, identity);
   }
@@ -70,7 +70,7 @@ export class Container {
    * @param {BPMNDefinition} definition - BPMNDefinition
    */
   public static addDefinition(id: string, definition: BPMNDefinition) {
-    this.definitions[id] = definition;
+    Container.definitions[id] = definition;
 
     log.info(`Definition ${id} added to the container`);
   }
@@ -83,7 +83,7 @@ export class Container {
    * @returns The definition of the id.
    */
   public static getDefinition(id: string) {
-    return this.definitions[id];
+    return Container.definitions[id];
   }
 
   /**
@@ -92,7 +92,7 @@ export class Container {
    * @param {string} id - The id of the definition.
    */
   public static delDefinition(id: string) {
-    delete this.definitions[id];
+    delete Container.definitions[id];
 
     log.info(`Definition ${id} deleted from the container`);
   }

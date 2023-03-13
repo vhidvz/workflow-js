@@ -72,7 +72,7 @@ class PizzaCustomer {
   }
 }
 
-const workflow = WorkflowJS.build();
+const workflow = WorkflowJS.build({ options: { cache: true } });
 
 const { target } = workflow.execute({
   factory: () => new PizzaCustomer(),
