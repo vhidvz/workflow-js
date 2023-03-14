@@ -14,7 +14,7 @@ class SimpleWorkflow {
   }
 }
 
-const workflow = WorkflowJS.build({ options: { cache: true } });
+const workflow = WorkflowJS.build();
 
 const xml = readFile('./example/simple-workflow.bpmn');
 

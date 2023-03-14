@@ -56,9 +56,11 @@ export class Container {
    * @param {string} id - The ID of the activity.
    * @param {IdentityOptions} identity - IdentityOptions
    */
-  public static delActivity(id: string, identity: IdentityOptions) {
-    if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];
-    else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];
+  public static delActivity(id: string, identity?: IdentityOptions) {
+    if (identity) {
+      if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];
+      else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];
+    } else delete Container.activities[id];
 
     log.info(`Process ${id} activity identity %o deleted from the container`, identity);
   }

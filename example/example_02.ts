@@ -75,7 +75,7 @@ class PizzaCustomer {
   }
 }
 
-const workflow = WorkflowJS.build({ options: { cache: true } });
+const workflow = WorkflowJS.build();
 
 const { target } = workflow.execute({
   handler: new PizzaCustomer(),

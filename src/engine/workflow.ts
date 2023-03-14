@@ -75,27 +75,28 @@ function run(target: any, method: string, options: MethodOptions) {
   return { value, exception };
 }
 
-/* Defining the interface for the `WorkflowOptions` object. */
-export interface WorkflowOptions {
-  cache: boolean;
-}
-
 export class WorkflowJS {
   protected target!: any;
 
   protected context?: Context;
   protected process?: BPMNProcess;
-  protected options?: WorkflowOptions;
   protected definition?: BPMNDefinition;
 
-  static build(exec?: Partial<Execute> & { options?: WorkflowOptions }): WorkflowJS {
+  /**
+   * > The `build` function is a static method that returns a new instance of the `WorkflowJS` class
+   *
+   * @param [exec] - This is the object that contains the parameters that will be passed to the
+   * workflow.
+   *
+   * @returns A new instance of the WorkflowJS class.
+   */
+  static build(exec?: Partial<Execute>): WorkflowJS {
     const workflow = new this();
 
     if (exec) {
       workflow.target = exec?.target;
       workflow.context = exec?.context;
       workflow.process = exec?.process;
-      workflow.options = exec?.options;
       workflow.definition = exec?.definition;
     }
 
@@ -157,10 +158,7 @@ export class WorkflowJS {
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
     if (options?.node) {
-      activity = getActivity(
-        this.process,
-        getBPMNActivity(this.process, options.node, { cache: !!this.options?.cache }),
-      );
+      activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
     } else if (!this.context.tokens.length) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
         throw new Error('Start event is not defined in process or have more than one start event');
@@ -230,7 +228,7 @@ export class WorkflowJS {
 
         if (!token) throw new Error('Token not found at running stage');
 
-        const instance = getBPMNActivity(this.process, { id: next.ref }, { cache: !!this.options?.cache });
+        const instance = getBPMNActivity(this.process, { id: next.ref });
 
         if (!instance) throw new Error('BPMN activity instance not found');
 
