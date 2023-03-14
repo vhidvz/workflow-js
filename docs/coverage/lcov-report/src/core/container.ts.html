@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.83% </span>
+                <span class="strong">83.96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>83/99</span>
+                <span class='fraction'>89/106</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.83% </span>
+                <span class="strong">83.96% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>83/99</span>
+                <span class='fraction'>89/106</span>
             </div>
         
             
@@ -162,7 +162,14 @@
 <a name='L97'></a><a href='#L97'>97</a>
 <a name='L98'></a><a href='#L98'>98</a>
 <a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -190,15 +197,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
+<span class="cline-any cline-yes">64x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -210,17 +217,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">73x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">252x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -309,8 +323,13 @@ export class Container {
    * @returns The activity of the user with the given identity.
    */
   public static getActivity(id: string, identity: IdentityOptions) {
-    if ('id' in identity) return (Container.activities[id] ?? {})[identity.id];
-<span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >    else if ('name' in identity) return (Container.activities[id] ?? {})[identity.name];</span></span>
+    const key = 'id' in identity ? identity.id : identity.name;
+    const value = (Container.activities[id] ?? {})[key];
+&nbsp;
+    if (value) log.hit(`Getting process ${id} activity identity %o`, identity);
+    else log.miss(`Getting process ${id} activity identity %o`, identity);
+&nbsp;
+    return value;
   }
 &nbsp;
   /**
@@ -319,9 +338,11 @@ export class Container {
    * @param {string} id - The ID of the activity.
    * @param {IdentityOptions} identity - IdentityOptions
    */
-  public static <span class="fstat-no" title="function not covered" >delActivity(id: string, identity: IdentityOptions) {</span>
-<span class="cstat-no" title="statement not covered" >    if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];</span>
-<span class="cstat-no" title="statement not covered" >    else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];</span>
+  public static <span class="fstat-no" title="function not covered" >delActivity(id: string, identity?: IdentityOptions) {</span>
+<span class="cstat-no" title="statement not covered" >    if (identity) {</span>
+<span class="cstat-no" title="statement not covered" >      if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];</span>
+<span class="cstat-no" title="statement not covered" >      else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];</span>
+<span class="cstat-no" title="statement not covered" >    } else delete Container.activities[id];</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    log.info(`Process ${id} activity identity %o deleted from the container`, identity);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
@@ -367,7 +388,7 @@ export class Container {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-14T10:13:36.374Z
+                at 2023-03-14T12:02:17.188Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -50,7 +50,7 @@ describe('test workflow engine class', () => {
   });
 
   it('should return workflow by schema', () => {
-    const workflow = WorkflowJS.build({ options: { cache: true } });
+    const workflow = WorkflowJS.build();
 
     expect(workflow).toBeDefined();
 

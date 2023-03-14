@@ -62,7 +62,7 @@ Once you have defined the workflow, you can build and execute it using the Workf
 ```ts
 import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 
-const workflow = WorkflowJS.build({ options: { cache: true } });
+const workflow = WorkflowJS.build();
 
 const xml = readFile('./example/simple-workflow.bpmn');
 
