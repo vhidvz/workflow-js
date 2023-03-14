@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { $, BPMNActivity, BPMNDefinition, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
+import { BPMNActivity, BPMNDefinition, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
 import { Activity, Container, EventActivity, GatewayActivity, Sequence, TaskActivity } from './core';
 import { IdentityOptions } from './common';
 
@@ -20,7 +20,8 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
 
     collaborations.some((collaboration) => {
       const participant = collaboration['bpmn:participant'].find((el) => el.$.name === identity.name);
-      return !!(processId = participant?.$?.processRef);
+      processId = participant?.$?.processRef;
+      return !!processId;
     });
 
     return processes.find((process) => process.$.id === processId);

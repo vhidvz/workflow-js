@@ -42,7 +42,7 @@ function run(target: any, method: string, options: MethodOptions) {
 
   try {
     options.token.status = Status.Running;
-    options.context!.status = Status.Running;
+    options.context.status = Status.Running;
 
     let outgoing: Activity[] | undefined;
 
@@ -53,7 +53,7 @@ function run(target: any, method: string, options: MethodOptions) {
 
       value = options.value;
       outgoing = options.activity.takeOutgoing();
-    } else value = (target as any)[method](options);
+    } else value = target[method](options);
 
     log.info(`Activity ${options.activity.id ?? options.activity.name} completed`);
 
@@ -65,7 +65,7 @@ function run(target: any, method: string, options: MethodOptions) {
 
     if (!outgoing?.length && !method && !options.activity.isEnd()) options.token.pause();
   } catch (error) {
-    options.context!.status = Status.Failed;
+    options.context.status = Status.Failed;
     options.token.status = Status.Failed;
     exception = error;
 
@@ -128,7 +128,7 @@ export class WorkflowJS {
     }
     if (!this.target) throw new Error('Target workflow not found');
 
-    const metadata = (this.target as any).$__metadata__ as Metadata;
+    const metadata = this.target.$__metadata__ as Metadata;
     const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
 
     this.definition = this.definition ?? Container.getDefinition(metadata.definition.id);
