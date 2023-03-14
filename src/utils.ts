@@ -45,6 +45,10 @@ export const logger = (namespace: string, prefix = 'workflow-js') => {
   const log = debug(`${prefix}:${namespace}`);
 
   return {
+    hit: (formatter: string, ...args: unknown[]) =>
+      log(`\x1b[32m${'[HIT]'} ` + formatter, ...args, '\x1b[0m'),
+    miss: (formatter: string, ...args: unknown[]) =>
+      log(`\x1b[35m${'[MISS]'} ` + formatter, ...args, '\x1b[0m'),
     error: (formatter: string, ...args: unknown[]) =>
       log(`\x1b[31m${'[ERROR]'} ` + formatter, ...args, '\x1b[0m'),
     warn: (formatter: string, ...args: unknown[]) =>

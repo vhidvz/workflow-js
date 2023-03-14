@@ -46,8 +46,13 @@ export class Container {
    * @returns The activity of the user with the given identity.
    */
   public static getActivity(id: string, identity: IdentityOptions) {
-    if ('id' in identity) return (Container.activities[id] ?? {})[identity.id];
-    else if ('name' in identity) return (Container.activities[id] ?? {})[identity.name];
+    const key = 'id' in identity ? identity.id : identity.name;
+    const value = (Container.activities[id] ?? {})[key];
+
+    if (value) log.hit(`Getting process ${id} activity identity %o`, identity);
+    else log.miss(`Getting process ${id} activity identity %o`, identity);
+
+    return value;
   }
 
   /**
