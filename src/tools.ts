@@ -99,9 +99,9 @@ export const getActivity = (process: BPMNProcess, options?: { key: string; activ
  */
 export const takeOutgoing = (outgoing: Sequence[], identity?: IdentityOptions) => {
   if (identity) {
-    if (identity && 'id' in identity)
+    if ('id' in identity)
       return outgoing?.filter((o) => o.targetRef?.id === identity.id).map((o) => o.targetRef!);
-    if (identity && 'name' in identity)
+    if ('name' in identity)
       return outgoing?.filter((o) => o.targetRef?.name === identity.name).map((o) => o.targetRef!);
   } else return outgoing?.map((o) => o.targetRef!);
 };
