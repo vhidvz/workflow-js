@@ -1,3 +1,19 @@
+# Build
+core
+type
+engine
+common
+context
+index.js
+tools.js
+utils.js
+index.d.ts
+tools.d.ts
+utils.d.ts
+index.js.map
+tools.js.map
+utils.js.ma
+
 # Logs
 logs
 *.log
