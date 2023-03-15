@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.63% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>117/132</span>
+                <span class='fraction'>120/135</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.75% </span>
+                <span class="strong">74.19% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>22/32</span>
+                <span class='fraction'>23/31</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.63% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>117/132</span>
+                <span class='fraction'>120/135</span>
             </div>
         
             
@@ -195,7 +195,10 @@
 <a name='L130'></a><a href='#L130'>130</a>
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -226,11 +229,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -239,9 +244,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-yes">59x</span>
 <span class="cline-any cline-yes">71x</span>
 <span class="cline-any cline-yes">71x</span>
-<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">59x</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -330,8 +336,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BPMNActivity, BPMNProcess, BPMNSequenceFlow } from '../../type';
+import { takeOutgoing, getWrappedBPMNElement } from '../../tools';
 import { Context, State, Token, Status } from '../../context';
-import { takeOutgoing, getBPMNActivity } from '../../tools';
 import { IdentityOptions } from '../../common';
 import { Attribute } from './attribute';
 import { Sequence } from './sequence';
@@ -358,10 +364,12 @@ export class Activity extends Attribute {
    * @returns An array of Sequence objects.
    */
   get incoming() {
-    return this['bpmn:incoming']<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap((id: string) =&gt; {
-      const activity = getBPMNActivity(this.process, { id })<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>ctivity;
-      return Sequence.build(activity as BPMNSequenceFlow, this.process);
-    });
+    return this['bpmn:incoming']
+      ?.map((id: string) =&gt; {
+        const flow = getWrappedBPMNElement(this.process, { id })<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>lement;
+        if (flow) return Sequence.build(flow as BPMNSequenceFlow, this.process);
+      })
+      .filter((f) =&gt; f instanceof Sequence) as Sequence[];
   }
 &nbsp;
   /**
@@ -370,11 +378,12 @@ export class Activity extends Attribute {
    * @returns An array of Sequence objects
    */
   get outgoing() {
-    return this['bpmn:outgoing']?.map((id: string) =&gt; {
-      const activity = getBPMNActivity(this.process, { id })<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>ctivity;
-      if (!activity) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Outgoing sequenceFlow not found');</span>
-      return Sequence.build(activity as BPMNSequenceFlow, this.process);
-    });
+    return this['bpmn:outgoing']
+      ?.map((id: string) =&gt; {
+        const flow = getWrappedBPMNElement(this.process, { id })<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>lement;
+        if (flow) return Sequence.build(flow as BPMNSequenceFlow, this.process);
+      })
+      .filter((f) =&gt; f instanceof Sequence) as Sequence[];
   }
 &nbsp;
   /**
@@ -466,7 +475,7 @@ export class Activity extends Attribute {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-14T12:02:17.188Z
+                at 2023-03-15T08:04:45.583Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

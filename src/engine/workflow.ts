@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getActivity, getWrappedBPMNElement, getBPMNProcess } from '../tools';
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
-import { getActivity, getBPMNActivity, getBPMNProcess } from '../tools';
 import { Context, Status, State, Token } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
 import { logger, parse, readFile } from '../utils';
@@ -10,6 +10,7 @@ import { Execute } from './types';
 
 const log = logger('engine');
 
+/* The interface for the execute function. */
 export interface ExecutionInterface {
   id?: string;
   factory?: () => any;
@@ -75,6 +76,7 @@ function run(target: any, method: string, options: MethodOptions) {
   return { value, exception };
 }
 
+/* It executes a workflow */
 export class WorkflowJS {
   protected target!: any;
 
@@ -158,14 +160,14 @@ export class WorkflowJS {
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
     if (options?.node) {
-      activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
+      activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
     } else if (!this.context.tokens.length) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
         throw new Error('Start event is not defined in process or have more than one start event');
 
       activity = getActivity(this.process, {
         key: 'bpmn:startEvent',
-        activity: this.process['bpmn:startEvent'][0],
+        element: this.process['bpmn:startEvent'][0],
       });
     }
     if (!activity) throw new Error('Node activity not found');
@@ -228,11 +230,7 @@ export class WorkflowJS {
 
         if (!token) throw new Error('Token not found at running stage');
 
-        const instance = getBPMNActivity(this.process, { id: next.ref });
-
-        if (!instance) throw new Error('BPMN activity instance not found');
-
-        const activity = getActivity(this.process, instance);
+        const activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
 
         log.info(`Next Activity is ${activity?.name ?? activity?.id ?? '[undefined]'}`);
 

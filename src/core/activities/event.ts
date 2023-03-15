@@ -1,4 +1,4 @@
-import { getActivity, getBPMNActivity } from '../../tools';
+import { getActivity, getWrappedBPMNElement } from '../../tools';
 import { BPMNEvent, BPMNProcess } from '../../type';
 import { Activity } from '../base';
 
@@ -49,8 +49,8 @@ export class EventActivity extends Activity {
    */
   get attachedToRef(): Activity | undefined {
     if (!this.$.attachedToRef) return;
-    const options = getBPMNActivity(this.process, { id: this.$.attachedToRef });
-    if (options) return getActivity(this.process, options);
+    const data = getWrappedBPMNElement(this.process, { id: this.$.attachedToRef });
+    if (data) return getActivity(this.process, data);
   }
 
   /**

@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { BPMNActivity, BPMNDefinition, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
-import { Activity, Container, EventActivity, GatewayActivity, Sequence, TaskActivity } from './core';
+import {
+  Activity,
+  Container,
+  EventActivity,
+  GatewayActivity,
+  Sequence,
+  TaskActivity,
+  WrappedElement,
+} from './core';
+import { BPMNDefinition, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
 import { IdentityOptions } from './common';
 
 /**
@@ -31,56 +39,56 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
 };
 
 /**
- * It returns the activity object from the BPMN process object
+ * It returns the element object from the BPMN process object
  *
  * @param {BPMNProcess} process - The BPMNProcess object
  * @param {IdentityOptions} identity - IdentityOptions
  * @param options - cache: boolean = cache: true
  *
- * @returns An object with a key and activity.
+ * @returns An object with a key and element.
  */
-export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions) => {
-  const wrappedActivity = Container.getActivity(process.$.id, identity);
+export const getWrappedBPMNElement = (process: BPMNProcess, identity: IdentityOptions) => {
+  const wrappedElement = Container.getElement(process.$.id, identity);
 
-  if (typeof wrappedActivity !== 'object') {
-    for (const [key, activities] of Object.entries(process)) {
-      if (typeof activities === 'object' && Array.isArray(activities)) {
-        for (const activity of activities) {
-          if (!Container.getActivity(process.$.id, activity.$))
-            Container.addActivity(process.$.id, { key, activity });
+  if (typeof wrappedElement !== 'object') {
+    for (const [key, elements] of Object.entries(process)) {
+      if (typeof elements === 'object' && Array.isArray(elements)) {
+        for (const element of elements) {
+          if (!Container.getElement(process.$.id, element.$))
+            Container.addElement(process.$.id, { key, element });
 
-          if ('id' in identity && activity.$.id === identity.id) return { key, activity };
-          if ('name' in identity && activity.$.name === identity.name) return { key, activity };
+          if ('id' in identity && element.$.id === identity.id) return { key, element };
+          if ('name' in identity && element.$.name === identity.name) return { key, element };
         }
       }
     }
-  } else return wrappedActivity;
+  } else return wrappedElement;
 };
 
 /**
- * It takes a BPMNProcess and an optional options object, and returns an Activity
+ * It takes a BPMNProcess and an optional data object, and returns an Activity
  *
  * @param {BPMNProcess} process - The BPMNProcess object that contains the activity.
- * @param [options] - key: string; activity: BPMNActivity
+ * @param [options] - key: string; element: BPMNElement
  *
  * @returns A new Activity object
  */
-export const getActivity = (process: BPMNProcess, options?: { key: string; activity: BPMNActivity }) => {
-  if (!options) return new Activity(process);
+export const getActivity = (process: BPMNProcess, data?: WrappedElement) => {
+  if (!data) return new Activity(process);
 
-  const { key, activity } = options;
+  const { key, element } = data;
 
   if (key?.toLowerCase()?.includes('task')) {
-    return TaskActivity.build(activity as BPMNTask, process, key);
+    return TaskActivity.build(element as BPMNTask, process, key);
   }
   if (key?.toLowerCase()?.includes('event')) {
-    return EventActivity.build(activity as BPMNEvent, process, key);
+    return EventActivity.build(element as BPMNEvent, process, key);
   }
   if (key?.toLowerCase()?.includes('gateway')) {
-    return GatewayActivity.build(activity as BPMNGateway, process, key);
+    return GatewayActivity.build(element as BPMNGateway, process, key);
   }
 
-  return new Activity(process, activity, key);
+  return new Activity(process, element, key);
 };
 
 /**

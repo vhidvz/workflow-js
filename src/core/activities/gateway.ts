@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { BPMNGateway, BPMNProcess, BPMNSequenceFlow } from '../../type';
-import { takeOutgoing, getBPMNActivity } from '../../tools';
+import { takeOutgoing, getWrappedBPMNElement } from '../../tools';
 import { State, Token, Status } from '../../context';
 import { IdentityOptions } from '../../common';
 import { Activity, Sequence } from '../base';
@@ -110,8 +110,8 @@ export class GatewayActivity extends Activity {
    */
   get default(): Sequence | undefined {
     if (!this.$.default) return;
-    const options = getBPMNActivity(this.process, { id: this.$.default });
-    if (options) return Sequence.build(options.activity as BPMNSequenceFlow, this.process);
+    const flow = getWrappedBPMNElement(this.process, { id: this.$.default })?.element;
+    if (flow) return Sequence.build(flow as BPMNSequenceFlow, this.process);
   }
 
   /**

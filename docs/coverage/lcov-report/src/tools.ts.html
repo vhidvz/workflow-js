@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>104/104</span>
+                <span class='fraction'>112/112</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>104/104</span>
+                <span class='fraction'>112/112</span>
             </div>
         
             
@@ -167,7 +167,23 @@
 <a name='L102'></a><a href='#L102'>102</a>
 <a name='L103'></a><a href='#L103'>103</a>
 <a name='L104'></a><a href='#L104'>104</a>
-<a name='L105'></a><a href='#L105'>105</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -272,8 +288,16 @@
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { BPMNActivity, BPMNDefinition, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
-import { Activity, Container, EventActivity, GatewayActivity, Sequence, TaskActivity } from './core';
+import {
+  Activity,
+  Container,
+  EventActivity,
+  GatewayActivity,
+  Sequence,
+  TaskActivity,
+  WrappedElement,
+} from './core';
+import { BPMNDefinition, BPMNEvent, BPMNGateway, BPMNProcess, BPMNTask } from './type';
 import { IdentityOptions } from './common';
 &nbsp;
 /**
@@ -304,56 +328,56 @@ export const getBPMNProcess = (definition: BPMNDefinition, identity: IdentityOpt
 };
 &nbsp;
 /**
- * It returns the activity object from the BPMN process object
+ * It returns the element object from the BPMN process object
  *
  * @param {BPMNProcess} process - The BPMNProcess object
  * @param {IdentityOptions} identity - IdentityOptions
  * @param options - cache: boolean = cache: true
  *
- * @returns An object with a key and activity.
+ * @returns An object with a key and element.
  */
-export const getBPMNActivity = (process: BPMNProcess, identity: IdentityOptions) =&gt; {
-  const wrappedActivity = Container.getActivity(process.$.id, identity);
+export const getWrappedBPMNElement = (process: BPMNProcess, identity: IdentityOptions) =&gt; {
+  const wrappedElement = Container.getElement(process.$.id, identity);
 &nbsp;
-  if (typeof wrappedActivity !== 'object') {
-    for (const [key, activities] of Object.entries(process)) {
-      if (typeof activities === 'object' &amp;&amp; Array.isArray(activities)) {
-        for (const activity of activities) {
-          if (!Container.getActivity(process.$.id, activity.$))
-            Container.addActivity(process.$.id, { key, activity });
+  if (typeof wrappedElement !== 'object') {
+    for (const [key, elements] of Object.entries(process)) {
+      if (typeof elements === 'object' &amp;&amp; Array.isArray(elements)) {
+        for (const element of elements) {
+          if (!Container.getElement(process.$.id, element.$))
+            Container.addElement(process.$.id, { key, element });
 &nbsp;
-          if ('id' in identity &amp;&amp; activity.$.id === identity.id) return { key, activity };
-          if ('name' in identity &amp;&amp; activity.$.name === identity.name) return { key, activity };
+          if ('id' in identity &amp;&amp; element.$.id === identity.id) return { key, element };
+          if ('name' in identity &amp;&amp; element.$.name === identity.name) return { key, element };
         }
       }
     }
-<span class="branch-0 cbranch-no" title="branch not covered" >  } else r</span>eturn wrappedActivity;
+<span class="branch-0 cbranch-no" title="branch not covered" >  } else r</span>eturn wrappedElement;
 };
 &nbsp;
 /**
- * It takes a BPMNProcess and an optional options object, and returns an Activity
+ * It takes a BPMNProcess and an optional data object, and returns an Activity
  *
  * @param {BPMNProcess} process - The BPMNProcess object that contains the activity.
- * @param [options] - key: string; activity: BPMNActivity
+ * @param [options] - key: string; element: BPMNElement
  *
  * @returns A new Activity object
  */
-export const getActivity = (process: BPMNProcess, options?: { key: string; activity: BPMNActivity }) =&gt; {
-  if (!options) return new Activity(process);
+export const getActivity = (process: BPMNProcess, data?: WrappedElement) =&gt; {
+  if (!data) return new Activity(process);
 &nbsp;
-  const { key, activity } = options;
+  const { key, element } = data;
 &nbsp;
   if (key<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLowerCase()<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('task')) {
-    return TaskActivity.build(activity as BPMNTask, process, key);
+    return TaskActivity.build(element as BPMNTask, process, key);
   }
   if (key<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLowerCase()<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('event')) {
-    return EventActivity.build(activity as BPMNEvent, process, key);
+    return EventActivity.build(element as BPMNEvent, process, key);
   }
   if (key<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>oLowerCase()<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('gateway')) {
-    return GatewayActivity.build(activity as BPMNGateway, process, key);
+    return GatewayActivity.build(element as BPMNGateway, process, key);
   }
 &nbsp;
-  return new Activity(process, activity, key);
+  return new Activity(process, element, key);
 };
 &nbsp;
 /**
@@ -382,7 +406,7 @@ export const takeOutgoing = (outgoing: Sequence[], identity?: IdentityOptions) =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-14T12:02:17.188Z
+                at 2023-03-15T08:04:45.583Z
             </div>
         <script src="../prettify.js"></script>
         <script>

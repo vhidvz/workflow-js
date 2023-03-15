@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BPMNActivity, BPMNProcess, BPMNSequenceFlow } from '../../type';
+import { takeOutgoing, getWrappedBPMNElement } from '../../tools';
 import { Context, State, Token, Status } from '../../context';
-import { takeOutgoing, getBPMNActivity } from '../../tools';
 import { IdentityOptions } from '../../common';
 import { Attribute } from './attribute';
 import { Sequence } from './sequence';
@@ -29,10 +29,12 @@ export class Activity extends Attribute {
    * @returns An array of Sequence objects.
    */
   get incoming() {
-    return this['bpmn:incoming']?.map((id: string) => {
-      const activity = getBPMNActivity(this.process, { id })?.activity;
-      return Sequence.build(activity as BPMNSequenceFlow, this.process);
-    });
+    return this['bpmn:incoming']
+      ?.map((id: string) => {
+        const flow = getWrappedBPMNElement(this.process, { id })?.element;
+        if (flow) return Sequence.build(flow as BPMNSequenceFlow, this.process);
+      })
+      .filter((f) => f instanceof Sequence) as Sequence[];
   }
 
   /**
@@ -41,11 +43,12 @@ export class Activity extends Attribute {
    * @returns An array of Sequence objects
    */
   get outgoing() {
-    return this['bpmn:outgoing']?.map((id: string) => {
-      const activity = getBPMNActivity(this.process, { id })?.activity;
-      if (!activity) throw new Error('Outgoing sequenceFlow not found');
-      return Sequence.build(activity as BPMNSequenceFlow, this.process);
-    });
+    return this['bpmn:outgoing']
+      ?.map((id: string) => {
+        const flow = getWrappedBPMNElement(this.process, { id })?.element;
+        if (flow) return Sequence.build(flow as BPMNSequenceFlow, this.process);
+      })
+      .filter((f) => f instanceof Sequence) as Sequence[];
   }
 
   /**

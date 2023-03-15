@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.73% </span>
+                <span class="strong">97.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>259/265</span>
+                <span class='fraction'>257/263</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.26% </span>
+                <span class="strong">58.4% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>74/127</span>
+                <span class='fraction'>73/125</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.73% </span>
+                <span class="strong">97.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>259/265</span>
+                <span class='fraction'>257/263</span>
             </div>
         
             
@@ -326,9 +326,8 @@
 <a name='L261'></a><a href='#L261'>261</a>
 <a name='L262'></a><a href='#L262'>262</a>
 <a name='L263'></a><a href='#L263'>263</a>
-<a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -404,6 +403,7 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -561,10 +561,6 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -595,8 +591,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getActivity, getWrappedBPMNElement, getBPMNProcess } from '../tools';
 import { IdentityOptions, Metadata, MethodOptions, NodeKey } from '../common';
-import { getActivity, getBPMNActivity, getBPMNProcess } from '../tools';
 import { Context, Status, State, Token } from '../context';
 import { BPMNDefinition, BPMNProcess } from '../type';
 import { logger, parse, readFile } from '../utils';
@@ -605,6 +601,7 @@ import { Execute } from './types';
 &nbsp;
 const log = logger('engine');
 &nbsp;
+/* The interface for the execute function. */
 export interface ExecutionInterface {
   id?: string;
   factory?: () =&gt; any;
@@ -670,6 +667,7 @@ function run(target: any, method: string, options: MethodOptions) {
   return { value, exception };
 }
 &nbsp;
+/* It executes a workflow */
 export class WorkflowJS {
   protected target!: any;
 &nbsp;
@@ -753,14 +751,14 @@ export class WorkflowJS {
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
     if (options<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ode) {
-      activity = getActivity(this.process, getBPMNActivity(this.process, options.node));
+      activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
     } else if (!this.context.tokens.length) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
 <span class="branch-0 cbranch-no" title="branch not covered" >        throw new Error('Start event is not defined in process or have more than one start event');</span>
 &nbsp;
       activity = getActivity(this.process, {
         key: 'bpmn:startEvent',
-        activity: this.process['bpmn:startEvent'][0],
+        element: this.process['bpmn:startEvent'][0],
       });
     }
     if (!activity) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Node activity not found');</span>
@@ -823,11 +821,7 @@ export class WorkflowJS {
 &nbsp;
         if (!token) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Token not found at running stage');</span>
 &nbsp;
-        const instance = getBPMNActivity(this.process, { id: next.ref });
-&nbsp;
-        if (!instance) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('BPMN activity instance not found');</span>
-&nbsp;
-        const activity = getActivity(this.process, instance);
+        const activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
 &nbsp;
         log.info(`Next Activity is ${activity<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame ?? activity<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d<span class="branch-0 cbranch-no" title="branch not covered" > ?? '[undefined]'}</span>`);
 &nbsp;
@@ -865,7 +859,7 @@ export class WorkflowJS {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-14T12:02:17.188Z
+                at 2023-03-15T08:04:45.583Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

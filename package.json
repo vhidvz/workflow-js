@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "index.js",
   "types": "index.d.ts",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@types/jest": "^29.4.1",
+    "@types/jest": "^29.4.2",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",

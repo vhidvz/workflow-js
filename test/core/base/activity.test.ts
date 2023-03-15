@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { parse, readFile, getBPMNProcess, getActivity, getBPMNActivity } from '../../../src';
+import { parse, readFile, getBPMNProcess, getActivity, getWrappedBPMNElement } from '../../../src';
 import { BPMNProcess, BPMNSchema } from '../../../src/type';
 import { Activity } from '../../../src/core';
 
@@ -28,11 +28,11 @@ describe('test core base activity class', () => {
   });
 
   it('should define activity object with incoming and outgoing', () => {
-    const bpmnActivity = getBPMNActivity(process!, { id: 'Event_0yc597t' })?.activity;
+    const bpmnActivity = getWrappedBPMNElement(process!, { id: 'Event_0yc597t' })?.element;
 
     expect(bpmnActivity).toBeDefined();
 
-    activity = getActivity(process!, { key: 'event', activity: bpmnActivity! });
+    activity = getActivity(process!, { key: 'event', element: bpmnActivity! });
 
     expect(activity).toBeDefined();
 

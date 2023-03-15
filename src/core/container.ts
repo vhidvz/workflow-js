@@ -1,4 +1,4 @@
-import { BPMNActivity, BPMNDefinition } from '../type';
+import { BPMNDefinition, BPMNElement } from '../type';
 import { IdentityOptions } from '../common';
 import { logger } from '../utils';
 
@@ -9,65 +9,71 @@ export interface DefinitionContainer {
   [id: string]: BPMNDefinition;
 }
 
-/* It's a container for BPMN activities. */
-export interface ActivityContainer {
-  [id: string]: { [id: string]: { activity: BPMNActivity; key: string } };
+/* It's a wrapper for the BPMN element. */
+export interface WrappedElement {
+  element: BPMNElement;
+  key: string;
 }
 
-/* It's a container for BPMN definitions and activities */
+/* It's a container for BPMN elements. */
+export interface ElementContainer {
+  [id: string]: { [id: string]: WrappedElement };
+}
+
+/* It's a container for BPMN definitions and elements */
 export class Container {
-  private static activities: ActivityContainer = {};
+  private static elements: ElementContainer = {};
   private static definitions: DefinitionContainer = {};
 
   /**
-   * It adds an activity to the activities object
+   * It adds an element to the elements object
    *
    * @param {string} id - string - The id of the process
-   * @param activity - activity: BPMNActivity; key: string
+   * @param data - element: BPMNElement; key: string
    */
-  public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
-    Container.activities[id] = Container.activities[id] ?? {};
+  public static addElement(id: string, data: WrappedElement) {
+    Container.elements[id] = Container.elements[id] ?? {};
 
-    const $ = activity.activity.$;
-    Container.activities[id][$.id] = activity;
+    const $ = data.element.$;
+    Container.elements[id][$.id] = data;
 
-    if ($.name) Container.activities[id][$.name] = activity;
+    if ($.name) Container.elements[id][$.name] = data;
 
-    log.info(`Process ${id} activity ${$.id} added to the container`);
+    log.info(`Process ${id} element ${$.id} added to the container`);
   }
 
   /**
-   * If the identity object has an id property, return the activity with that id, otherwise if it has a
-   * name property, return the activity with that name
+   * If the identity object has an id property, return the element with that id, otherwise if it has a
+   * name property, return the element with that name
    *
-   * @param {string} id - The ID of the activity.
-   * @param {IdentityOptions} identity - IdentityOptions
+   * @param {string} id - The ID of the process.
+   * @param {IdentityOptions} identity - IdentityOptions of element
    *
-   * @returns The activity of the user with the given identity.
+   * @returns The element of the user with the given identity.
    */
-  public static getActivity(id: string, identity: IdentityOptions) {
+  public static getElement(id: string, identity: IdentityOptions) {
     const key = 'id' in identity ? identity.id : identity.name;
-    const value = (Container.activities[id] ?? {})[key];
+    const value = (Container.elements[id] ?? {})[key];
 
-    if (value) log.hit(`Getting process ${id} activity identity %o`, identity);
-    else log.miss(`Getting process ${id} activity identity %o`, identity);
+    if (value) log.hit(`Getting process ${id} element identity %o`, identity);
+    else log.miss(`Getting process ${id} element identity %o`, identity);
 
     return value;
   }
 
   /**
-   * It deletes an activity from the activities object
+   * It deletes an element from the elements object
    *
-   * @param {string} id - The ID of the activity.
-   * @param {IdentityOptions} identity - IdentityOptions
+   * @param {string} id - The ID of the process.
+   * @param {IdentityOptions} identity - IdentityOptions of element
    */
-  public static delActivity(id: string, identity?: IdentityOptions) {
+  public static delElement(id: string, identity?: IdentityOptions) {
     if (identity) {
-      if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];
-      else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];
-    } else delete Container.activities[id];
+      if ('id' in identity) delete (Container.elements[id] ?? {})[identity.id];
+      else if ('name' in identity) delete (Container.elements[id] ?? {})[identity.name];
+    } else delete Container.elements[id];
 
-    log.info(`Process ${id} activity identity %o deleted from the container`, identity);
+    log.info(`Process ${id} element identity %o deleted from the container`, identity);
   }
 
   /**

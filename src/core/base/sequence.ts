@@ -1,5 +1,5 @@
+import { getActivity, getWrappedBPMNElement } from '../../tools';
 import { BPMNProcess, BPMNSequenceFlow } from '../../type';
-import { getActivity, getBPMNActivity } from '../../tools';
 import { Attribute } from './attribute';
 import { Activity } from './activity';
 
@@ -18,8 +18,8 @@ export class Sequence extends Attribute {
    */
   get sourceRef(): Activity | undefined {
     if (!this.$.sourceRef) return;
-    const options = getBPMNActivity(this.process, { id: this.$.sourceRef });
-    if (options) return getActivity(this.process, options);
+
+    return getActivity(this.process, getWrappedBPMNElement(this.process, { id: this.$.sourceRef }));
   }
 
   /**
@@ -29,8 +29,8 @@ export class Sequence extends Attribute {
    */
   get targetRef(): Activity | undefined {
     if (!this.$.targetRef) return;
-    const options = getBPMNActivity(this.process, { id: this.$.targetRef });
-    if (options) return getActivity(this.process, options);
+
+    return getActivity(this.process, getWrappedBPMNElement(this.process, { id: this.$.targetRef }));
   }
 
   /**

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.96% </span>
+                <span class="strong">84.82% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>89/106</span>
+                <span class='fraction'>95/112</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.96% </span>
+                <span class="strong">84.82% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>89/106</span>
+                <span class='fraction'>95/112</span>
             </div>
         
             
@@ -169,7 +169,19 @@
 <a name='L104'></a><a href='#L104'>104</a>
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -275,7 +287,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BPMNActivity, BPMNDefinition } from '../type';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BPMNDefinition, BPMNElement } from '../type';
 import { IdentityOptions } from '../common';
 import { logger } from '../utils';
 &nbsp;
@@ -286,65 +298,71 @@ export interface DefinitionContainer {
   [id: string]: BPMNDefinition;
 }
 &nbsp;
-/* It's a container for BPMN activities. */
-export interface ActivityContainer {
-  [id: string]: { [id: string]: { activity: BPMNActivity; key: string } };
+/* It's a wrapper for the BPMN element. */
+export interface WrappedElement {
+  element: BPMNElement;
+  key: string;
 }
 &nbsp;
-/* It's a container for BPMN definitions and activities */
+/* It's a container for BPMN elements. */
+export interface ElementContainer {
+  [id: string]: { [id: string]: WrappedElement };
+}
+&nbsp;
+/* It's a container for BPMN definitions and elements */
 export class Container {
-  private static activities: ActivityContainer = {};
+  private static elements: ElementContainer = {};
   private static definitions: DefinitionContainer = {};
 &nbsp;
   /**
-   * It adds an activity to the activities object
+   * It adds an element to the elements object
    *
    * @param {string} id - string - The id of the process
-   * @param activity - activity: BPMNActivity; key: string
+   * @param data - element: BPMNElement; key: string
    */
-  public static addActivity(id: string, activity: { activity: BPMNActivity; key: string }) {
-    Container.activities[id] = Container.activities[id] ?? {};
+  public static addElement(id: string, data: WrappedElement) {
+    Container.elements[id] = Container.elements[id] ?? {};
 &nbsp;
-    const $ = activity.activity.$;
-    Container.activities[id][$.id] = activity;
+    const $ = data.element.$;
+    Container.elements[id][$.id] = data;
 &nbsp;
-    if ($.name) Container.activities[id][$.name] = activity;
+    if ($.name) Container.elements[id][$.name] = data;
 &nbsp;
-    log.info(`Process ${id} activity ${$.id} added to the container`);
+    log.info(`Process ${id} element ${$.id} added to the container`);
   }
 &nbsp;
   /**
-   * If the identity object has an id property, return the activity with that id, otherwise if it has a
-   * name property, return the activity with that name
+   * If the identity object has an id property, return the element with that id, otherwise if it has a
+   * name property, return the element with that name
    *
-   * @param {string} id - The ID of the activity.
-   * @param {IdentityOptions} identity - IdentityOptions
+   * @param {string} id - The ID of the process.
+   * @param {IdentityOptions} identity - IdentityOptions of element
    *
-   * @returns The activity of the user with the given identity.
+   * @returns The element of the user with the given identity.
    */
-  public static getActivity(id: string, identity: IdentityOptions) {
+  public static getElement(id: string, identity: IdentityOptions) {
     const key = 'id' in identity ? identity.id : identity.name;
-    const value = (Container.activities[id] ?? {})[key];
+    const value = (Container.elements[id] ?? {})[key];
 &nbsp;
-    if (value) log.hit(`Getting process ${id} activity identity %o`, identity);
-    else log.miss(`Getting process ${id} activity identity %o`, identity);
+    if (value) log.hit(`Getting process ${id} element identity %o`, identity);
+    else log.miss(`Getting process ${id} element identity %o`, identity);
 &nbsp;
     return value;
   }
 &nbsp;
   /**
-   * It deletes an activity from the activities object
+   * It deletes an element from the elements object
    *
-   * @param {string} id - The ID of the activity.
-   * @param {IdentityOptions} identity - IdentityOptions
+   * @param {string} id - The ID of the process.
+   * @param {IdentityOptions} identity - IdentityOptions of element
    */
-  public static <span class="fstat-no" title="function not covered" >delActivity(id: string, identity?: IdentityOptions) {</span>
+  public static <span class="fstat-no" title="function not covered" >delElement(id: string, identity?: IdentityOptions) {</span>
 <span class="cstat-no" title="statement not covered" >    if (identity) {</span>
-<span class="cstat-no" title="statement not covered" >      if ('id' in identity) delete (Container.activities[id] ?? {})[identity.id];</span>
-<span class="cstat-no" title="statement not covered" >      else if ('name' in identity) delete (Container.activities[id] ?? {})[identity.name];</span>
-<span class="cstat-no" title="statement not covered" >    } else delete Container.activities[id];</span>
+<span class="cstat-no" title="statement not covered" >      if ('id' in identity) delete (Container.elements[id] ?? {})[identity.id];</span>
+<span class="cstat-no" title="statement not covered" >      else if ('name' in identity) delete (Container.elements[id] ?? {})[identity.name];</span>
+<span class="cstat-no" title="statement not covered" >    } else delete Container.elements[id];</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    log.info(`Process ${id} activity identity %o deleted from the container`, identity);</span>
+<span class="cstat-no" title="statement not covered" >    log.info(`Process ${id} element identity %o deleted from the container`, identity);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
@@ -388,7 +406,7 @@ export class Container {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-03-14T12:02:17.188Z
+                at 2023-03-15T08:04:45.583Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
