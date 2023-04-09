@@ -4,7 +4,6 @@
 [![Coverage](https://raw.githubusercontent.com/vhidvz/workflow-js/master/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/vhidvz/workflow-js/blob/master/docs/coverage/lcov-report/index.html)
 ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/vhidvz/workflow-js)
 ![npm](https://img.shields.io/npm/dm/@vhidvz/wfjs)
-![node-current](https://img.shields.io/node/v/@vhidvz/wfjs)
 [![GitHub](https://img.shields.io/github/license/vhidvz/workflow-js?style=flat)](https://github.com/vhidvz/workflow-js/blob/master/LICENSE)
 [![semantic-release: nodejs](https://img.shields.io/badge/semantic--versioning-nodejs-e10079?logo=semantic-release)](https://semver.org)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
@@ -18,7 +17,7 @@ This is a JavaScript library for building and executing workflows. It provides a
 
   + [Installation](#installation)
   + [Quick Start](#getting-started)
-  + [Tutorial]()
+  + WIP: [Tutorial]()
   + [Examples](https://github.com/vhidvz/workflow-js/tree/master/example)
   + [License](#license)
 
