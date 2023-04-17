@@ -1,5 +1,7 @@
 import { parseString } from 'xml2js';
 import { debug } from 'debug';
+
+import * as crypto from 'crypto';
 import * as fs from 'fs';
 
 /**
@@ -29,9 +31,13 @@ export const parse = (xml: string) => {
 };
 
 /**
- * It returns a random string of 36 characters
+ * generates a random string of hexadecimal characters of a given size (default 16) using the Node.js built-in 'crypto' module's
+ *
+ * @param size - length of uid
+ *
+ * @returns An uid string in hex
  */
-export const uid = () => Math.round(Date.now() * Math.random() * 10).toString(36);
+export const uid = (size = 8) => crypto.randomBytes(size).toString('hex');
 
 /**
  * It returns an object with three functions, each of which logs a message with a different color

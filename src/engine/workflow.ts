@@ -78,9 +78,9 @@ function run(target: any, method: string, options: MethodOptions) {
 
 /* It executes a workflow */
 export class WorkflowJS {
-  protected target!: any;
-
   protected context?: Context;
+
+  protected target!: any;
   protected process?: BPMNProcess;
   protected definition?: BPMNDefinition;
 
@@ -112,27 +112,30 @@ export class WorkflowJS {
    *
    * @returns The return value is an object with the following properties:
    */
-  public execute(options: ExecutionInterface): Execute {
-    if (!this.target && options?.exec?.target) this.target = options.exec.target;
-    if (!this.context && options?.exec?.context) this.context = options.exec.context;
-    if (!this.process && options?.exec?.process) this.process = options.exec.process;
-    if (!this.definition && options?.exec?.definition) this.definition = options.exec.definition;
+  public execute({ context, data, value, ...options }: ExecutionInterface): Execute {
+    context = (this.context ?? context ?? Context.build({ data })).resume();
+    if (!context.isReady()) throw new Error('Context is not ready to consume');
+    if (context.status === Status.Terminated) throw new Error('Cannot execute workflow at terminated state');
 
-    const { handler, factory, path, xml, schema } = options;
+    if (!this.target && options?.exec?.target) this.target = options.exec.target;
+    if (!this.process && options?.exec?.process) this.process = options.exec.process;
 
     if (!this.definition && options.id) this.definition = Container.getDefinition(options.id);
+    if (!this.definition && options.exec?.definition) this.definition = options.exec.definition;
 
+    const { path, xml, schema } = options;
     if (!this.definition && schema) this.definition = schema;
     else if (!this.definition && xml) this.definition = parse(xml)['bpmn:definitions'];
     else if (!this.definition && path) this.definition = parse(readFile(path))['bpmn:definitions'];
 
     if (!this.target) {
+      const { handler, factory } = options;
       this.target = '$__metadata__' in this ? this : (factory ?? (() => undefined))() ?? handler;
+
+      if (!this.target) throw new Error('Target workflow not found');
     }
-    if (!this.target) throw new Error('Target workflow not found');
 
     const metadata = this.target.$__metadata__ as Metadata;
-    const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
 
     this.definition = this.definition ?? Container.getDefinition(metadata.definition.id);
     if (!this.definition) throw new Error('Definition schema not found');
@@ -144,24 +147,13 @@ export class WorkflowJS {
 
     log.info(`Process %o is loaded`, metadata.process);
 
-    const { context, data, value } = options;
-    this.context = this.context ?? context ?? Context.build({ data, status: Status.Ready });
-
-    if (!this.context?.status) this.context.status = Status.Ready;
-
-    if ([Status.Completed, Status.Terminated].includes(this.context.status))
-      throw new Error('Cannot execute workflow at completed or terminated state');
-
-    if (this.context.status !== Status.Ready) this.context.resume();
-    if (!this.context.isReady()) throw new Error('Context is not ready to consume');
-
     /* Checking if the options has a node, if it does, it will get the activity from the process. If it
     does not, it will check if the context has tokens. If it does not, it will get the start event
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
-    if (options?.node) {
+    if (options?.node && context.tokens.length) {
       activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
-    } else if (!this.context.tokens.length) {
+    } else if (!context.tokens.length && !options?.node) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
         throw new Error('Start event is not defined in process or have more than one start event');
 
@@ -170,28 +162,27 @@ export class WorkflowJS {
         element: this.process['bpmn:startEvent'][0],
       });
     }
-    if (!activity) throw new Error('Node activity not found');
+    if (!activity) throw new Error('Node activity not found or not applicable');
 
     /* Checking if the context has tokens. If it does not, it creates a new token and adds it to the
     context. If it does, it gets the last token from the context and resumes it. */
     let token: Token | undefined;
-    if (this.context.tokens.length == 0) {
-      const state = State.build(activity.id, { name: activity.name, value, status: Status.Ready });
+    if (context.tokens.length == 0) {
+      const state = State.build(activity.id, { name: activity.name, value });
 
-      token = Token.build().push(state);
+      token = Token.build({ histories: [state] });
 
-      this.context.addToken(token);
+      context.addToken(token);
     } else {
-      token = this.context.getTokens(activity.$)?.pop();
+      token = context.getTokens(activity.$)?.pop()?.resume();
 
-      if (token?.isPaused()) {
-        if (!token.resume().isReady()) throw new Error('Token is not ready to consume');
-      }
+      if (!token?.isReady()) throw new Error('Token is not ready to consume');
     }
-
     if (!token) throw new Error('Token not found');
+    else token.state.value = token.state.value ?? value;
 
     let node!: { identity: IdentityOptions; propertyName: string };
+    const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
 
     if (activity.name) node = nodes[activity.name];
     if (!node && activity.id) node = nodes[activity.id];
@@ -200,10 +191,11 @@ export class WorkflowJS {
 
     const runOptions: { method: string; options: MethodOptions } = {
       method: node?.propertyName ?? '',
-      options: { activity, token, value, data: data ?? this.context.data, context: this.context },
+      options: { activity, token, context, data: data ?? context.data, value },
     };
 
     /* A loop that will run until the context status is not running. */
+    let val: { [id: string]: any } = {}; // to hold returned value by token id
     do {
       const result = run(this.target, runOptions.method, runOptions.options);
 
@@ -211,51 +203,53 @@ export class WorkflowJS {
 
       if (result.exception) throw result.exception;
 
-      if (this.context.status === Status.Running) {
-        const next = this.context.next();
+      if (context.status === Status.Running) {
+        const next = context.next();
 
         log.info(`Next node is ${next?.name ?? next?.ref ?? '[undefined]'}`);
 
         if (!next) break;
 
         runOptions.method = '';
-        next.value = result.value;
 
         if (next.name) runOptions.method = nodes[next.name]?.propertyName ?? '';
         if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName ?? '';
 
+        if (!runOptions.method && result.value) val = { [token.id]: result.value };
+        else if (runOptions.method && val[token.id]) {
+          next.value = val[token.id];
+          delete val[token.id];
+        } else next.value = result.value;
+
         log.info(`Next method is ${runOptions.method ?? '[undefined]'}`);
 
-        const token = this.context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
+        token = context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
 
         if (!token) throw new Error('Token not found at running stage');
 
-        const activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
+        activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
 
         log.info(`Next Activity is ${activity?.name ?? activity?.id ?? '[undefined]'}`);
 
         runOptions.options = {
           token,
           activity,
+          context: context,
           value: next.value,
-          context: this.context,
-          data: data ?? this.context.data,
+          data: data ?? context.data,
         };
       }
-    } while (this.context.status === Status.Running);
+    } while (context.status === Status.Running);
 
     /* Setting the status of the context to the appropriate status. */
-    if (this.context.isPaused()) this.context.status = Status.Paused;
-    else if (this.context.isTerminated()) this.context.status = Status.Terminated;
+    if (context.isTerminated()) context.status = Status.Terminated;
+    else if (context.status === Status.Running) context.status = Status.Paused;
 
-    if (![Status.Paused, Status.Terminated].includes(this.context.status))
-      this.context.isPausedOrTerminated() && (this.context.status = Status.Completed);
-
-    log.info(`Context status is ${this.context.status}`);
+    log.info(`Context status is ${context.status}`);
 
     return {
+      context: context,
       target: this.target,
-      context: this.context,
       process: this.process,
       definition: this.definition,
     };

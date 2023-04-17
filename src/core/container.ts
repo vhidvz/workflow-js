@@ -55,8 +55,8 @@ export class Container {
     const key = 'id' in identity ? identity.id : identity.name;
     const value = (Container.elements[id] ?? {})[key];
 
-    if (value) log.hit(`Getting process ${id} element identity %o`, identity);
-    else log.miss(`Getting process ${id} element identity %o`, identity);
+    if (value) log.hit(`Getting process ${id} element identity ${key}`);
+    else log.miss(`Getting process ${id} element identity ${key}`);
 
     return value;
   }
@@ -73,7 +73,8 @@ export class Container {
       else if ('name' in identity) delete (Container.elements[id] ?? {})[identity.name];
     } else delete Container.elements[id];
 
-    log.info(`Process ${id} element identity %o deleted from the container`, identity);
+    const key = identity && 'id' in identity ? identity.id : identity?.name;
+    log.info(`Process ${id} element identity ${key ?? id} deleted from the container`);
   }
 
   /**

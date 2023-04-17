@@ -35,20 +35,13 @@ export class Context<D = any> implements ContextInterface<D> {
    *
    * @returns The instance of the class.
    */
-  resume() {
-    if ([Status.Completed, Status.Paused].includes(this.status)) this.status = Status.Ready;
+  resume(force = false) {
+    if (force) this.status = Status.Ready;
+    else if (this.status !== Status.Terminated) {
+      this.status = Status.Ready;
+    }
 
     return this;
-  }
-
-  /**
-   * If the status property of the current instance is equal to the Ready constant, return true,
-   * otherwise return false.
-   *
-   * @returns A boolean value.
-   */
-  isReady() {
-    return this.status === Status.Ready;
   }
 
   /**
@@ -83,6 +76,25 @@ export class Context<D = any> implements ContextInterface<D> {
   }
 
   /**
+   * If the status property of the current instance is equal to the Ready constant, return true,
+   * otherwise return false.
+   *
+   * @returns A boolean value.
+   */
+  isReady() {
+    return this.status === Status.Ready;
+  }
+
+  /**
+   * The function checks if the status is equal to "Failed".
+   *
+   * @returns The `isFailed()` function is returning a boolean value
+   */
+  isFailed() {
+    return this.status === Status.Failed;
+  }
+
+  /**
    * It returns true if every token in the tokens array has a status of Paused
    *
    * @returns A boolean value.
@@ -110,14 +122,23 @@ export class Context<D = any> implements ContextInterface<D> {
   }
 
   /**
-   * It returns true if all the tokens that are not locked have a status of either paused or terminated
+   * It returns true if some token in the tokens array has a status of Terminated
    *
-   * @returns A boolean value.
+   * @returns A boolean value that is true if all the tokens have a status of Terminated.
    */
-  isPausedOrTerminated() {
-    return this.tokens
-      .filter((t) => !t.locked)
-      .every((t) => [Status.Paused, Status.Terminated].includes(t.status));
+  isPartiallyTerminated() {
+    return this.tokens.filter((t) => !t.locked).some((t) => t.status === Status.Terminated);
+  }
+
+  /**
+   * The function sets the status of an object to "Terminated".
+   *
+   * @returns The `terminate()` method is returning the current object (`this`)
+   */
+  terminate() {
+    this.status = Status.Terminated;
+
+    return this;
   }
 
   /**
@@ -136,25 +157,25 @@ export class Context<D = any> implements ContextInterface<D> {
    *
    * @returns An object with the data, status, and tokens.
    */
-  serialize(options = { data: true, value: true }) {
+  serialize({ data, value } = { data: true, value: true }) {
     return {
       status: this.status,
-      ...(options?.data ? this.data : {}),
-      tokens: this.tokens.map((t) => t.serialize(options)),
+      ...(data ? { data: this.data } : {}),
+      tokens: this.tokens.map((t) => t.serialize({ value })),
     };
   }
 
   /**
    * It takes a serialized context and returns a new context with the tokens deserialized
    *
-   * @param data - Context<D>
+   * @param ctx - Context<D>
    *
    * @returns A new Context object with the data passed in and the tokens mapped to Token objects.
    */
-  static deserialize<D = any>(data: ContextInterface<D>) {
+  static deserialize<D = any>(ctx: ContextInterface<D>) {
     return new Context<D>({
-      ...data,
-      tokens: data.tokens.map((t) => Token.deserialize(t)),
+      ...ctx,
+      tokens: ctx.tokens.map((t) => Token.deserialize(t)),
     });
   }
 

@@ -30,7 +30,7 @@ export class GatewayActivity extends Activity {
    *
    * @returns The outgoing activity
    */
-  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
+  takeOutgoing(identity?: IdentityOptions, { pause } = { pause: false }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     let outgoing = takeOutgoing(this.outgoing, identity);
@@ -46,10 +46,17 @@ export class GatewayActivity extends Activity {
           if (tokens?.length !== this.incoming.length) {
             this.token.pause();
             return;
-          } else {
-            tokens.forEach((t) => (t.status = Status.Terminated));
-            outgoing = takeOutgoing(this.outgoing);
+          } else if (this.incoming.length > 1) {
+            tokens.forEach((t) => {
+              t.locked = true;
+              t.status = Status.Terminated;
+            });
+
+            this.token = Token.build({ histories: [this.token.state.clone()] });
+            this.context.addToken(this.token);
           }
+
+          outgoing = takeOutgoing(this.outgoing);
         }
         break;
 
@@ -66,8 +73,6 @@ export class GatewayActivity extends Activity {
     }
 
     if (outgoing?.length && this.token) {
-      const { pause } = options ?? {};
-
       if (outgoing.length === 1) {
         this.token.status = Status.Completed;
 

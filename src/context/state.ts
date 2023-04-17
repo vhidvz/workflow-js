@@ -14,10 +14,21 @@ export class State<V = any> {
 
   public ref!: string;
   public name?: string;
-  public status!: Status;
+  public status = Status.Ready;
 
   constructor(data?: Partial<StateInterface>) {
     if (data) Object.assign(this, data);
+  }
+
+  /**
+   * This function clones the current state object by serializing and deserializing it.
+   *
+   * @param  - The `clone` function takes an optional object parameter
+   *
+   * @returns The `clone` method is returning a new instance of the `State` class
+   */
+  clone({ value } = { value: false }) {
+    return State.deserialize(this.serialize({ value }));
   }
 
   /**
@@ -27,24 +38,24 @@ export class State<V = any> {
    *
    * @returns An object with the ref, name, status, and value properties.
    */
-  serialize(options = { value: true }) {
+  serialize({ value } = { value: true }) {
     return {
       ref: this.ref,
       status: this.status,
+      ...(value ? { value: this.value } : {}),
       ...(this.name ? { name: this.name } : {}),
-      ...(options?.value ? { value: this.value } : {}),
     };
   }
 
   /**
    * It takes a State object and returns a new State object with the same properties
    *
-   * @param {State} data - The data to be deserialized.
+   * @param {State} state - The data to be deserialized.
    *
    * @returns A new instance of the State class.
    */
-  static deserialize<V = any>(data: StateInterface<V>) {
-    return new State<V>({ ...data });
+  static deserialize<V = any>(state: StateInterface<V>) {
+    return new State<V>({ ...state });
   }
 
   /**
@@ -56,7 +67,7 @@ export class State<V = any> {
    *
    * @returns A new instance of the State class.
    */
-  static build<V = any>(ref: string, options: { name?: string; value?: V; status: Status }) {
+  static build<V = any>(ref: string, options: { name?: string; value?: V; status?: Status }) {
     return new State<V>({ ref, ...options });
   }
 }

@@ -4,16 +4,12 @@ dotenv.config();
 
 import { EventActivity, GatewayActivity, TaskActivity } from '../src/core';
 import { Act, Data, Node, Process, Value } from '../src/common';
-import { WorkflowJS } from '../src';
+import { Context, ContextInterface, WorkflowJS } from '../src';
 
-@Process(
-  {
-    name: 'Pizza Customer',
-    path: './example/supplying-pizza.bpmn',
-  },
-  // you must set this id if you have multiple bpmn file
-  'custom_definition_id',
-)
+@Process({
+  name: 'Pizza Customer',
+  path: './example/supplying-pizza.bpmn',
+})
 class PizzaCustomer {
   @Node({ name: 'Hungry for Pizza' })
   public hungryForPizza(
@@ -79,17 +75,34 @@ class PizzaCustomer {
   }
 }
 
+let ctx: ContextInterface;
+let handle: PizzaCustomer;
+
 const workflow = WorkflowJS.build();
 
-const { target } = workflow.execute({
-  id: 'custom_definition_id',
-  factory: () => new PizzaCustomer(),
-  data: { value: 'pizza' },
-  value: 'pepperoni',
-});
+(function () {
+  const { context, target } = workflow.execute({
+    factory: () => new PizzaCustomer(),
+    data: { value: 'pizza' },
+    value: 'pepperoni',
+  });
 
-console.log(typeof target);
+  handle = target; // PizzaCustomer instance
+  ctx = context.serialize(); // plain json object can store it to your DB
+
+  console.debug('\nContext is:', JSON.stringify(ctx, null, 2));
+})();
 
 // After 60 Minutes
 
-workflow.execute({ node: { name: 'Ask for the pizza' }, value: 'Hey?' });
+(function () {
+  const { context } = workflow.execute({
+    handler: handle,
+    // exec: { target: handle },
+    context: Context.deserialize(ctx),
+    node: { name: 'Ask for the pizza' },
+    value: 'Hey?',
+  });
+
+  console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+})();

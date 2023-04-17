@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProcessOptions, IdentityOptions, Metadata } from '../types';
+import { parse, readFile, uid } from '../../utils';
 import { Container } from '../../core/container';
-import { parse, readFile } from '../../utils';
-import { Default } from '../keys';
 
 import 'reflect-metadata';
 
@@ -17,7 +16,7 @@ import 'reflect-metadata';
  *
  * @returns A function that returns a class that extends the class passed in.
  */
-export function Process(options: Partial<ProcessOptions & IdentityOptions>, id: string = Default): any {
+export function Process(options: Partial<ProcessOptions & IdentityOptions>, id: string = uid()): any {
   if ('schema' in options) Container.addDefinition(id, options.schema!);
   if ('xml' in options) Container.addDefinition(id, parse(options.xml!)['bpmn:definitions']);
   if ('path' in options) Container.addDefinition(id, parse(readFile(options.path!))['bpmn:definitions']);

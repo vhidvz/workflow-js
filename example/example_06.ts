@@ -2,8 +2,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { parse, readFile, WorkflowJS } from '../src';
 import { Act, Node, Process } from '../src/common';
+import { readFile, WorkflowJS } from '../src';
 import { EventActivity } from '../src/core';
 
 @Process({ name: 'Pizza Vendor' })
@@ -26,13 +26,12 @@ class PizzaVendor {
 
 const workflow = WorkflowJS.build();
 
-const xml = readFile('./example/supplying-pizza.bpmn');
-
 const { context, definition } = workflow.execute({
   factory: () => new PizzaVendor(),
-  schema: parse(xml)['bpmn:definitions'],
+  xml: readFile('./example/supplying-pizza.bpmn'),
 });
 
+console.debug('\nDefinition is:', definition);
 console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
 
 // After a while
@@ -43,6 +42,8 @@ const exec = WorkflowJS.build({ definition }).execute({
   node: { name: 'Receive Payment' },
 });
 
-console.debug(exec);
+console.debug('\nContext before termination is:', JSON.stringify(exec.context.serialize(), null, 2));
 
-console.debug('\nContext is:', JSON.stringify(exec.context.serialize(), null, 2));
+if (context.isPartiallyTerminated()) exec.context.terminate();
+
+console.debug('\nContext after termination is:', JSON.stringify(exec.context.serialize(), null, 2));

@@ -2,5 +2,9 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "cSpell.words": ["vhidvz", "wfjs"]
+  "cSpell.words": [
+    "Vahid",
+    "vhidvz",
+    "wfjs"
+  ]
 }

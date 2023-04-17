@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/62</span>
+                <span class='fraction'>73/73</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/8</span>
+                <span class='fraction'>7/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>62/62</span>
+                <span class='fraction'>73/73</span>
             </div>
         
             
@@ -125,7 +125,18 @@
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -144,8 +155,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -155,13 +166,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -171,8 +175,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -203,10 +225,21 @@ export class State&lt;V = any&gt; {
 &nbsp;
   public ref!: string;
   public name?: string;
-  public status!: Status;
+  public status = Status.Ready;
 &nbsp;
   constructor(data?: Partial&lt;StateInterface&gt;) {
     if (data) Object.assign(this, data);
+  }
+&nbsp;
+  /**
+   * This function clones the current state object by serializing and deserializing it.
+   *
+   * @param  - The `clone` function takes an optional object parameter
+   *
+   * @returns The `clone` method is returning a new instance of the `State` class
+   */
+  clone({ value } = { value: false }) {
+    return State.deserialize(this.serialize({ value }));
   }
 &nbsp;
   /**
@@ -216,24 +249,24 @@ export class State&lt;V = any&gt; {
    *
    * @returns An object with the ref, name, status, and value properties.
    */
-  serialize(options = { value: true }) {
+  serialize({ value } = { value: true }) {
     return {
       ref: this.ref,
       status: this.status,
+      ...(value <span class="branch-0 cbranch-no" title="branch not covered" >? { value: this.value } </span>: {}),
       ...(this.name ? { name: this.name } : {}),
-      ...(options<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue <span class="branch-0 cbranch-no" title="branch not covered" >? { value: this.value } </span>: {}),
     };
   }
 &nbsp;
   /**
    * It takes a State object and returns a new State object with the same properties
    *
-   * @param {State} data - The data to be deserialized.
+   * @param {State} state - The data to be deserialized.
    *
    * @returns A new instance of the State class.
    */
-  static deserialize&lt;V = any&gt;(data: StateInterface&lt;V&gt;) {
-    return new State&lt;V&gt;({ ...data });
+  static deserialize&lt;V = any&gt;(state: StateInterface&lt;V&gt;) {
+    return new State&lt;V&gt;({ ...state });
   }
 &nbsp;
   /**
@@ -245,7 +278,7 @@ export class State&lt;V = any&gt; {
    *
    * @returns A new instance of the State class.
    */
-  static build&lt;V = any&gt;(ref: string, options: { name?: string; value?: V; status: Status }) {
+  static build&lt;V = any&gt;(ref: string, options: { name?: string; value?: V; status?: Status }) {
     return new State&lt;V&gt;({ ref, ...options });
   }
 }
@@ -256,7 +289,7 @@ export class State&lt;V = any&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-09T17:00:23.062Z
+                at 2023-04-17T15:16:20.944Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

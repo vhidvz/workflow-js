@@ -4,7 +4,7 @@ dotenv.config();
 
 import { EventActivity, GatewayActivity, TaskActivity } from '../src/core';
 import { Act, Data, Node, Process, Value } from '../src/common';
-import { WorkflowJS } from '../src';
+import { Context, ContextInterface, WorkflowJS } from '../src';
 
 @Process({ name: 'Pizza Customer' })
 class PizzaCustomer {
@@ -72,17 +72,30 @@ class PizzaCustomer {
   }
 }
 
-const workflow = WorkflowJS.build();
+let ctx: ContextInterface;
 
-const { target } = workflow.execute({
-  factory: () => new PizzaCustomer(),
-  data: { value: 'pizza' },
-  value: 'pepperoni',
-  path: './example/supplying-pizza.bpmn',
-});
+const workflow = WorkflowJS.build({ target: new PizzaCustomer() });
 
-console.log(typeof target);
+(function () {
+  const { context } = workflow.execute({
+    data: { value: 'pizza' },
+    value: 'pepperoni',
+    path: './example/supplying-pizza.bpmn',
+  });
+
+  ctx = context.serialize(); // plain json object can store it to your DB
+
+  console.debug('\nContext is:', JSON.stringify(ctx, null, 2));
+})();
 
 // After 60 Minutes
 
-workflow.execute({ node: { name: 'Ask for the pizza' }, value: 'Hey?' });
+(function () {
+  const { context } = workflow.execute({
+    context: Context.deserialize(ctx),
+    node: { name: 'Ask for the pizza' },
+    value: 'Hey?',
+  });
+
+  console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+})();
