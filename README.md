@@ -5,7 +5,6 @@
 ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/vhidvz/workflow-js)
 ![npm](https://img.shields.io/npm/dm/@vhidvz/wfjs)
 [![GitHub](https://img.shields.io/github/license/vhidvz/workflow-js?style=flat)](https://github.com/vhidvz/workflow-js/blob/master/LICENSE)
-[![semantic-release: nodejs](https://img.shields.io/badge/semantic--versioning-nodejs-e10079?logo=semantic-release)](https://semver.org)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Chat on Matrix](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#wfjs:gitter.im)
 [![documentation](https://img.shields.io/badge/documentation-click_to_read-c27cf4)](https://vhidvz.github.io/workflow-js/)
@@ -77,4 +76,4 @@ console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - SEE the [LICENSE](LICENSE) file for details
