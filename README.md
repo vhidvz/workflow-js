@@ -65,7 +65,7 @@ import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 
   const xml = readFile('./example/simple-workflow.bpmn');
 
-  const { context } = workflow.execute({
+  const { context } = await workflow.execute({
     factory: () => new SimpleWorkflow(),
     schema: parse(xml)['bpmn:definitions'],
   });
