@@ -34,7 +34,7 @@ export interface ExecutionInterface {
  *
  * @returns The value of the method, or the exception if there is one.
  */
-function run(target: any, method: string, options: MethodOptions) {
+async function run(target: any, method: string, options: MethodOptions) {
   options.activity.token = options.token;
   options.activity.context = options.context;
 
@@ -54,7 +54,7 @@ function run(target: any, method: string, options: MethodOptions) {
 
       value = options.value;
       outgoing = options.activity.takeOutgoing();
-    } else value = target[method](options);
+    } else value = await target[method](options);
 
     log.info(`Activity ${options.activity.id ?? options.activity.name} completed`);
 
@@ -112,7 +112,7 @@ export class WorkflowJS {
    *
    * @returns The return value is an object with the following properties:
    */
-  public execute({ context, data, value, ...options }: ExecutionInterface): Execute {
+  async execute({ context, data, value, ...options }: ExecutionInterface): Promise<Execute> {
     context = (this.context ?? context ?? Context.build({ data })).resume();
     if (!context.isReady()) throw new Error('Context is not ready to consume');
     if (context.status === Status.Terminated) throw new Error('Cannot execute workflow at terminated state');
@@ -197,7 +197,7 @@ export class WorkflowJS {
     /* A loop that will run until the context status is not running. */
     let val: { [id: string]: any } = {}; // to hold returned value by token id
     do {
-      const result = run(this.target, runOptions.method, runOptions.options);
+      const result = await run(this.target, runOptions.method, runOptions.options);
 
       log.debug(`Result of %o method is %O`, runOptions.method, result.value ?? '[null]');
 

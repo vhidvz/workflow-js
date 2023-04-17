@@ -4,7 +4,7 @@ dotenv.config();
 
 import { EventActivity, GatewayActivity, TaskActivity } from '../src/core';
 import { Act, Data, Node, Process, Value } from '../src/common';
-import { Context, ContextInterface, WorkflowJS } from '../src';
+import { Context, WorkflowJS } from '../src';
 
 @Process({
   name: 'Pizza Customer',
@@ -38,7 +38,11 @@ class PizzaCustomer {
   }
 
   @Node({ id: 'Gateway_0s7y3gr' })
-  whereIsMyPizza(@Value() value: string, @Data() data: { value: string }, @Act() activity: GatewayActivity) {
+  async whereIsMyPizza(
+    @Value() value: string,
+    @Data() data: { value: string },
+    @Act() activity: GatewayActivity,
+  ) {
     console.log('data in whereIsMyPizza is:', data);
     console.log('value in whereIsMyPizza is:', value);
 
@@ -59,7 +63,11 @@ class PizzaCustomer {
   }
 
   @Node({ name: 'Pizza Received' })
-  pizzaReceived(@Value() value: string, @Data() data: { value: string }, @Act() activity: EventActivity) {
+  async pizzaReceived(
+    @Value() value: string,
+    @Data() data: { value: string },
+    @Act() activity: EventActivity,
+  ) {
     console.log('data in pizzaReceived is:', data);
     console.log('value in pizzaReceived is:', value);
 
@@ -75,28 +83,23 @@ class PizzaCustomer {
   }
 }
 
-let ctx: ContextInterface;
-let handle: PizzaCustomer;
+(async () => {
+  const workflow = WorkflowJS.build();
 
-const workflow = WorkflowJS.build();
-
-(function () {
-  const { context, target } = workflow.execute({
+  const { context, target } = await workflow.execute({
     factory: () => new PizzaCustomer(),
     data: { value: 'pizza' },
     value: 'pepperoni',
   });
 
-  handle = target; // PizzaCustomer instance
-  ctx = context.serialize(); // plain json object can store it to your DB
+  const handle = target; // PizzaCustomer instance
+  const ctx = context.serialize(); // plain json object can store it to your DB
 
   console.debug('\nContext is:', JSON.stringify(ctx, null, 2));
-})();
 
-// After 60 Minutes
+  // After 60 Minutes
 
-(function () {
-  const { context } = workflow.execute({
+  const exec = await workflow.execute({
     handler: handle,
     // exec: { target: handle },
     context: Context.deserialize(ctx),
@@ -104,5 +107,5 @@ const workflow = WorkflowJS.build();
     value: 'Hey?',
   });
 
-  console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+  console.debug('\nContext is:', JSON.stringify(exec.context.serialize(), null, 2));
 })();

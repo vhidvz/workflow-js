@@ -24,26 +24,28 @@ class PizzaVendor {
   }
 }
 
-const workflow = WorkflowJS.build();
+(async () => {
+  const workflow = WorkflowJS.build();
 
-const { context, definition } = workflow.execute({
-  factory: () => new PizzaVendor(),
-  xml: readFile('./example/supplying-pizza.bpmn'),
-});
+  const { context, definition } = await workflow.execute({
+    factory: () => new PizzaVendor(),
+    xml: readFile('./example/supplying-pizza.bpmn'),
+  });
 
-console.debug('\nDefinition is:', definition);
-console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+  console.debug('\nDefinition is:', definition);
+  console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
 
-// After a while
+  // After a while
 
-const exec = WorkflowJS.build({ definition }).execute({
-  context: context.resume(),
-  factory: () => new PizzaVendor(),
-  node: { name: 'Receive Payment' },
-});
+  const exec = await WorkflowJS.build({ definition }).execute({
+    context: context.resume(),
+    factory: () => new PizzaVendor(),
+    node: { name: 'Receive Payment' },
+  });
 
-console.debug('\nContext before termination is:', JSON.stringify(exec.context.serialize(), null, 2));
+  console.debug('\nContext before termination is:', JSON.stringify(exec.context.serialize(), null, 2));
 
-if (context.isPartiallyTerminated()) exec.context.terminate();
+  if (context.isPartiallyTerminated()) exec.context.terminate();
 
-console.debug('\nContext after termination is:', JSON.stringify(exec.context.serialize(), null, 2));
+  console.debug('\nContext after termination is:', JSON.stringify(exec.context.serialize(), null, 2));
+})();

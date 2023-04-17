@@ -49,12 +49,12 @@ describe('test workflow engine class', () => {
     expect(process).toBeDefined();
   });
 
-  it('should return workflow by schema', () => {
+  it('should return workflow by schema', async () => {
     const workflow = WorkflowJS.build();
 
     expect(workflow).toBeDefined();
 
-    const { context } = workflow.execute({
+    const { context } = await workflow.execute({
       factory: () => new SimpleWorkflow(),
       schema: parse(xml)['bpmn:definitions'],
     });
@@ -62,12 +62,12 @@ describe('test workflow engine class', () => {
     expect(context.isPaused()).toBeTruthy();
   });
 
-  it('should return workflow by path', () => {
+  it('should return workflow by path', async () => {
     const workflow = WorkflowJS.build();
 
     expect(workflow).toBeDefined();
 
-    const { context } = workflow.execute({
+    const { context } = await workflow.execute({
       path,
       handler: new SimpleWorkflow(),
     });
@@ -75,12 +75,12 @@ describe('test workflow engine class', () => {
     expect(context.isPaused()).toBeTruthy();
   });
 
-  it('should return workflow by context deserialized', () => {
+  it('should return workflow by context deserialized', async () => {
     const workflow = WorkflowJS.build();
 
     expect(workflow).toBeDefined();
 
-    const { context } = workflow.execute({
+    const { context } = await workflow.execute({
       path,
       handler: new SimpleWorkflow(),
     });
@@ -91,7 +91,7 @@ describe('test workflow engine class', () => {
 
     expect(ctx).toBeDefined();
 
-    const exec = WorkflowJS.build({ context: Context.deserialize(ctx) }).execute({
+    const exec = await WorkflowJS.build({ context: Context.deserialize(ctx) }).execute({
       xml,
       handler: new SimpleWorkflow(),
       node: { id: 'Activity_1r8gmbw' },

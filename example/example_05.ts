@@ -14,11 +14,13 @@ class SimpleWorkflow {
   }
 }
 
-const workflow = WorkflowJS.build();
+(async () => {
+  const workflow = WorkflowJS.build();
 
-const { context } = workflow.execute({
-  factory: () => new SimpleWorkflow(),
-  xml: readFile('./example/simple-workflow.bpmn'),
-});
+  const { context } = await workflow.execute({
+    factory: () => new SimpleWorkflow(),
+    xml: readFile('./example/simple-workflow.bpmn'),
+  });
 
-console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+  console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+})();

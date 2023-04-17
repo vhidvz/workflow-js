@@ -47,7 +47,7 @@ import { EventActivity } from "@vhidvz/wfjs/core";
 @Process({ name: 'Simple Workflow' })
 class SimpleWorkflow {
   @Node({ name: 'Start' })
-  public start(@Act() activity: EventActivity) {
+  async start(@Act() activity: EventActivity) {
     activity.takeOutgoing();
   }
 }
@@ -60,16 +60,18 @@ Once you have defined the workflow, you can build and execute it using the Workf
 ```ts
 import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 
-const workflow = WorkflowJS.build();
+(async () => {
+  const workflow = WorkflowJS.build();
 
-const xml = readFile('./example/simple-workflow.bpmn');
+  const xml = readFile('./example/simple-workflow.bpmn');
 
-const { context } = workflow.execute({
-  factory: () => new SimpleWorkflow(),
-  schema: parse(xml)['bpmn:definitions'],
-});
+  const { context } = workflow.execute({
+    factory: () => new SimpleWorkflow(),
+    schema: parse(xml)['bpmn:definitions'],
+  });
 
-console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+  console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));
+})()
 ```
 
 ## [More Example](https://github.com/vhidvz/workflow-js/tree/master/example)
