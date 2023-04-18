@@ -14,11 +14,11 @@ WorkflowJS is a lightweight and flexible library for building workflows and proc
 
 This is a JavaScript library for building and executing workflows. It provides a simple, declarative syntax for defining processes, and offers a flexible and extensible framework for handling workflow events and activities.
 
-  + [Installation](#installation)
-  + [Quick Start](#getting-started)
-  + WIP: [Tutorial]()
-  + [Examples](https://github.com/vhidvz/workflow-js/tree/master/example)
-  + [License](#license)
++ [Installation](#installation)
++ [Quick Start](#getting-started)
++ WIP: [Tutorial]()
++ [Examples](https://github.com/vhidvz/workflow-js/tree/master/example)
++ [License](#license)
 
 ## Installation
 
@@ -63,11 +63,9 @@ import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 (async () => {
   const workflow = WorkflowJS.build();
 
-  const xml = readFile('./example/simple-workflow.bpmn');
-
   const { context } = await workflow.execute({
     factory: () => new SimpleWorkflow(),
-    schema: parse(xml)['bpmn:definitions'],
+    xml: readFile('./example/simple-workflow.bpmn'),
   });
 
   console.debug('\nContext is:', JSON.stringify(context.serialize(), null, 2));

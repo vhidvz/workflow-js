@@ -1,9 +1,9 @@
 # Build
-core
-type
-engine
-common
-context
+./core
+./type
+./engine
+./common
+./context
 index.js
 tools.js
 utils.js
