@@ -74,6 +74,10 @@ import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 
 ## [More Example](https://github.com/vhidvz/workflow-js/tree/master/example)
 
+__Template__: 
+
+- [workflow-template](https://github.com/vhidvz/workflow-template) an example of creating a simple workflow microservice with [NestJS](https://github.com/nestjs/nest) and [WorkflowJS](https://github.com/vhidvz/workflow-js).
+
 ## License
 
 This project is licensed under the MIT License - SEE the [LICENSE](LICENSE) file for details
