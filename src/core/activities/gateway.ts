@@ -56,7 +56,7 @@ export class GatewayActivity extends Activity {
             this.context.addToken(this.token);
           }
 
-          outgoing = takeOutgoing(this.outgoing);
+          outgoing = outgoing ?? takeOutgoing(this.outgoing);
         }
         break;
 
