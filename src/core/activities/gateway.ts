@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-case-declarations */
+import { Activity, GoOutInterface, Sequence, TakeOutgoingInterface } from '../base';
 import { BPMNGateway, BPMNProcess, BPMNSequenceFlow } from '../../type';
 import { takeOutgoing, getWrappedBPMNElement } from '../../tools';
-import { State, Token, Status } from '../../context';
 import { IdentityOptions } from '../../common';
-import { Activity, Sequence } from '../base';
+import { Token, Status } from '../../context';
 
 export enum GatewayType {
   Complex = 'complex',
@@ -21,18 +22,7 @@ export class GatewayActivity extends Activity {
     super(process, data, key);
   }
 
-  /**
-   * > This function takes the outgoing sequence flows of a gateway and returns the next activity to be
-   * executed
-   *
-   * @param {IdentityOptions} [identity] - IdentityOptions
-   * @param [options] - pause: boolean
-   *
-   * @returns The outgoing activity
-   */
-  takeOutgoing(identity?: IdentityOptions, { pause } = { pause: false }) {
-    if (!this.outgoing || !this.outgoing?.length) return;
-
+  protected takeGatewayOutgoing(identity?: IdentityOptions) {
     let outgoing = takeOutgoing(this.outgoing, identity);
 
     switch (this.type) {
@@ -72,39 +62,41 @@ export class GatewayActivity extends Activity {
         break;
     }
 
-    if (outgoing?.length && this.token) {
-      if (outgoing.length === 1) {
-        this.token.status = Status.Completed;
+    return outgoing;
+  }
 
-        this.token.push(
-          State.build(outgoing[0].id, {
-            name: outgoing[0].name,
-            status: pause ? Status.Paused : Status.Ready,
-          }),
-        );
-      }
+  /**
+   * > This function takes the outgoing sequence flows of a gateway and returns the next activity to be
+   * executed
+   *
+   * @param {IdentityOptions} [identity] - IdentityOptions
+   * @param [options] - pause: boolean
+   *
+   * @returns The outgoing activity
+   */
+  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
+    if (!this.outgoing || !this.outgoing?.length) return;
 
-      if (outgoing.length > 1 && this.context) {
-        this.token.locked = true;
-        this.token.status = Status.Terminated;
+    const outgoing = this.takeGatewayOutgoing(identity);
 
-        for (const activity of outgoing) {
-          const token = Token.build({
-            parent: this.token.id,
-          });
+    if (!outgoing) return;
 
-          token.push(
-            State.build(activity.id, {
-              name: activity.name,
-              status: pause ? Status.Paused : Status.Ready,
-            }),
-          );
-          this.context.addToken(token);
-        }
-      }
+    this.goOut(outgoing.map((out) => ({ activity: out, pause: options?.pause })));
+  }
+
+  takeOutgoings(options: TakeOutgoingInterface[]) {
+    if (!this.outgoing || !this.outgoing?.length) return;
+
+    const outgoing: { [id: string]: GoOutInterface } = {};
+
+    for (const option of options) {
+      const { identity, pause } = option;
+      const activity = this.takeGatewayOutgoing(identity)?.pop();
+
+      if (activity) outgoing[activity.id] = { activity, pause };
     }
 
-    return outgoing;
+    this.goOut(Object.values(outgoing));
   }
 
   /**

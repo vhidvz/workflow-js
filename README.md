@@ -16,7 +16,6 @@ This is a JavaScript library for building and executing workflows. It provides a
 
 + [Installation](#installation)
 + [Quick Start](#getting-started)
-+ WIP: [Tutorial]()
 + [Examples](https://github.com/vhidvz/workflow-js/tree/master/example)
 + [License](#license)
 
@@ -74,9 +73,11 @@ import { parse, readFile, WorkflowJS } from '@vhidvz/wfjs';
 
 ## [More Example](https://github.com/vhidvz/workflow-js/tree/master/example)
 
+Examples provided on this [link](https://github.com/vhidvz/workflow-js/tree/master/example).
+
 __Projects__: 
 
-- [workflow-template](https://github.com/vhidvz/workflow-template) is an example of creating a simple workflow microservice with [NestJS](https://github.com/nestjs/nest) and [WorkflowJS](https://github.com/vhidvz/workflow-js).
+- [Simple Workflow Microservice](https://github.com/vhidvz/workflow-template) is an example of creating a simple workflow microservice with [NestJS](https://github.com/nestjs/nest) and [WorkflowJS](https://github.com/vhidvz/workflow-js).
 
 ## License
 

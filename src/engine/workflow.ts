@@ -45,15 +45,13 @@ async function run(target: any, method: string, options: MethodOptions) {
     options.token.status = Status.Running;
     options.context.status = Status.Running;
 
-    let outgoing: Activity[] | undefined;
-
     log.info(`Activity ${options.activity.id ?? options.activity.name} is running`);
 
     if (!method) {
       log.warn(`Activity ${options.activity.id ?? options.activity.name} method not defined`);
 
       value = options.value;
-      outgoing = options.activity.takeOutgoing();
+      options.activity.takeOutgoing();
     } else value = await target[method](options);
 
     log.info(`Activity ${options.activity.id ?? options.activity.name} completed`);
@@ -64,7 +62,7 @@ async function run(target: any, method: string, options: MethodOptions) {
 
     if (options.activity.isEnd()) options.token.status = Status.Terminated;
 
-    if (!outgoing?.length && !method && !options.activity.isEnd()) options.token.pause();
+    if (!options.activity.outgoing?.length && !options.activity.isEnd()) options.token.pause();
   } catch (error) {
     options.context.status = Status.Failed;
     options.token.status = Status.Failed;

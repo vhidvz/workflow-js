@@ -39,7 +39,7 @@ describe('test core base activity class', () => {
     expect(activity.incoming).toHaveLength(2);
     expect(activity.outgoing).toHaveLength(1);
 
-    expect(activity.takeOutgoing()).toHaveLength(1);
+    expect(activity.takeOutgoings([{ identity: { id: 'Event_0yc597t' } }])).toBeUndefined();
   });
 
   it('should return boolean', () => {
