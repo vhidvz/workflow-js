@@ -31,10 +31,11 @@ export interface ExecutionInterface {
  * @param {any} target - any - The target object that contains the method to be executed.
  * @param {string} method - The name of the method to be executed.
  * @param {MethodOptions} options - MethodOptions
+ * @param {boolean} is_first_iteration - is first iteration
  *
  * @returns The value of the method, or the exception if there is one.
  */
-async function run(target: any, method: string, options: MethodOptions) {
+async function run(target: any, method: string, options: MethodOptions, is_first_iteration?: boolean) {
   options.activity.token = options.token;
   options.activity.context = options.context;
 
@@ -60,7 +61,7 @@ async function run(target: any, method: string, options: MethodOptions) {
 
       value = options.value;
       options.activity.takeOutgoing();
-    } else if (!node?.options?.pause) {
+    } else if (!node?.options?.pause || is_first_iteration) {
       value = await target[method](options);
     } else options.token.pause();
 
@@ -203,9 +204,10 @@ export class WorkflowJS {
     };
 
     /* A loop that will run until the context status is not running. */
+    let is_first_iteration = true;
     let val: { [id: string]: any } = {}; // to hold returned value by token id
     do {
-      const result = await run(this.target, runOptions.method, runOptions.options);
+      const result = await run(this.target, runOptions.method, runOptions.options, is_first_iteration);
 
       log.debug(`Result of %o method is %O`, runOptions.method, result.value ?? '[null]');
 
@@ -247,6 +249,8 @@ export class WorkflowJS {
           data: data ?? context.data,
         };
       }
+
+      is_first_iteration = false;
     } while (context.status === Status.Running);
 
     /* Setting the status of the context to the appropriate status. */
