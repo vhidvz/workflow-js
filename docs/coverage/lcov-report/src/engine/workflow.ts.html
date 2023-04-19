@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.86% </span>
+                <span class="strong">96.98% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>247/255</span>
+                <span class='fraction'>257/265</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.87% </span>
+                <span class="strong">57.89% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>73/124</span>
+                <span class='fraction'>77/133</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.86% </span>
+                <span class="strong">96.98% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>247/255</span>
+                <span class='fraction'>257/265</span>
             </div>
         
             
@@ -318,7 +318,17 @@
 <a name='L253'></a><a href='#L253'>253</a>
 <a name='L254'></a><a href='#L254'>254</a>
 <a name='L255'></a><a href='#L255'>255</a>
-<a name='L256'></a><a href='#L256'>256</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -354,6 +364,14 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -373,6 +391,8 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -622,14 +642,24 @@ async function run(target: any, method: string, options: MethodOptions) {
 &nbsp;
     log.info(`Activity ${options.activity.id<span class="branch-0 cbranch-no" title="branch not covered" > ?? options.activity.name}</span> is running`);
 &nbsp;
-    if (!method) {
+    let node!: { options: { pause?: true }; propertyName: string };
+    const nodes = Reflect.getMetadata(NodeKey, target, '$__metadata__');
+&nbsp;
+    if (options.activity.name) node = nodes[options.activity.name];
+    if (!node &amp;&amp; options.activity.id) node = nodes[options.activity.id];
+&nbsp;
+    log.info(`Node %o is loaded`, node);
+&nbsp;
+    if (!method &amp;&amp; !node<span class="branch-0 cbranch-no" title="branch not covered" >?.options<span class="branch-0 cbranch-no" title="branch not covered" >?</span>.pause)</span> {
       log.warn(`Activity ${options.activity.id<span class="branch-0 cbranch-no" title="branch not covered" > ?? options.activity.name}</span> method not defined`);
 &nbsp;
       value = options.value;
       options.activity.takeOutgoing();
-    } else value = await target[method](options);
+    } else if (!node<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>ptions<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ause) {
+      value = await target[method](options);
+    }<span class="branch-0 cbranch-no" title="branch not covered" > else options.token.pause();</span>
 &nbsp;
-    log.info(`Activity ${options.activity.id<span class="branch-0 cbranch-no" title="branch not covered" > ?? options.activity.name}</span> completed`);
+    log.info(`Activity ${options.activity.id<span class="branch-0 cbranch-no" title="branch not covered" > ?? options.activity.name}</span> processed`);
 &nbsp;
     /* This is the code that is responsible for pausing the workflow token. */
     if (method &amp;&amp; options.activity.id === options.token.state.ref)
@@ -754,7 +784,7 @@ export class WorkflowJS {
     if (!token) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Token not found');</span>
     else token.state.value = token.state.value<span class="branch-0 cbranch-no" title="branch not covered" > ?? v</span>alue;
 &nbsp;
-    let node!: { identity: IdentityOptions; propertyName: string };
+    let node!: { options: IdentityOptions; propertyName: string };
     const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
 &nbsp;
     if (activity.name) node = nodes[activity.name];
@@ -835,7 +865,7 @@ export class WorkflowJS {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-19T09:04:07.485Z
+                at 2023-04-19T10:19:19.775Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

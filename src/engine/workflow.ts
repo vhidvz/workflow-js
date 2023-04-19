@@ -47,14 +47,24 @@ async function run(target: any, method: string, options: MethodOptions) {
 
     log.info(`Activity ${options.activity.id ?? options.activity.name} is running`);
 
-    if (!method) {
+    let node!: { options: { pause?: true }; propertyName: string };
+    const nodes = Reflect.getMetadata(NodeKey, target, '$__metadata__');
+
+    if (options.activity.name) node = nodes[options.activity.name];
+    if (!node && options.activity.id) node = nodes[options.activity.id];
+
+    log.info(`Node %o is loaded`, node);
+
+    if (!method && !node?.options?.pause) {
       log.warn(`Activity ${options.activity.id ?? options.activity.name} method not defined`);
 
       value = options.value;
       options.activity.takeOutgoing();
-    } else value = await target[method](options);
+    } else if (!node?.options?.pause) {
+      value = await target[method](options);
+    } else options.token.pause();
 
-    log.info(`Activity ${options.activity.id ?? options.activity.name} completed`);
+    log.info(`Activity ${options.activity.id ?? options.activity.name} processed`);
 
     /* This is the code that is responsible for pausing the workflow token. */
     if (method && options.activity.id === options.token.state.ref)
@@ -179,7 +189,7 @@ export class WorkflowJS {
     if (!token) throw new Error('Token not found');
     else token.state.value = token.state.value ?? value;
 
-    let node!: { identity: IdentityOptions; propertyName: string };
+    let node!: { options: IdentityOptions; propertyName: string };
     const nodes = Reflect.getMetadata(NodeKey, this.target, '$__metadata__');
 
     if (activity.name) node = nodes[activity.name];

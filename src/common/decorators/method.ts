@@ -14,7 +14,7 @@ export type MethodOptions = { activity: Activity; context: Context; token: Token
  *
  * @returns A function that is used as a decorator.
  */
-export function Node(options: IdentityOptions): any {
+export function Node(options: IdentityOptions & { pause?: true }): any {
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const nodes = Reflect.getOwnMetadata(NodeKey, target, '$__metadata__') ?? {};
 
