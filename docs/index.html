@@ -25,28 +25,33 @@
 <p>This is a JavaScript library for building and executing workflows. It provides a simple, declarative syntax for defining processes, and offers a flexible and extensible framework for handling workflow events and activities.</p>
 <ul>
 <li><a href="#installation">Installation</a></li>
+<li><a href="#concepts">Concepts</a></li>
 <li><a href="#getting-started">Quick Start</a></li>
 <li><a href="https://github.com/vhidvz/workflow-js/tree/master/example">Examples</a></li>
 <li><a href="#license">License</a></li>
 </ul>
 <a id="md:installation" class="tsd-anchor"></a><h2><a href="#$installation" style="color:inherit;text-decoration:none">Installation</a></h2><pre><code class="language-sh"><span class="hl-0">npm </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-1">--save</span><span class="hl-0"> </span><span class="hl-1">@vhidvz/wfjs</span>
 </code></pre>
-<a id="md:getting-started" class="tsd-anchor"></a><h2><a href="#$getting-started" style="color:inherit;text-decoration:none">Getting Started</a></h2><a id="md:define-a-bpmn-schema" class="tsd-anchor"></a><h3><a href="#$define-a-bpmn-schema" style="color:inherit;text-decoration:none">Define a BPMN Schema</a></h3><p>To define a BPMN schema, you need to create a file with the extension <code>.bpmn</code> and define the schema using the BPMN 2.0 standard or use the online BPMN <a href="https://demo.bpmn.io/new">editor</a>. Here&#39;s an example of a simple BPMN schema:</p>
-<p><img src="https://raw.githubusercontent.com/vhidvz/workflow-js/master/assets/simple-workflow.svg" alt="Simple Workflow"></p>
-<blockquote>
-<p>The full definition of the simple workflow schema <code>.bpmn</code> file located in <a href="https://github.com/vhidvz/workflow-js/tree/master/example">this link</a>.</p>
-</blockquote>
-<a id="md:creating-a-workflow-instance" class="tsd-anchor"></a><h3><a href="#$creating-a-workflow-instance" style="color:inherit;text-decoration:none">Creating a Workflow Instance</a></h3><p>To create a new workflow, you need to define a class with methods that represent the different steps of the workflow. You can use decorators to define the nodes and activities of the workflow. Here&#39;s an example of a simple workflow:</p>
-<pre><code class="language-ts"><span class="hl-2">import</span><span class="hl-0"> { </span><span class="hl-3">Act</span><span class="hl-0">, </span><span class="hl-3">Node</span><span class="hl-0">, </span><span class="hl-3">Process</span><span class="hl-0"> } </span><span class="hl-2">from</span><span class="hl-0"> </span><span class="hl-1">&quot;@vhidvz/wfjs/common&quot;</span><span class="hl-0">;</span><br/><span class="hl-2">import</span><span class="hl-0"> { </span><span class="hl-3">EventActivity</span><span class="hl-0"> } </span><span class="hl-2">from</span><span class="hl-0"> </span><span class="hl-1">&quot;@vhidvz/wfjs/core&quot;</span><span class="hl-0">;</span><br/><br/><span class="hl-0">@</span><span class="hl-4">Process</span><span class="hl-0">({ </span><span class="hl-3">name:</span><span class="hl-0"> </span><span class="hl-1">&#39;Simple Workflow&#39;</span><span class="hl-0"> })</span><br/><span class="hl-5">class</span><span class="hl-0"> </span><span class="hl-6">SimpleWorkflow</span><span class="hl-0"> {</span><br/><span class="hl-0">  @</span><span class="hl-4">Node</span><span class="hl-0">({ </span><span class="hl-3">name:</span><span class="hl-0"> </span><span class="hl-1">&#39;Start&#39;</span><span class="hl-0"> })</span><br/><span class="hl-0">  </span><span class="hl-5">async</span><span class="hl-0"> </span><span class="hl-4">start</span><span class="hl-0">(@</span><span class="hl-4">Act</span><span class="hl-0">() </span><span class="hl-3">activity</span><span class="hl-0">: </span><span class="hl-6">EventActivity</span><span class="hl-0">) {</span><br/><span class="hl-0">    </span><span class="hl-3">activity</span><span class="hl-0">.</span><span class="hl-4">takeOutgoing</span><span class="hl-0">();</span><br/><span class="hl-0">  }</span><br/><span class="hl-0">}</span>
-</code></pre>
-<a id="md:building-and-executing-the-workflow" class="tsd-anchor"></a><h3><a href="#$building-and-executing-the-workflow" style="color:inherit;text-decoration:none">Building and Executing the Workflow</a></h3><p>Once you have defined the workflow, you can build and execute it using the WorkflowJS library. Here&#39;s how you can do it:</p>
-<pre><code class="language-ts"><span class="hl-2">import</span><span class="hl-0"> { </span><span class="hl-3">parse</span><span class="hl-0">, </span><span class="hl-3">readFile</span><span class="hl-0">, </span><span class="hl-3">WorkflowJS</span><span class="hl-0"> } </span><span class="hl-2">from</span><span class="hl-0"> </span><span class="hl-1">&#39;@vhidvz/wfjs&#39;</span><span class="hl-0">;</span><br/><br/><span class="hl-0">(</span><span class="hl-5">async</span><span class="hl-0"> () </span><span class="hl-5">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-5">const</span><span class="hl-0"> </span><span class="hl-7">workflow</span><span class="hl-0"> = </span><span class="hl-3">WorkflowJS</span><span class="hl-0">.</span><span class="hl-4">build</span><span class="hl-0">();</span><br/><br/><span class="hl-0">  </span><span class="hl-5">const</span><span class="hl-0"> { </span><span class="hl-7">context</span><span class="hl-0"> } = </span><span class="hl-2">await</span><span class="hl-0"> </span><span class="hl-3">workflow</span><span class="hl-0">.</span><span class="hl-4">execute</span><span class="hl-0">({</span><br/><span class="hl-0">    </span><span class="hl-4">factory</span><span class="hl-3">:</span><span class="hl-0"> () </span><span class="hl-5">=&gt;</span><span class="hl-0"> </span><span class="hl-5">new</span><span class="hl-0"> </span><span class="hl-4">SimpleWorkflow</span><span class="hl-0">(),</span><br/><span class="hl-0">    </span><span class="hl-3">xml:</span><span class="hl-0"> </span><span class="hl-4">readFile</span><span class="hl-0">(</span><span class="hl-1">&#39;./example/simple-workflow.bpmn&#39;</span><span class="hl-0">),</span><br/><span class="hl-0">  });</span><br/><br/><span class="hl-0">  </span><span class="hl-3">console</span><span class="hl-0">.</span><span class="hl-4">debug</span><span class="hl-0">(</span><span class="hl-1">&#39;</span><span class="hl-8">\n</span><span class="hl-1">Context is:&#39;</span><span class="hl-0">, </span><span class="hl-7">JSON</span><span class="hl-0">.</span><span class="hl-4">stringify</span><span class="hl-0">(</span><span class="hl-3">context</span><span class="hl-0">.</span><span class="hl-4">serialize</span><span class="hl-0">(), </span><span class="hl-5">null</span><span class="hl-0">, </span><span class="hl-9">2</span><span class="hl-0">));</span><br/><span class="hl-0">})()</span>
-</code></pre>
-<a id="md:more-example" class="tsd-anchor"></a><h2><a href="#$more-example" style="color:inherit;text-decoration:none"><a href="https://github.com/vhidvz/workflow-js/tree/master/example">More Example</a></a></h2><p><strong>Projects</strong>: </p>
-<ul>
-<li><a href="https://github.com/vhidvz/workflow-template">workflow-template</a> is an example of creating a simple workflow microservice with <a href="https://github.com/nestjs/nest">NestJS</a> and <a href="https://github.com/vhidvz/workflow-js">WorkflowJS</a>.</li>
-</ul>
-<a id="md:license" class="tsd-anchor"></a><h2><a href="#$license" style="color:inherit;text-decoration:none">License</a></h2><p>This project is licensed under the MIT License - SEE the <a href="LICENSE">LICENSE</a> file for details</p>
+<a id="md:concepts" class="tsd-anchor"></a><h2><a href="#$concepts" style="color:inherit;text-decoration:none">Concepts</a></h2><table>
+<thead>
+<tr>
+<th>*</th>
+<th>Concept</th>
+<th>Description</th>
+<th>Type</th>
+<th>Decorator</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Process</td>
+<td>is a BPMN lane, a collection of flow objects.</td>
+<td>Class</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
 </div></div>
 <div class="col-sidebar">
 <div class="page-menu">
@@ -73,14 +78,7 @@
 <li>
 <ul>
 <li><a href="#md:installation"><span>Installation</span></a></li>
-<li><a href="#md:getting-started"><span>Getting <wbr/>Started</span></a></li>
-<li>
-<ul>
-<li><a href="#md:define-a-bpmn-schema"><span>Define a BPMN <wbr/>Schema</span></a></li>
-<li><a href="#md:creating-a-workflow-instance"><span>Creating a <wbr/>Workflow <wbr/>Instance</span></a></li>
-<li><a href="#md:building-and-executing-the-workflow"><span>Building and <wbr/>Executing the <wbr/>Workflow</span></a></li></ul></li>
-<li><a href="#md:more-example"><span>More <wbr/>Example</span></a></li>
-<li><a href="#md:license"><span>License</span></a></li></ul></li></ul></li></ul></div></details></div>
+<li><a href="#md:concepts"><span>Concepts</span></a></li></ul></li></ul></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="index.html" class="current"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4-path"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)" id="icon-4-text"></path></svg><span>@vhidvz/wfjs</span></a>
 <ul class="tsd-small-nested-navigation">
