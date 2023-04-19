@@ -110,3 +110,12 @@ export const takeOutgoing = (outgoing: Sequence[], identity?: IdentityOptions) =
       return outgoing?.filter((o) => o.targetRef?.name === identity.name).map((o) => o.targetRef!);
   } else return outgoing?.map((o) => o.targetRef!);
 };
+
+/**
+ * This TypeScript function returns the 'id' property of an object if it exists, otherwise it returns
+ * the 'name' property.
+ *
+ * @param {IdentityOptions} identity - The parameter `identity` is of type `IdentityOptions`, which is
+ * an interface or type that defines two possible properties: `id` and `name`.
+ */
+export const getKey = (identity: IdentityOptions) => ('id' in identity ? identity.id : identity.name);

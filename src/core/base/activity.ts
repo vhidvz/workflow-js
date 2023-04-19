@@ -9,12 +9,12 @@ import { Sequence } from './sequence';
 
 export interface GoOutInterface {
   activity: Activity;
-  pause?: boolean;
+  pause?: boolean | string;
 }
 
 export interface TakeOutgoingInterface {
   identity: IdentityOptions;
-  pause?: boolean;
+  pause?: boolean | string;
 }
 
 /* It's a class that represents an activity in a BPMN file */
@@ -66,11 +66,11 @@ export class Activity extends Attribute {
    * one
    *
    * @param {IdentityOptions} [identity] - IdentityOptions
-   * @param [options] - pause: boolean
+   * @param [options] - pause: boolean | string
    *
    * @returns The outgoing activity
    */
-  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
+  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean | string }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     const outgoing = takeOutgoing(this.outgoing, identity);
@@ -112,6 +112,11 @@ export class Activity extends Attribute {
    * represents an outgoing transition from a current activity to a new activity.
    */
   protected goOut(outgoing: GoOutInterface[]) {
+    const pause = (out: GoOutInterface) =>
+      typeof out!.pause === 'string'
+        ? out!.pause === out!.activity.id || out!.pause === out!.activity.name
+        : out!.pause;
+
     if (outgoing?.length && this.token) {
       if (outgoing.length === 1) {
         this.token.status = Status.Completed;
@@ -121,7 +126,7 @@ export class Activity extends Attribute {
         this.token.push(
           State.build(out!.activity!.id, {
             name: out!.activity!.name,
-            status: out!.pause ? Status.Paused : Status.Ready,
+            status: pause(out!) ? Status.Paused : Status.Ready,
           }),
         );
       }
@@ -138,7 +143,7 @@ export class Activity extends Attribute {
           token.push(
             State.build(out.activity.id, {
               name: out.activity.name,
-              status: out.pause ? Status.Paused : Status.Ready,
+              status: pause(out) ? Status.Paused : Status.Ready,
             }),
           );
 

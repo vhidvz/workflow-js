@@ -70,11 +70,11 @@ export class GatewayActivity extends Activity {
    * executed
    *
    * @param {IdentityOptions} [identity] - IdentityOptions
-   * @param [options] - pause: boolean
+   * @param [options] - pause: boolean | string
    *
    * @returns The outgoing activity
    */
-  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
+  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean | string }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     const outgoing = this.takeGatewayOutgoing(identity);

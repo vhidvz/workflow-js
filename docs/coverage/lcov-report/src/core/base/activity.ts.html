@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>183/183</span>
+                <span class='fraction'>188/188</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.73% </span>
+                <span class="strong">69.76% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>29/41</span>
+                <span class='fraction'>30/43</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>183/183</span>
+                <span class='fraction'>188/188</span>
             </div>
         
             
@@ -246,7 +246,12 @@
 <a name='L181'></a><a href='#L181'>181</a>
 <a name='L182'></a><a href='#L182'>182</a>
 <a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -360,6 +365,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -440,12 +450,12 @@ import { Sequence } from './sequence';
 &nbsp;
 export interface GoOutInterface {
   activity: Activity;
-  pause?: boolean;
+  pause?: boolean | string;
 }
 &nbsp;
 export interface TakeOutgoingInterface {
   identity: IdentityOptions;
-  pause?: boolean;
+  pause?: boolean | string;
 }
 &nbsp;
 /* It's a class that represents an activity in a BPMN file */
@@ -497,11 +507,11 @@ export class Activity extends Attribute {
    * one
    *
    * @param {IdentityOptions} [identity] - IdentityOptions
-   * @param [options] - pause: boolean
+   * @param [options] - pause: boolean | string
    *
    * @returns The outgoing activity
    */
-  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean }) {
+  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean | string }) {
     if (!this.outgoing || !this.outgoing<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength) return;
 &nbsp;
     const outgoing = takeOutgoing(this.outgoing, identity);
@@ -543,6 +553,11 @@ export class Activity extends Attribute {
    * represents an outgoing transition from a current activity to a new activity.
    */
   protected goOut(outgoing: GoOutInterface[]) {
+    const pause = (out: GoOutInterface) =&gt;
+      typeof out!.pause === 'string'
+<span class="branch-0 cbranch-no" title="branch not covered" >        ? out!.pause === out!.activity.id || out!.pause === out!.activity.name</span>
+        : out!.pause;
+&nbsp;
     if (outgoing<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength &amp;&amp; this.token) {
       if (outgoing.length === 1) {
         this.token.status = Status.Completed;
@@ -552,7 +567,7 @@ export class Activity extends Attribute {
         this.token.push(
           State.build(out!.activity!.id, {
             name: out!.activity!.name,
-            status: out!.pause ? Status.Paused : Status.Ready,
+            status: pause(out!) ? Status.Paused : Status.Ready,
           }),
         );
       }
@@ -569,7 +584,7 @@ export class Activity extends Attribute {
           token.push(
             State.build(out.activity.id, {
               name: out.activity.name,
-              status: out.pause <span class="branch-0 cbranch-no" title="branch not covered" >? Status.Paused </span>: Status.Ready,
+              status: pause(out) <span class="branch-0 cbranch-no" title="branch not covered" >? Status.Paused </span>: Status.Ready,
             }),
           );
 &nbsp;
@@ -619,7 +634,7 @@ export class Activity extends Attribute {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-19T07:59:55.161Z
+                at 2023-04-19T09:04:07.485Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
