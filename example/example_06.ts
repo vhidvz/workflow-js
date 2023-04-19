@@ -14,8 +14,8 @@ class PizzaVendor {
   }
 
   @Node({ name: 'Deliver the Pizza' })
-  public deliverThePizza() {
-    // Waiting for delivery
+  public deliverThePizza(@Act() activity: EventActivity) {
+    activity.takeOutgoing(undefined, { pause: true });
   }
 
   @Node({ name: 'Receive Payment' })

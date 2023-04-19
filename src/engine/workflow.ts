@@ -68,9 +68,6 @@ async function run(target: any, method: string, options: MethodOptions, is_first
     log.info(`Activity ${options.activity.id ?? options.activity.name} processed`);
 
     /* This is the code that is responsible for pausing the workflow token. */
-    if (method && options.activity.id === options.token.state.ref)
-      options.activity.takeOutgoing(undefined, { pause: true });
-
     if (options.activity.isEnd()) options.token.status = Status.Terminated;
 
     if (!options.activity.outgoing?.length && !options.activity.isEnd()) options.token.pause();

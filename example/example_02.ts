@@ -46,8 +46,8 @@ class PizzaCustomer {
   }
 
   @Node({ name: '60 Minutes' })
-  _60minutes() {
-    // use your job tools to handle this
+  _60minutes(@Act() activity: EventActivity) {
+    activity.takeOutgoing(undefined, { pause: true });
   }
 
   @Node({ name: 'Ask for the pizza' })
