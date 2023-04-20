@@ -1,5 +1,9 @@
 # Examples
 
+__Projects__: 
+
+- [workflow-template](https://github.com/vhidvz/workflow-template) is an example of creating a simple workflow microservice.
+
 ## Prerequisites
 
 Before running the following command please make sure you have installed Node version 18 or higher with NPM and GIT tool.
