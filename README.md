@@ -28,16 +28,17 @@ npm install --save @vhidvz/wfjs
 
 ## Concepts
 
-| * | Concept  | Description                                                      | Type  | Decorator | Required |
-|---|----------|------------------------------------------------------------------|-------|-----------|----------|
-| 1 | Process  | is a BPMN lane, a collection of flow objects.                    | Class | @Process  | Yes      |
-| 2 | Activity | is a Flow Object or a Node of a workflow process.                | Param | @Act()    | Yes      |
-| 3 | Context  | is storing the state of the machine during execution.            | Param | @Ctx()    | No       |
-| 4 | Token    | has a `history` of the execution `State`, tokens are needed.     | Param | @Sign()   | No       |
-| 5 | history  | is an array of the `State` of a flow object or node in a token.  | --    | @Sign()   | No       |
-| 6 | State    | it contains the state of each node or flows object in `history`. | --    | @Sign()   | No       |
-| 7 | Data     | is a shared space across the execution context.                  | Param | @Data()   | Maybe    |
-| 8 | Value    | is an isolated space for each flow object or node.               | Param | @Value()  | Maybe    |
+| * | Concept  | Description                                                      | Type   | Decorator | Required |
+|---|----------|------------------------------------------------------------------|--------|-----------|----------|
+| 1 | Process  | is a BPMN lane, a collection of flow objects.                    | Class  | @Process  | Yes      |
+| 2 | Node     | is a functionality of `Activity` in a workflow.                  | Method | @Node     | Yes      |
+| 3 | Activity | is a Flow Object or a Node of a workflow process.                | Param  | @Act()    | Yes      |
+| 4 | Context  | is storing the state of the machine during execution.            | Param  | @Ctx()    | No       |
+| 5 | Token    | has a `history` of the execution `State`, tokens are needed.     | Param  | @Sign()   | No       |
+| 6 | history  | is an array of the `State` of a flow object or node in a token.  | --     | @Sign()   | No       |
+| 7 | State    | it contains the state of each node or flows object in `history`. | --     | @Sign()   | No       |
+| 8 | Data     | is a shared space across the execution context.                  | Param  | @Data()   | Maybe    |
+| 9 | Value    | is an isolated space for each flow object or node.               | Param  | @Value()  | Maybe    |
 
 > Note: if you `return` a value in a `Node` the value is passed to the next available `Node` as a `Value` in a specific execution.
 
