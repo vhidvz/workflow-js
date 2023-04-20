@@ -176,7 +176,7 @@ export class WorkflowJS {
     if (context.tokens.length == 0) {
       const state = State.build(activity.id, { name: activity.name, value });
 
-      token = Token.build({ histories: [state] });
+      token = Token.build({ history: [state] });
 
       context.addToken(token);
     } else {

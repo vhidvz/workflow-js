@@ -7,7 +7,7 @@ export interface TokenInterface {
   readonly id: string;
   parent?: string;
   locked?: boolean;
-  histories: StateInterface[];
+  history: StateInterface[];
 }
 
 /* It creates a new instance of the Token class */
@@ -17,32 +17,32 @@ export class Token implements TokenInterface {
   public parent?: string;
   public locked?: boolean;
 
-  public histories: State[] = [];
+  public history: State[] = [];
 
   constructor(data?: Partial<TokenInterface>) {
     if (data) Object.assign(this, data);
   }
 
   /**
-   * It pushes a state to the histories array
+   * It pushes a state to the history array
    *
    * @param {State} state - State
    *
    * @returns The current instance of the class.
    */
   push(state: State) {
-    this.histories.push(state);
+    this.history.push(state);
 
     return this;
   }
 
   /**
-   * Pop the last item from the histories array and return the lates state at histories array.
+   * Pop the last item from the history array and return the lates state at history array.
    *
    * @returns The poped state object.
    */
   pop() {
-    return !this.locked && this.histories.pop();
+    return !this.locked && this.history.pop();
   }
 
   /**
@@ -110,12 +110,12 @@ export class Token implements TokenInterface {
   }
 
   /**
-   * It returns the last element of the histories array
+   * It returns the last element of the history array
    *
    * @returns The last element in the array.
    */
   get state() {
-    return this.histories[this.histories.length - 1];
+    return this.history[this.history.length - 1];
   }
 
   /**
@@ -123,12 +123,12 @@ export class Token implements TokenInterface {
    *
    * @param options - value: true
    *
-   * @returns An object with the id, parent, histories, and locked properties.
+   * @returns An object with the id, parent, history, and locked properties.
    */
   serialize({ value } = { value: true }) {
     return {
       id: this.id,
-      histories: this.histories.map((s) => s.serialize({ value })),
+      history: this.history.map((s) => s.serialize({ value })),
       ...(this.parent ? { parent: this.parent } : {}),
       ...(this.locked !== undefined ? { locked: this.locked } : {}),
     };
@@ -136,17 +136,17 @@ export class Token implements TokenInterface {
 
   /**
    * It takes a JSON object and returns a new Token object with the same properties as the JSON object,
-   * except that the histories property is an array of State objects instead of an array of JSON
+   * except that the history property is an array of State objects instead of an array of JSON
    * objects
    *
    * @param {Token} token - Token - this is the data that is passed in from the deserialize function.
    *
-   * @returns A new Token object with the data passed in and the histories mapped to State objects.
+   * @returns A new Token object with the data passed in and the history mapped to State objects.
    */
   static deserialize(token: TokenInterface) {
     return new Token({
       ...token,
-      histories: token.histories.map((s) => State.deserialize(s)),
+      history: token.history.map((s) => State.deserialize(s)),
     });
   }
 

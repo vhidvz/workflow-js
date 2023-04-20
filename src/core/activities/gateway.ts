@@ -42,7 +42,7 @@ export class GatewayActivity extends Activity {
               t.status = Status.Terminated;
             });
 
-            this.token = Token.build({ histories: [this.token.state.clone()] });
+            this.token = Token.build({ history: [this.token.state.clone()] });
             this.context.addToken(this.token);
           }
 
