@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "index.js",
   "types": "index.d.ts",
@@ -44,28 +44,28 @@
   "dependencies": {
     "debug": "^4.3.4",
     "reflect-metadata": "^0.1.13",
-    "xml2js": "^0.5.0"
+    "xml2js": "^0.6.0"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/jest": "^29.5.1",
+    "@types/debug": "^4.1.8",
+    "@types/jest": "^29.5.3",
     "@types/xml2js": "^0.4.11",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
-    "dotenv": "^16.0.3",
-    "eslint": "^8.38.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "jest": "^29.5.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.6.1",
     "jshint": "^2.13.6",
     "make-coverage-badge": "^1.2.0",
-    "prettier": "^2.8.7",
-    "rimraf": "^5.0.0",
-    "ts-jest": "^29.1.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.1",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typedoc": "^0.24.4",
-    "typescript": "^5.0.4"
+    "typedoc": "^0.24.8",
+    "typescript": "^5.1.6"
   },
   "publishConfig": {
     "access": "public",
