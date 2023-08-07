@@ -19,6 +19,8 @@ export const readFile = (path: string): string => fs.readFileSync(path, 'utf8');
  * @returns A BPMNSchema object
  */
 export const parse = (xml: string) => {
+  xml = xml.replace(/bpmn\d*:/g, 'bpmn:');
+
   let parse;
   parseString(xml, { async: false }, (err, result) => {
     if (err) throw err;
