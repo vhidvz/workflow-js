@@ -1,5 +1,6 @@
 import { getActivity, getWrappedBPMNElement } from '../../tools';
 import { BPMNEvent, BPMNProcess } from '../../type';
+import { TaskActivity } from './task';
 import { Activity } from '../base';
 
 export enum EventType {
@@ -47,10 +48,10 @@ export class EventActivity extends Activity {
    *
    * @returns The activity that the boundary event is attached to.
    */
-  get attachedToRef(): Activity | undefined {
+  get attachedToRef(): TaskActivity | undefined {
     if (!this.$.attachedToRef) return;
     const data = getWrappedBPMNElement(this.process, { id: this.$.attachedToRef });
-    if (data) return getActivity(this.process, data);
+    if (data) return getActivity(this.process, data) as TaskActivity;
   }
 
   /**
