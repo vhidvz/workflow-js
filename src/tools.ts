@@ -73,7 +73,10 @@ export const getWrappedBPMNElement = (process: BPMNProcess, identity: IdentityOp
  *
  * @returns A new Activity object
  */
-export const getActivity = (process: BPMNProcess, data?: WrappedElement) => {
+export const getActivity = (
+  process: BPMNProcess,
+  data?: WrappedElement,
+): Activity | TaskActivity | EventActivity | GatewayActivity => {
   if (!data) return new Activity(process);
 
   const { key, element } = data;

@@ -1,4 +1,6 @@
+import { getActivity, getWrappedBPMNElement } from '../../tools';
 import { BPMNProcess, BPMNTask } from '../../type';
+import { EventActivity } from './event';
 import { Activity } from '../base';
 
 export enum TaskType {
@@ -23,6 +25,22 @@ of the Business enum, otherwise return undefined */
 export class TaskActivity extends Activity {
   constructor(process: BPMNProcess, data?: Partial<TaskActivity>, key?: string) {
     super(process, data, key);
+  }
+
+  /**
+   * The function retrieves the attachments of a boundary event in a BPMN process.
+   *
+   * @returns an array of attachments. These attachments are boundary events that are attached to the
+   * current BPMN element. The function filters out any boundary events that are not attached to the
+   * current element and then maps them to their corresponding activities. The resulting array contains
+   * the activities that are attached as boundaries to the current element.
+   */
+  get attachments(): EventActivity[] {
+    const boundaries = (this.process['bpmn:boundaryEvent'] ?? [])
+      .filter((e) => e.$.attachedToRef === this.$.id)
+      .map((e) => getWrappedBPMNElement(this.process, e.$));
+
+    return boundaries.filter((e) => !!e).map((e) => getActivity(this.process, e) as EventActivity);
   }
 
   /**

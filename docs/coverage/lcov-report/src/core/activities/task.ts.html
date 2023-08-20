@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">82.92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>56/64</span>
+                <span class='fraction'>68/82</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">82.92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>56/64</span>
+                <span class='fraction'>68/82</span>
             </div>
         
             
@@ -127,7 +127,27 @@
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -163,6 +183,22 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -191,7 +227,9 @@
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BPMNProcess, BPMNTask } from '../../type';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { getActivity, getWrappedBPMNElement } from '../../tools';
+import { BPMNProcess, BPMNTask } from '../../type';
+import { EventActivity } from './event';
 import { Activity } from '../base';
 &nbsp;
 export enum TaskType {
@@ -217,6 +255,22 @@ export class TaskActivity extends Activity {
   constructor(process: BPMNProcess, data?: Partial&lt;TaskActivity&gt;, key?: string) {
     super(process, data, key);
   }
+&nbsp;
+  /**
+   * The function retrieves the attachments of a boundary event in a BPMN process.
+   *
+   * @returns an array of attachments. These attachments are boundary events that are attached to the
+   * current BPMN element. The function filters out any boundary events that are not attached to the
+   * current element and then maps them to their corresponding activities. The resulting array contains
+   * the activities that are attached as boundaries to the current element.
+   */
+<span class="fstat-no" title="function not covered" >  get attachments(): EventActivity[] {</span>
+<span class="cstat-no" title="statement not covered" >    const boundaries = (this.process['bpmn:boundaryEvent'] ?? [])</span>
+<span class="cstat-no" title="statement not covered" >      .filter((e) =&gt; e.$.attachedToRef === this.$.id)</span>
+<span class="cstat-no" title="statement not covered" >      .map((e) =&gt; getWrappedBPMNElement(this.process, e.$));</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return boundaries.filter((e) =&gt; !!e).map((e) =&gt; getActivity(this.process, e) as EventActivity);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   /**
    * If the key property of the current object contains the word "send", return the value of the Send
@@ -262,7 +316,7 @@ export class TaskActivity extends Activity {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-07-16T10:58:56.879Z
+                at 2023-08-20T11:55:33.019Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
