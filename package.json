@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "5.0.7",
+  "version": "5.0.8",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "index.js",
   "types": "index.d.ts",
