@@ -1,6 +1,6 @@
 {
   "name": "@vhidvz/wfjs",
-  "version": "5.0.9",
+  "version": "5.0.10",
   "description": "Workflow Engine (BPMN Engine)",
   "main": "index.js",
   "types": "index.d.ts",
@@ -39,6 +39,22 @@
     "engine",
     "workflow"
   ],
+  "files": [
+    "/core",
+    "/type",
+    "/engine",
+    "/common",
+    "/context",
+    "/index.js",
+    "/tools.js",
+    "/utils.js",
+    "/index.d.ts",
+    "/tools.d.ts",
+    "/utils.d.ts",
+    "/index.js.map",
+    "/tools.js.map",
+    "/utils.js.map"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
   "dependencies": {
@@ -72,20 +88,12 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": [
-    "/core",
-    "/type",
-    "/engine",
-    "/common",
-    "/context",
-    "/index.js",
-    "/tools.js",
-    "/utils.js",
-    "/index.d.ts",
-    "/tools.d.ts",
-    "/utils.d.ts",
-    "/index.js.map",
-    "/tools.js.map",
-    "/utils.js.map"
-  ]
+  "engines": {
+    "node": ">=20.x.x <22",
+    "npm": "~10.8.2"
+  },
+  "os": [
+    "!win32"
+  ],
+  "packageManager": "pnpm@10.5.2"
 }

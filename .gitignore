@@ -1,9 +1,10 @@
 # Build
-./core
-./type
-./engine
-./common
-./context
+core/
+type/
+engine/
+common/
+context/
+
 index.js
 tools.js
 utils.js
@@ -13,6 +14,12 @@ utils.d.ts
 index.js.map
 tools.js.map
 utils.js.map
+
+!src/core/
+!src/type/
+!src/engine/
+!src/common/
+!src/context/
 
 # Logs
 logs

@@ -136,7 +136,7 @@ export class WorkflowJS {
 
     if (!this.target) {
       const { handler, factory } = options;
-      this.target = '$__metadata__' in this ? this : (factory ?? (() => undefined))() ?? handler;
+      this.target = '$__metadata__' in this ? this : ((factory ?? (() => undefined))() ?? handler);
 
       if (!this.target) throw new Error('Target workflow not found');
     }
@@ -157,9 +157,7 @@ export class WorkflowJS {
     does not, it will check if the context has tokens. If it does not, it will get the start event
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
-    if (options?.node && context.tokens.length) {
-      activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
-    } else if (!context.tokens.length && !options?.node) {
+    if (!context.tokens.length && !options?.node) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
         throw new Error('Start event is not defined in process or have more than one start event');
 
@@ -167,6 +165,8 @@ export class WorkflowJS {
         key: 'bpmn:startEvent',
         element: this.process['bpmn:startEvent'][0],
       });
+    } else if (options?.node) {
+      activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
     }
     if (!activity) throw new Error('Node activity not found or not applicable');
 
