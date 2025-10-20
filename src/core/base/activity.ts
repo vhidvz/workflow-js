@@ -77,7 +77,7 @@ export class Activity extends Attribute {
 
     if (!outgoing) return;
 
-    this.goOut(outgoing.map((out) => ({ activity: out, pause: options?.pause })));
+    return this.goOut(outgoing.map((out) => ({ activity: out, pause: options?.pause })));
   }
 
   /**
@@ -102,7 +102,7 @@ export class Activity extends Attribute {
       if (activity) outgoing[activity.id] = { activity, pause };
     }
 
-    this.goOut(Object.values(outgoing));
+    return this.goOut(Object.values(outgoing));
   }
 
   /**
@@ -135,6 +135,7 @@ export class Activity extends Attribute {
         this.token.locked = true;
         this.token.status = Status.Terminated;
 
+        const tokens: Token[] = [];
         for (const out of outgoing) {
           const token = Token.build({
             parent: this.token.id,
@@ -147,8 +148,10 @@ export class Activity extends Attribute {
             }),
           );
 
+          tokens.push(token);
           this.context.addToken(token);
         }
+        return tokens;
       }
     }
   }

@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">57.77% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>76/133</span>
+                <span class='fraction'>78/135</span>
             </div>
         
             
@@ -57,7 +57,7 @@
         <template id="filterTemplate">
             <div class="quiet">
                 Filter:
-                <input oninput="onInput()" type="search" id="fileSearch">
+                <input type="search" id="fileSearch">
             </div>
         </template>
     </div>
@@ -388,6 +388,7 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -489,16 +490,16 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -552,7 +553,8 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -560,11 +562,9 @@
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -637,6 +637,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
   options.activity.context = options.context;
 &nbsp;
   let value;
+  let tokens;
   let exception;
 &nbsp;
   try {
@@ -657,7 +658,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
       log.warn(`Activity ${options.activity.id<span class="branch-0 cbranch-no" title="branch not covered" > ?? options.activity.name}</span> method not defined`);
 &nbsp;
       value = options.value;
-      options.activity.takeOutgoing();
+      tokens = options.activity.takeOutgoing();
     } else if (!node<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>ptions<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ause<span class="branch-0 cbranch-no" title="branch not covered" > || is_first_iteration)</span> {
       value = await target[method](options);
     }<span class="branch-0 cbranch-no" title="branch not covered" > else options.token.pause();</span>
@@ -676,7 +677,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
 <span class="cstat-no" title="statement not covered" >    log.error(`Activity ${options.activity.id ?? options.activity.name} failed with error %O`, error);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
-  return { value, exception };
+  return { value, tokens, exception };
 }
 &nbsp;
 /* It executes a workflow */
@@ -733,7 +734,7 @@ export class WorkflowJS {
 &nbsp;
     if (!this.target) {
       const { handler, factory } = options;
-      this.target = '$__metadata__' in this <span class="branch-0 cbranch-no" title="branch not covered" >? this </span>: (factory ?? (() =&gt; undefined))() ?? handler;
+      this.target = '$__metadata__' in this <span class="branch-0 cbranch-no" title="branch not covered" >? this </span>: ((factory ?? (() =&gt; undefined))() ?? handler);
 &nbsp;
       if (!this.target) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Target workflow not found');</span>
     }
@@ -754,9 +755,7 @@ export class WorkflowJS {
     does not, it will check if the context has tokens. If it does not, it will get the start event
     from the process. If it does, it will throw an error. */
     let activity: Activity | undefined;
-    if (options<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ode &amp;&amp; context.tokens.length) {
-      activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
-    } else if (!context.tokens.length &amp;&amp; !options<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ode) {
+    if (!context.tokens.length &amp;&amp; !options<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ode) {
       if (!this.process['bpmn:startEvent'] || this.process['bpmn:startEvent'].length !== 1)
 <span class="branch-0 cbranch-no" title="branch not covered" >        throw new Error('Start event is not defined in process or have more than one start event');</span>
 &nbsp;
@@ -764,6 +763,8 @@ export class WorkflowJS {
         key: 'bpmn:startEvent',
         element: this.process['bpmn:startEvent'][0],
       });
+    } else if (options<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ode) {
+      activity = getActivity(this.process, getWrappedBPMNElement(this.process, options.node));
     }
     if (!activity) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Node activity not found or not applicable');</span>
 &nbsp;
@@ -818,6 +819,7 @@ export class WorkflowJS {
 &nbsp;
         if (next.name) runOptions.method = nodes[next.name]?.propertyName ?? '';
         if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName ?? '';
+        log.info(`Next method is ${runOptions.method<span class="branch-0 cbranch-no" title="branch not covered" > ?? '[undefined]'}</span>`);
 &nbsp;
         if (!runOptions.method &amp;&amp; result.value) <span class="branch-0 cbranch-no" title="branch not covered" >val = { [token.id]: result.value };</span>
         else if (runOptions.method &amp;&amp; val[token.id]) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
@@ -825,14 +827,12 @@ export class WorkflowJS {
 <span class="cstat-no" title="statement not covered" >          delete val[token.id];</span>
         } else next.value = result.value;
 &nbsp;
-        log.info(`Next method is ${runOptions.method<span class="branch-0 cbranch-no" title="branch not covered" > ?? '[undefined]'}</span>`);
+        if (result.tokens) for (const { id } of result.tokens) val[id] = val[token.id];
 &nbsp;
         token = context.getTokens({ id: next.ref })<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ind((t) =&gt; t.status === Status.Ready);
-&nbsp;
         if (!token) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Token not found at running stage');</span>
 &nbsp;
         activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
-&nbsp;
         log.info(`Next Activity is ${activity<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame ?? activity<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d<span class="branch-0 cbranch-no" title="branch not covered" > ?? '[undefined]'}</span>`);
 &nbsp;
         runOptions.options = {
@@ -868,7 +868,7 @@ export class WorkflowJS {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-03-03T10:31:06.584Z
+                at 2025-10-20T13:17:02.452Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

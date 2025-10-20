@@ -74,17 +74,17 @@ export class GatewayActivity extends Activity {
    *
    * @returns The outgoing activity
    */
-  takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean | string }) {
+  override takeOutgoing(identity?: IdentityOptions, options?: { pause: boolean | string }) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     const outgoing = this.takeGatewayOutgoing(identity);
 
     if (!outgoing) return;
 
-    this.goOut(outgoing.map((out) => ({ activity: out, pause: options?.pause })));
+    return this.goOut(outgoing.map((out) => ({ activity: out, pause: options?.pause })));
   }
 
-  takeOutgoings(options: TakeOutgoingInterface[]) {
+  override takeOutgoings(options: TakeOutgoingInterface[]) {
     if (!this.outgoing || !this.outgoing?.length) return;
 
     const outgoing: { [id: string]: GoOutInterface } = {};
@@ -96,7 +96,7 @@ export class GatewayActivity extends Activity {
       if (activity) outgoing[activity.id] = { activity, pause };
     }
 
-    this.goOut(Object.values(outgoing));
+    return this.goOut(Object.values(outgoing));
   }
 
   /**

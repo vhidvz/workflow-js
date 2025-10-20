@@ -40,6 +40,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
   options.activity.context = options.context;
 
   let value;
+  let tokens;
   let exception;
 
   try {
@@ -60,7 +61,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
       log.warn(`Activity ${options.activity.id ?? options.activity.name} method not defined`);
 
       value = options.value;
-      options.activity.takeOutgoing();
+      tokens = options.activity.takeOutgoing();
     } else if (!node?.options?.pause || is_first_iteration) {
       value = await target[method](options);
     } else options.token.pause();
@@ -79,7 +80,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
     log.error(`Activity ${options.activity.id ?? options.activity.name} failed with error %O`, error);
   }
 
-  return { value, exception };
+  return { value, tokens, exception };
 }
 
 /* It executes a workflow */
@@ -221,6 +222,7 @@ export class WorkflowJS {
 
         if (next.name) runOptions.method = nodes[next.name]?.propertyName ?? '';
         if (!runOptions.method) runOptions.method = nodes[next.ref]?.propertyName ?? '';
+        log.info(`Next method is ${runOptions.method ?? '[undefined]'}`);
 
         if (!runOptions.method && result.value) val = { [token.id]: result.value };
         else if (runOptions.method && val[token.id]) {
@@ -228,14 +230,12 @@ export class WorkflowJS {
           delete val[token.id];
         } else next.value = result.value;
 
-        log.info(`Next method is ${runOptions.method ?? '[undefined]'}`);
+        if (result.tokens) for (const { id } of result.tokens) val[id] = val[token.id];
 
         token = context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
-
         if (!token) throw new Error('Token not found at running stage');
 
         activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
-
         log.info(`Next Activity is ${activity?.name ?? activity?.id ?? '[undefined]'}`);
 
         runOptions.options = {
