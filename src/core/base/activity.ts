@@ -112,6 +112,8 @@ export class Activity extends Attribute {
    * represents an outgoing transition from a current activity to a new activity.
    */
   protected goOut(outgoing: GoOutInterface[]) {
+    if (this.context) this.context.recentlyAddedTokens = undefined;
+
     const pause = (out: GoOutInterface) =>
       typeof out!.pause === 'string'
         ? out!.pause === out!.activity.id || out!.pause === out!.activity.name
@@ -123,12 +125,14 @@ export class Activity extends Attribute {
 
         const out = outgoing.pop();
 
-        this.token.push(
+        const token = this.token.push(
           State.build(out!.activity!.id, {
             name: out!.activity!.name,
             status: pause(out!) ? Status.Paused : Status.Ready,
           }),
         );
+
+        if (this.context) this.context.recentlyAddedTokens = [token];
       }
 
       if (outgoing.length > 1 && this.context) {
@@ -151,6 +155,8 @@ export class Activity extends Attribute {
           tokens.push(token);
           this.context.addToken(token);
         }
+
+        this.context.recentlyAddedTokens = tokens;
         return tokens;
       }
     }

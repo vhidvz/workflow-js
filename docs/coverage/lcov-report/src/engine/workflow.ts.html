@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.99% </span>
+                <span class="strong">97.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>258/266</span>
+                <span class='fraction'>259/266</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.77% </span>
+                <span class="strong">58.08% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>78/135</span>
+                <span class='fraction'>79/136</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.99% </span>
+                <span class="strong">97.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>258/266</span>
+                <span class='fraction'>259/266</span>
             </div>
         
             
@@ -388,7 +388,6 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -548,22 +547,23 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
@@ -637,7 +637,6 @@ async function run(target: any, method: string, options: MethodOptions, is_first
   options.activity.context = options.context;
 &nbsp;
   let value;
-  let tokens;
   let exception;
 &nbsp;
   try {
@@ -658,7 +657,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
       log.warn(`Activity ${options.activity.id<span class="branch-0 cbranch-no" title="branch not covered" > ?? options.activity.name}</span> method not defined`);
 &nbsp;
       value = options.value;
-      tokens = options.activity.takeOutgoing();
+      options.activity.takeOutgoing();
     } else if (!node<span class="branch-0 cbranch-no" title="branch not covered" >?.o</span>ptions<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ause<span class="branch-0 cbranch-no" title="branch not covered" > || is_first_iteration)</span> {
       value = await target[method](options);
     }<span class="branch-0 cbranch-no" title="branch not covered" > else options.token.pause();</span>
@@ -677,7 +676,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
 <span class="cstat-no" title="statement not covered" >    log.error(`Activity ${options.activity.id ?? options.activity.name} failed with error %O`, error);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
-  return { value, tokens, exception };
+  return { value, tokens: options.context.recentlyAddedTokens, exception };
 }
 &nbsp;
 /* It executes a workflow */
@@ -803,6 +802,7 @@ export class WorkflowJS {
     let val: { [id: string]: any } = {}; // to hold returned value by token id
     do {
       const result = await run(this.target, runOptions.method, runOptions.options, is_first_iteration);
+      if (result.tokens &amp;&amp; result.value) for (const { id } of result.tokens) val[id] = result.value;
 &nbsp;
       log.debug(`Result of %o method is %O`, runOptions.method, result.value ?? '[null]');
 &nbsp;
@@ -822,15 +822,15 @@ export class WorkflowJS {
         log.info(`Next method is ${runOptions.method<span class="branch-0 cbranch-no" title="branch not covered" > ?? '[undefined]'}</span>`);
 &nbsp;
         if (!runOptions.method &amp;&amp; result.value) <span class="branch-0 cbranch-no" title="branch not covered" >val = { [token.id]: result.value };</span>
-        else if (runOptions.method &amp;&amp; val[token.id]) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >          next.value = val[token.id];</span>
-<span class="cstat-no" title="statement not covered" >          delete val[token.id];</span>
-        } else next.value = result.value;
 &nbsp;
-        if (result.tokens) for (const { id } of result.tokens) val[id] = val[token.id];
-&nbsp;
+        let isSameToken: string | boolean = token.id;
         token = context.getTokens({ id: next.ref })<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ind((t) =&gt; t.status === Status.Ready);
         if (!token) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error('Token not found at running stage');</span>
+        isSameToken = isSameToken === token.id;
+&nbsp;
+        if (runOptions.method &amp;&amp; val[token.id]) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >          (next.value = val[token.id]) &amp;&amp; delete val[token.id];</span>
+        } else next.value = isSameToken ? result.value : undefined;
 &nbsp;
         activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
         log.info(`Next Activity is ${activity<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame ?? activity<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>d<span class="branch-0 cbranch-no" title="branch not covered" > ?? '[undefined]'}</span>`);
@@ -868,7 +868,7 @@ export class WorkflowJS {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-20T13:17:02.452Z
+                at 2025-10-23T09:36:44.919Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

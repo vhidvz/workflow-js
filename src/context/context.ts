@@ -11,6 +11,8 @@ export interface ContextInterface<D = any> {
 
 /* It's a class that represents the state of a running workflow */
 export class Context<D = any> implements ContextInterface<D> {
+  public recentlyAddedTokens?: Token[];
+
   public data?: D;
   public tokens: Token[] = [];
   public status: Status = Status.Ready;

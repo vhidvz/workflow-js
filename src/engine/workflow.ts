@@ -40,7 +40,6 @@ async function run(target: any, method: string, options: MethodOptions, is_first
   options.activity.context = options.context;
 
   let value;
-  let tokens;
   let exception;
 
   try {
@@ -61,7 +60,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
       log.warn(`Activity ${options.activity.id ?? options.activity.name} method not defined`);
 
       value = options.value;
-      tokens = options.activity.takeOutgoing();
+      options.activity.takeOutgoing();
     } else if (!node?.options?.pause || is_first_iteration) {
       value = await target[method](options);
     } else options.token.pause();
@@ -80,7 +79,7 @@ async function run(target: any, method: string, options: MethodOptions, is_first
     log.error(`Activity ${options.activity.id ?? options.activity.name} failed with error %O`, error);
   }
 
-  return { value, tokens, exception };
+  return { value, tokens: options.context.recentlyAddedTokens, exception };
 }
 
 /* It executes a workflow */
@@ -206,6 +205,7 @@ export class WorkflowJS {
     let val: { [id: string]: any } = {}; // to hold returned value by token id
     do {
       const result = await run(this.target, runOptions.method, runOptions.options, is_first_iteration);
+      if (result.tokens && result.value) for (const { id } of result.tokens) val[id] = result.value;
 
       log.debug(`Result of %o method is %O`, runOptions.method, result.value ?? '[null]');
 
@@ -225,15 +225,15 @@ export class WorkflowJS {
         log.info(`Next method is ${runOptions.method ?? '[undefined]'}`);
 
         if (!runOptions.method && result.value) val = { [token.id]: result.value };
-        else if (runOptions.method && val[token.id]) {
-          next.value = val[token.id];
-          delete val[token.id];
-        } else next.value = result.value;
 
-        if (result.tokens) for (const { id } of result.tokens) val[id] = val[token.id];
-
+        let isSameToken: string | boolean = token.id;
         token = context.getTokens({ id: next.ref })?.find((t) => t.status === Status.Ready);
         if (!token) throw new Error('Token not found at running stage');
+        isSameToken = isSameToken === token.id;
+
+        if (runOptions.method && val[token.id]) {
+          (next.value = val[token.id]) && delete val[token.id];
+        } else next.value = isSameToken ? result.value : undefined;
 
         activity = getActivity(this.process, getWrappedBPMNElement(this.process, { id: next.ref }));
         log.info(`Next Activity is ${activity?.name ?? activity?.id ?? '[undefined]'}`);

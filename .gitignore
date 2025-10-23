@@ -5,6 +5,11 @@ engine/
 common/
 context/
 
+!docs/coverage/lcov-report/src/common/
+!docs/coverage/lcov-report/src/context/
+!docs/coverage/lcov-report/src/core/
+!docs/coverage/lcov-report/src/engine/
+
 index.js
 tools.js
 utils.js
