@@ -58,7 +58,7 @@
   "license": "MIT",
   "homepage": "https://github.com/vhidvz/workflow-js#readme",
   "dependencies": {
-    "debug": "^4.3.4",
+    "debug": "^4.4.3",
     "reflect-metadata": "^0.2.1",
     "xml2js": "^0.6.2"
   },
